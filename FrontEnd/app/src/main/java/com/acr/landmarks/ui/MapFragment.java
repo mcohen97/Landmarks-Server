@@ -1,8 +1,9 @@
-package com.acr.landmarks;
+package com.acr.landmarks.ui;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,13 +12,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.acr.landmarks.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
@@ -32,11 +40,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private RecyclerView mUserListRecyclerView;
     private MapView mMapView;
 
+    //Prueba location y camara update
+    private GoogleMap mMap;
+    private LatLngBounds mMapBoundary;
+    //private Location mUserLocation;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
     }
+
+    //LLamarlo aquí o en main activity en intervalos de tiempo de algún modo, hay que actualizar location permanentemente
+    /*private void getLastKnownLocation() {
+        Log.d(TAG, "getLastKnownLocation: called.");
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if (task.isSuccessful()) {
+                    Location location = task.getResult();
+                    mUserLocation = location;
+                }
+            }
+        });
+
+    }*/
 
     @Nullable
     @Override
@@ -111,7 +144,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
         map.setMyLocationEnabled(true);
+        mMap = map;
     }
+
 
     @Override
     public void onPause() {
@@ -130,5 +165,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
 
 }

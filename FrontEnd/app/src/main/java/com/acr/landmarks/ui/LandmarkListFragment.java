@@ -1,4 +1,4 @@
-package com.acr.landmarks;
+package com.acr.landmarks.ui;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,13 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ToursFragment extends Fragment {
+import com.acr.landmarks.R;
 
+
+public class LandmarkListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tours, container, false);
+        return inflater.inflate(R.layout.fragment_landmark_list, container, false);
     }
+
+
 }
