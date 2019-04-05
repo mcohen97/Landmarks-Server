@@ -21,6 +21,8 @@ import android.util.Log;
 
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.ui.MainActivity;
+import com.acr.landmarks.ui.MapFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -110,10 +112,12 @@ public class LocationService extends Service {
     }
 
     private void saveUserLocation(final Location location){
+
         userLocation = location;
+        setUserLocation();
     }
 
-    public Location getUserLocation(){
-        return userLocation;
+    public void setUserLocation(){
+        MainActivity.mUserLocation = userLocation;
     }
 }

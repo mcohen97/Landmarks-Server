@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Maps Activity";
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
-    private Location mUserLocation;
+    public static Location mUserLocation;
 
     private ViewPager mViewPager;
 
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private void startLocationService(){
         if(!isLocationServiceRunning()){
             Intent serviceIntent = new Intent(this, LocationService.class);
-//        this.startService(serviceIntent);
+            //this.startService(serviceIntent);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
 

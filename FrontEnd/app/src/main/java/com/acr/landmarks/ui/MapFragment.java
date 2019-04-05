@@ -2,6 +2,7 @@ package com.acr.landmarks.ui;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
@@ -18,11 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.service.LocationService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,33 +47,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //Prueba location y camara update
     private GoogleMap mMap;
     private LatLngBounds mMapBoundary;
-    //private Location mUserLocation;
+    public static Location mUserLocation;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
     }
 
-    //LLamarlo aquí o en main activity en intervalos de tiempo de algún modo, hay que actualizar location permanentemente
-    /*private void getLastKnownLocation() {
-        Log.d(TAG, "getLastKnownLocation: called.");
-
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if (task.isSuccessful()) {
-                    Location location = task.getResult();
-                    mUserLocation = location;
-                }
-            }
-        });
-
-    }*/
 
     @Nullable
     @Override
@@ -96,6 +81,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.getMapAsync(this);
     }
 
+    private void setCameraView() {
+        mUserLocation = MainActivity.mUserLocation;
+        // Set a boundary to start
+        double bottomBoundary = mUserLocation.getLatitude() - .1;
+        double leftBoundary = mUserLocation.getLongitude() - .1;
+        double topBoundary = mUserLocation.getLatitude() + .1;
+        double rightBoundary = mUserLocation.getLongitude() + .1;
+
+        mMapBoundary = new LatLngBounds(
+                new LatLng(bottomBoundary, leftBoundary),
+                new LatLng(topBoundary, rightBoundary)
+        );
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -145,6 +145,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
         map.setMyLocationEnabled(true);
         mMap = map;
+        setCameraView();
     }
 
 
