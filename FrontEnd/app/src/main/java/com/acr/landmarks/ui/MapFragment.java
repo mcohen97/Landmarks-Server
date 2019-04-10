@@ -10,12 +10,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkClusterMarker;
+import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.util.ViewWeightAnimationWrapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,6 +27,9 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.clustering.ClusterManager;
+
+import java.util.ArrayList;
 
 import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
@@ -35,7 +42,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private RecyclerView mLandmarkListRecyclerView;
     private MapView mMapView;
 
-    //Prueba location y camara update
+    //location y camara update
     private GoogleMap mMap;
     private LatLngBounds mMapBoundary;
     public static Location mUserLocation;
@@ -47,6 +54,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private static final int MAP_LAYOUT_STATE_EXPANDED = 1;
     private int mMapLayoutState = 0;
 
+    //Clustering
+    private ClusterManager<LandmarkClusterMarker> mClusterManager;
+    private ClusterManagerRenderer mClusterManagerRenderer;
+    private ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
+    private ArrayList<Landmark> mLandmarks = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -145,7 +157,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
         map.setMyLocationEnabled(true);
         mMap = map;
-        setCameraView();
+        addMapMarkers();
     }
 
 
@@ -225,6 +237,66 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             }
 
         }
+    }
+
+    private void addMapMarkers(){
+        downloadLandmarks();//Hardcoded ver donde colocarlo para el flujo correcto
+        if(mMap != null){
+
+            if(mClusterManager == null){
+                mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
+            }
+            if(mClusterManagerRenderer == null){
+                mClusterManagerRenderer = new ClusterManagerRenderer(
+                        getActivity(),
+                        mMap,
+                        mClusterManager
+                );
+                mClusterManager.setRenderer(mClusterManagerRenderer);
+            }
+
+            for(Landmark landmark: mLandmarks){
+
+                try{
+                    String snippet = "";
+
+                    snippet = "Determine route to " + landmark.getName() + "?";
+
+                    int avatar = R.drawable.test_image; // set the default avatar
+                    /* por ahora seteo la imagen poor defecto queda a implementar el cargar la imagen
+                    try{
+                        avatar = Integer.parseInt(landmark.getImg());
+                    }catch (NumberFormatException e){
+                        Log.d(TAG, "addMapMarkers: no avatar for " + landmark.getName() + ", setting default.");
+                    }*/
+                    LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
+                            new LatLng(landmark.getLat(), landmark.getLon()),
+                            landmark.getName(),
+                            snippet,
+                            avatar,
+                            landmark
+                    );
+                    mClusterManager.addItem(newClusterMarker);
+                    mClusterMarkers.add(newClusterMarker);
+
+                }catch (NullPointerException e){
+                    Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage() );
+                }
+
+            }
+            mClusterManager.cluster();
+
+            setCameraView();
+        }
+    }
+    //Hardcoded
+    private void downloadLandmarks() {
+        Landmark lm1 = new Landmark("Prueba1","Landmark de prueba 1",-34.859270,-56.034038);
+        Landmark lm2 = new Landmark("Prueba2","Landmark de prueba 2",-34.859258,-56.030105);
+        Landmark lm3 = new Landmark("Prueba3","Landmark de prueba 3",-34.864186,-56.027584);
+        mLandmarks.add(lm1);
+        mLandmarks.add(lm2);
+        mLandmarks.add(lm3);
     }
 
 }
