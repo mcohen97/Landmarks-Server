@@ -18,6 +18,11 @@ android {
     }
     productFlavors {
     }
+    //Arreglo de errores de compilación, ver que se pierde al respecto
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -34,12 +39,19 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    //Maps and location services
+    //Maps, location and direction services
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
 
+    implementation 'com.google.maps:google-maps-services:0.9.3'
+    implementation 'org.slf4j:slf4j-simple:1.7.25'
+
     //Utils for clustering
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
+
+
 }
+
+
 
 apply plugin: 'com.google.gms.google-services'
