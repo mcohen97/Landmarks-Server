@@ -82,6 +82,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private GeoApiContext mGeoApiContext;
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
     private Marker mSelectedMarker;
+    private ArrayList<Marker> mTripMarkers = new ArrayList<>();
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -335,6 +338,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 .setCancelable(true)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        resetSelectedMarker();
                         mSelectedMarker = marker;
                         calculateDirections(marker);
                         dialog.dismiss();
@@ -456,11 +460,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
 
                 marker.showInfoWindow();
+                mTripMarkers.add(marker);
             }
             else{
                 polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
                 polylineData.getPolyline().setZIndex(0);
             }
+        }
+    }
+
+    private void resetSelectedMarker(){
+        if(mSelectedMarker != null){
+            mSelectedMarker.setVisible(true);
+            mSelectedMarker = null;
+            removeTripMarkers();
+        }
+    }
+
+    private void removeTripMarkers(){
+        for(Marker marker: mTripMarkers){
+            marker.remove();
         }
     }
 }
