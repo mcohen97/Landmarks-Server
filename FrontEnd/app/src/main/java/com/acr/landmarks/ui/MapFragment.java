@@ -427,6 +427,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                     if(tempDuration < duration){
                         duration = tempDuration;
                         onPolylineClick(polyline);
+                        zoomRoute(polyline.getPoints());
                     }
 
                     mSelectedMarker.setVisible(false);
@@ -481,5 +482,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         for(Marker marker: mTripMarkers){
             marker.remove();
         }
+    }
+
+    public void zoomRoute(List<LatLng> lstLatLngRoute) {
+
+        if (mMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()) return;
+
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+        for (LatLng latLngPoint : lstLatLngRoute)
+            boundsBuilder.include(latLngPoint);
+
+        int routePadding = 120;
+        LatLngBounds latLngBounds = boundsBuilder.build();
+
+        mMap.animateCamera(
+                CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding),
+                600,
+                null
+        );
     }
 }
