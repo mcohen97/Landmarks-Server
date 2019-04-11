@@ -34,6 +34,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApiRequest;
@@ -80,7 +81,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     //Directions
     private GeoApiContext mGeoApiContext;
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
-
+    private Marker mSelectedMarker;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -334,6 +335,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 .setCancelable(true)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        mSelectedMarker = marker;
                         calculateDirections(marker);
                         dialog.dismiss();
                     }
@@ -394,6 +396,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                     mPolyLinesData = new ArrayList<>();
                 }
 
+                double duration = 999999999;
                 for(DirectionsRoute route: result.routes){
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
                     List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
@@ -414,18 +417,45 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                     polyline.setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
                     polyline.setClickable(true);
                     mPolyLinesData.add(new PolylineData(polyline,route.legs[0]));
+
+                    // highlight the fastest route and adjust camera
+                    double tempDuration = route.legs[0].duration.inSeconds;
+                    if(tempDuration < duration){
+                        duration = tempDuration;
+                        onPolylineClick(polyline);
+                    }
+
+                    mSelectedMarker.setVisible(false);
                 }
             }
+
+
         });
     }
 
     @Override
     public void onPolylineClick(Polyline polyline) {
+        int index = 0;
         for(PolylineData polylineData: mPolyLinesData){
+            index++;
             Log.d(TAG, "onPolylineClick: toString: " + polylineData.toString());
             if(polyline.getId().equals(polylineData.getPolyline().getId())){
                 polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.blue1));
                 polylineData.getPolyline().setZIndex(1);
+
+                LatLng endLocation = new LatLng(
+                        polylineData.getLeg().endLocation.lat,
+                        polylineData.getLeg().endLocation.lng
+                );
+
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(endLocation)
+                        .title("Trip #" + index)
+                        .snippet("Duration: " + polylineData.getLeg().duration
+                        ));
+
+
+                marker.showInfoWindow();
             }
             else{
                 polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
