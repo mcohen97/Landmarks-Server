@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
+import com.acr.landmarks.models.PolylineData;
 import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.util.ViewWeightAnimationWrapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,7 +50,8 @@ import java.util.List;
 import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener , GoogleMap.OnInfoWindowClickListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener {
 
     private static final String TAG = "UserListFragment";
 
@@ -77,6 +79,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     //Directions
     private GeoApiContext mGeoApiContext;
+    private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -180,8 +183,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
         map.setMyLocationEnabled(true);
         mMap = map;
+        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnPolylineClickListener(this);
         addMapMarkers();
-        map.setOnInfoWindowClickListener(this);
     }
 
 
@@ -381,6 +385,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             @Override
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
+                //Evitar polylines duplicadas, en mapa y lista
+                if(mPolyLinesData.size() > 0){
+                    for(PolylineData polylineData: mPolyLinesData){
+                        polylineData.getPolyline().remove();
+                    }
+                    mPolyLinesData.clear();
+                    mPolyLinesData = new ArrayList<>();
+                }
 
                 for(DirectionsRoute route: result.routes){
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
@@ -401,10 +413,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                     Polyline polyline = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath));
                     polyline.setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
                     polyline.setClickable(true);
-
+                    mPolyLinesData.add(new PolylineData(polyline,route.legs[0]));
                 }
             }
         });
     }
 
+    @Override
+    public void onPolylineClick(Polyline polyline) {
+        for(PolylineData polylineData: mPolyLinesData){
+            Log.d(TAG, "onPolylineClick: toString: " + polylineData.toString());
+            if(polyline.getId().equals(polylineData.getPolyline().getId())){
+                polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.blue1));
+                polylineData.getPolyline().setZIndex(1);
+            }
+            else{
+                polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
+                polylineData.getPolyline().setZIndex(0);
+            }
+        }
+    }
 }
