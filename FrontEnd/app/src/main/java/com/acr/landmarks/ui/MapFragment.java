@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.adapters.LandmarkListAdapter;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
@@ -52,12 +54,15 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener {
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener,
+        LandmarkListAdapter.LandmarkListRecyclerClickListener
+{
 
     private static final String TAG = "UserListFragment";
 
     //widgets
     private RecyclerView mLandmarkListRecyclerView;
+    private LandmarkListAdapter mLandmarkListRecyclerAdapter;
     private MapView mMapView;
 
     //location y camara update
@@ -98,8 +103,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mLandmarkListRecyclerView = view.findViewById(R.id.landmark_list_recycler_view);
         mMapView = view.findViewById(R.id.fragmented_map);
+
+        initLandmarkListRecyclerView();
         initGoogleMap(savedInstanceState);
+
         view.findViewById(R.id.btn_full_screen_map).setOnClickListener(this);
+        view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
         mMapContainer = view.findViewById(R.id.map_container);
         return view;
     }
@@ -267,14 +276,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 }
                 break;
             }
-
+            case R.id.btn_reset_map:{
+                addMapMarkers();
+                break;
+            }
         }
     }
 
     private void addMapMarkers(){
         downloadLandmarks();//Hardcoded ver donde colocarlo para el flujo correcto
         if(mMap != null){
-
+            resetMap();
             if(mClusterManager == null){
                 mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
             }
@@ -323,12 +335,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
     //Hardcoded
     private void downloadLandmarks() {
+        mLandmarks = new ArrayList<>();
         Landmark lm1 = new Landmark("Prueba1","Landmark de prueba 1",-34.859270,-56.034038);
         Landmark lm2 = new Landmark("Prueba2","Landmark de prueba 2",-34.859258,-56.030105);
         Landmark lm3 = new Landmark("Prueba3","Landmark de prueba 3",-34.864186,-56.027584);
         mLandmarks.add(lm1);
         mLandmarks.add(lm2);
         mLandmarks.add(lm3);
+        initLandmarkListRecyclerView();
     }
 
     @Override
@@ -500,5 +514,48 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 600,
                 null
         );
+    }
+
+    private void resetMap(){
+        if(mMap != null) {
+            mMap.clear();
+
+            if(mClusterManager != null){
+                mClusterManager.clearItems();
+            }
+
+            if (mClusterMarkers.size() > 0) {
+                mClusterMarkers.clear();
+                mClusterMarkers = new ArrayList<>();
+            }
+
+            if(mPolyLinesData.size() > 0){
+                mPolyLinesData.clear();
+                mPolyLinesData = new ArrayList<>();
+            }
+        }
+    }
+
+    private void initLandmarkListRecyclerView() {
+        mLandmarkListRecyclerAdapter = new LandmarkListAdapter(mLandmarks, this);
+        mLandmarkListRecyclerView.setAdapter(mLandmarkListRecyclerAdapter);
+        mLandmarkListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    @Override
+    public void onLandmarkClicked(int position) {
+        String selectedUserId = mLandmarks.get(position).getName();
+
+        for(LandmarkClusterMarker clusterMarker: mClusterMarkers){
+            if(selectedUserId.equals(clusterMarker.getLandmark().getName())){
+                mMap.animateCamera(
+                        CameraUpdateFactory.newLatLng(
+                                new LatLng(clusterMarker.getPosition().latitude, clusterMarker.getPosition().longitude)),
+                        600,
+                        null
+                );
+                break;
+            }
+        }
     }
 }

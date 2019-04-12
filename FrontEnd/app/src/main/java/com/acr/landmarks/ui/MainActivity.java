@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.service.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -42,6 +43,8 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.ArrayList;
 
 import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     public static Location mUserLocation;
-
+    public ArrayList<Landmark> mainLandmarks;
     private ViewPager mViewPager;
 
 
