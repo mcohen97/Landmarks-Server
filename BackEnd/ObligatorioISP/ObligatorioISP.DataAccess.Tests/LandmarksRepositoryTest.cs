@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -24,9 +25,15 @@ namespace ObligatorioISP.DataAccess.Tests
         }
 
         [TestMethod]
-        public void Test()
+        public void ShouldGiveLandmarksWithinBounds()
         {
-            Assert.IsTrue(true);
+            double bottomLeftLat = -34.923844;
+            double bottomLeftLng = -56.170590;
+            double topRightLat = -34.908501;
+            double topRightLng = -56.155019;
+
+            ICollection<LandmarkDto> withinBounds = landmarks.GetWithinCoordenates(bottomLeftLat, bottomLeftLng, topRightLat, topRightLng);
+            Assert.AreEqual(3, withinBounds.Count);
         }
 
         private void SetUpDatabase()
@@ -71,8 +78,13 @@ namespace ObligatorioISP.DataAccess.Tests
                 {
                     sqlCmd.ExecuteNonQuery();
                 }
-                string script = File.ReadAllText(@"Database\create_tables.sql");
-                using (SqlCommand sqlCmd = new SqlCommand(script, client))
+                string createScript = File.ReadAllText(@"Database\create_tables.sql");
+                using (SqlCommand sqlCmd = new SqlCommand(createScript, client))
+                {
+                    sqlCmd.ExecuteNonQuery();
+                }
+                string testDataScript = File.ReadAllText(@"Database\create_test_data.sql");
+                using (SqlCommand sqlCmd = new SqlCommand(testDataScript, client))
                 {
                     sqlCmd.ExecuteNonQuery();
                 }
