@@ -39,8 +39,22 @@ namespace ObligatorioISP.BusinessLogic.Tests
 
         [TestMethod]
         [ExpectedException(typeof(InvalidLandmarkException))]
-        public void ShouldThrowExceptionIfImageListIsNull() {
-            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", null);
+        public void ShouldThrowExceptionIfImageListIsEmpty() {
+            Landmark landmark = new Landmark("title", "description", new List<string>(), 0.0, 0.0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidLandmarkException))]
+        public void ShouldThrowExceptionIfImageListHasUnexistentPath()
+        {
+            Landmark landmark = new Landmark("title", "description", new List<string>() { "iconImage"}, 0.0, 0.0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidLandmarkException))]
+        public void ShouldThrowExceptionIfImageListIsNull()
+        {
+            Landmark landmark = new Landmark("title", "description", null, 0.0, 0.0);
         }
 
         [TestMethod]
