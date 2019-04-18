@@ -32,6 +32,15 @@ namespace ObligatorioISP.BusinessLogic.Tests
         public void ShouldCreateLandmarkIfDataIsValid() {
             File.Create("testImage.jpg");
             Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage.jpg");
+            Assert.AreEqual("title", landmark.Title);
+            Assert.AreEqual("description", landmark.Description);
+
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidLandmarkException))]
+        public void ShouldThrowExceptionIfImageListIsNull() {
+            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", null);
         }
 
         [TestMethod]
