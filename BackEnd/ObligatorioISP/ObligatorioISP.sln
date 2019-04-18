@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObligatorioISP.BusinessLogic", "ObligatorioISP.BusinessLogic\ObligatorioISP.BusinessLogic.csproj", "{9FC85694-6F40-4EFC-A6C9-1237A117C868}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObligatorioISP.BusinessLogic.Tests", "ObligatorioISP.BusinessLogic.Tests\ObligatorioISP.BusinessLogic.Tests.csproj", "{570F4700-399F-4416-AD4E-66089E9A996C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObligatorioISP.BusinessLogic.Tests", "ObligatorioISP.BusinessLogic.Tests\ObligatorioISP.BusinessLogic.Tests.csproj", "{570F4700-399F-4416-AD4E-66089E9A996C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObligatorioISP.DataAccess.Tests", "ObligatorioISP.DataAccess.Tests\ObligatorioISP.DataAccess.Tests.csproj", "{369B4FD1-0F0B-47F3-8744-08342ADDB23D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{570F4700-399F-4416-AD4E-66089E9A996C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{570F4700-399F-4416-AD4E-66089E9A996C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{570F4700-399F-4416-AD4E-66089E9A996C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{369B4FD1-0F0B-47F3-8744-08342ADDB23D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{369B4FD1-0F0B-47F3-8744-08342ADDB23D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{369B4FD1-0F0B-47F3-8744-08342ADDB23D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{369B4FD1-0F0B-47F3-8744-08342ADDB23D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
