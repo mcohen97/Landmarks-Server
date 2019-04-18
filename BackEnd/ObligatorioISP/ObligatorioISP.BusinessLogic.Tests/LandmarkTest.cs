@@ -68,5 +68,33 @@ namespace ObligatorioISP.BusinessLogic.Tests
             Assert.AreEqual(1, images.Count);
             Assert.AreEqual("testImage.jpg", images[0]);
         }
+
+        [TestMethod]
+        public void ShouldBeOneMoreImageWhenOneAdded() {
+            File.Create("testImage1.jpg");
+            File.Create("testImage2.jpg");
+            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage1.jpg");
+            landmark.AddImage("testImage2.jpg");
+            Assert.AreEqual(2, landmark.Images.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidLandmarkException))]
+        public void ShouldThrowExceptionIfAudioListIsNull() {
+            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", new List<string>() { "testImage.jpg" }, null);
+        }
+
+        [TestMethod]
+        public void ShouldHaveCeroAudioguidesWhenCreated() {
+            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage1.jpg");
+            Assert.AreEqual(0, landmark.Audios.Count);
+        }
+
+        [TestMethod]
+        public void ShouldBeOneMoreAudioWhenOneAdded() {
+            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage1.jpg");
+            landmark.AddAudio("testAudio.mp3");
+            Assert.AreEqual(1, landmark.Audios.Count);
+        }
     }
 }
