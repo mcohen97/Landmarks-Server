@@ -1,4 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ObligatorioISP.BusinessLogic.Exceptions;
+using System.IO;
 
 namespace ObligatorioISP.BusinessLogic.Tests
 {
@@ -27,7 +29,8 @@ namespace ObligatorioISP.BusinessLogic.Tests
 
         [TestMethod]
         public void ShouldCreateLandmarkIfDataIsValid() {
-            Landmark landmark = new Landmark("", 0.0, 0.0, "description", "testImage.jpg");
+            File.Create("testImage.jpg");
+            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage.jpg");
         }
     }
 }
