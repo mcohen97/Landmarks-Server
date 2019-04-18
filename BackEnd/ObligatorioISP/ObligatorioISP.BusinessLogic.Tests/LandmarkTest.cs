@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ObligatorioISP.BusinessLogic.Exceptions;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ObligatorioISP.BusinessLogic.Tests
@@ -31,6 +32,14 @@ namespace ObligatorioISP.BusinessLogic.Tests
         public void ShouldCreateLandmarkIfDataIsValid() {
             File.Create("testImage.jpg");
             Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage.jpg");
+        }
+
+        [TestMethod]
+        public void ShouldReturnTheImagesPathsWhenAsked() {
+            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage.jpg");
+            List<string> images = landmark.Images;
+            Assert.AreEqual(1, images.Count);
+            Assert.AreEqual("testImage.jpg", images.Images[0]);
         }
     }
 }
