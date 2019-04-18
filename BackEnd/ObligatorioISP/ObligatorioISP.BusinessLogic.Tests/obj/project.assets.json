@@ -5729,11 +5729,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Marcel\\Desktop\\Ing De Software En la Practica\\ing-software-en-la-practica\\BackEnd\\ObligatorioISP\\ObligatorioISP.BusinessLogic.Test\\ObligatorioISP.BusinessLogic.Test.csproj",
-      "projectName": "ObligatorioISP.BusinessLogic.Test",
-      "projectPath": "C:\\Users\\Marcel\\Desktop\\Ing De Software En la Practica\\ing-software-en-la-practica\\BackEnd\\ObligatorioISP\\ObligatorioISP.BusinessLogic.Test\\ObligatorioISP.BusinessLogic.Test.csproj",
+      "projectUniqueName": "C:\\Users\\Marcel\\Desktop\\Ing De Software En la Practica\\ing-software-en-la-practica\\BackEnd\\ObligatorioISP\\ObligatorioISP.BusinessLogic.Tests\\ObligatorioISP.BusinessLogic.Tests.csproj",
+      "projectName": "ObligatorioISP.BusinessLogic.Tests",
+      "projectPath": "C:\\Users\\Marcel\\Desktop\\Ing De Software En la Practica\\ing-software-en-la-practica\\BackEnd\\ObligatorioISP\\ObligatorioISP.BusinessLogic.Tests\\ObligatorioISP.BusinessLogic.Tests.csproj",
       "packagesPath": "C:\\Users\\Marcel\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Marcel\\Desktop\\Ing De Software En la Practica\\ing-software-en-la-practica\\BackEnd\\ObligatorioISP\\ObligatorioISP.BusinessLogic.Test\\obj\\",
+      "outputPath": "C:\\Users\\Marcel\\Desktop\\Ing De Software En la Practica\\ing-software-en-la-practica\\BackEnd\\ObligatorioISP\\ObligatorioISP.BusinessLogic.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
