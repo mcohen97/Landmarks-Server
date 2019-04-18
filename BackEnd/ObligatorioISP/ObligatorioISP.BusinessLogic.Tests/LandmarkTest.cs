@@ -39,7 +39,7 @@ namespace ObligatorioISP.BusinessLogic.Tests
             Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage.jpg");
             List<string> images = landmark.Images;
             Assert.AreEqual(1, images.Count);
-            Assert.AreEqual("testImage.jpg", images.Images[0]);
+            Assert.AreEqual("testImage.jpg", images[0]);
         }
     }
 }
