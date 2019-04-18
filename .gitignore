@@ -18,6 +18,7 @@
 !*CommonReferences/*.dll
 ####################
 # VS Upgrade stuff #
+.vs/
 ####################
 _UpgradeReport_Files/
 ###############
