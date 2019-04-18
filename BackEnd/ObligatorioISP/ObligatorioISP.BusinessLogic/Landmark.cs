@@ -16,6 +16,7 @@ namespace ObligatorioISP.BusinessLogic
         private string description;
         public string Description { get { return description; } private set { SetDescription(value); } }
         private List<string> imagesPaths;
+        public List<string> Images { get { return imagesPaths; } private set { imagesPaths = value; } }
 
         public Landmark(string aTitle, double lat, double lng, string aDescription, string aPath)
         {
