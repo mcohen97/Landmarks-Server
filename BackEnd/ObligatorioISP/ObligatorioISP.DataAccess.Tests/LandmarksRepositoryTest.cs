@@ -10,7 +10,7 @@ namespace ObligatorioISP.DataAccess.Tests
     [TestClass]
     public class LandmarksRepositoryTest
     {
-        private LandmarksRepository landmarks;
+        private SqlServerLandmarksRepository landmarks;
         private string serverString = $"Server=DESKTOP-JH1M2MF\\SQLSERVER_R14;";
         private string securityString = "Trusted_Connection=True;Integrated Security=True;";
         private string dbName = "LandmarksTestDB";
@@ -19,8 +19,9 @@ namespace ObligatorioISP.DataAccess.Tests
         public void StartUp()
         {
             SetUpDatabase();
+            string connString = serverString + $"Initial Catalog={dbName};" + securityString;
+            landmarks = new SqlServerLandmarksRepository(connString);
         }
-
 
         [TestMethod]
         public void Test()
@@ -40,7 +41,7 @@ namespace ObligatorioISP.DataAccess.Tests
         private bool DbExists(string database)
         {
             string connString = serverString + "Initial Catalog=master;" + securityString;
-            string cmdText = "select * from master.dbo.sysdatabases where name=\'" + database + "\'";
+            string cmdText = "SELECT * FROM master.dbo.sysdatabases WHERE NAME=\'" + database + "\'";
             bool exists = false;
             using (SqlConnection client = new SqlConnection(connString))
             {
