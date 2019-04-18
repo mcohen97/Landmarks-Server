@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ObligatorioISP.DataAccess.Contracts.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,8 +20,8 @@ namespace ObligatorioISP.DataAccess.Tests
         [TestInitialize]
         public void StartUp()
         {
-            SetUpDatabase();
             string connString = serverString + $"Initial Catalog={dbName};" + securityString;
+            SetUpDatabase(connString);
             landmarks = new SqlServerLandmarksRepository(connString);
         }
 
@@ -36,14 +37,17 @@ namespace ObligatorioISP.DataAccess.Tests
             Assert.AreEqual(3, withinBounds.Count);
         }
 
-        private void SetUpDatabase()
+        private void SetUpDatabase(string finalConnString)
         {
 
             if (!DbExists(dbName))
             {
                 CreateDB(dbName);
             }
+            LoadDatabase(finalConnString);
+
         }
+
 
         private bool DbExists(string database)
         {
@@ -78,17 +82,27 @@ namespace ObligatorioISP.DataAccess.Tests
                 {
                     sqlCmd.ExecuteNonQuery();
                 }
-                string createScript = File.ReadAllText(@"Database\create_tables.sql");
+               
+            }
+        }
+
+        private void LoadDatabase(string connectionString)
+        {
+            using (SqlConnection client = new SqlConnection(connectionString))
+            {
+                client.Open();
+                string createScript = File.ReadAllText(@"..\..\..\..\Database\create_tables.sql");
                 using (SqlCommand sqlCmd = new SqlCommand(createScript, client))
                 {
                     sqlCmd.ExecuteNonQuery();
                 }
-                string testDataScript = File.ReadAllText(@"Database\create_test_data.sql");
+                string testDataScript = File.ReadAllText(@"..\..\..\..\Database\create_test_data.sql");
                 using (SqlCommand sqlCmd = new SqlCommand(testDataScript, client))
                 {
                     sqlCmd.ExecuteNonQuery();
                 }
             }
+              
         }
     }
 }
