@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObligatorioISP.DataAccess.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObligatorioISP.WebAPI.Tests", "ObligatorioISP.WebAPI.Tests\ObligatorioISP.WebAPI.Tests.csproj", "{EDB4BE83-E648-46BA-9CF2-D5569745F356}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObligatorioISP.WebAPI", "ObligatorioISP.WebAPI\ObligatorioISP.WebAPI.csproj", "{882DA267-578E-46F4-8870-8A73770BE35F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{EDB4BE83-E648-46BA-9CF2-D5569745F356}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDB4BE83-E648-46BA-9CF2-D5569745F356}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDB4BE83-E648-46BA-9CF2-D5569745F356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{882DA267-578E-46F4-8870-8A73770BE35F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{882DA267-578E-46F4-8870-8A73770BE35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{882DA267-578E-46F4-8870-8A73770BE35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{882DA267-578E-46F4-8870-8A73770BE35F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
