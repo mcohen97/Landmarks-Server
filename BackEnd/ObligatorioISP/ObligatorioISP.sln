@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObligatorioISP.DataAccess.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObligatorioISP.DataAccess", "ObligatorioISP.DataAccess\ObligatorioISP.DataAccess.csproj", "{8509D399-0B46-4F1B-8B8F-8AC9C68D8143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObligatorioISP.DataAccess.Contracts", "ObligatorioISP.DataAccess.Contracts\ObligatorioISP.DataAccess.Contracts.csproj", "{B47F0B31-3F07-40BE-BC47-BD898340FB4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObligatorioISP.DataAccess.Contracts", "ObligatorioISP.DataAccess.Contracts\ObligatorioISP.DataAccess.Contracts.csproj", "{B47F0B31-3F07-40BE-BC47-BD898340FB4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObligatorioISP.WebAPI.Tests", "ObligatorioISP.WebAPI.Tests\ObligatorioISP.WebAPI.Tests.csproj", "{EDB4BE83-E648-46BA-9CF2-D5569745F356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{B47F0B31-3F07-40BE-BC47-BD898340FB4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B47F0B31-3F07-40BE-BC47-BD898340FB4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B47F0B31-3F07-40BE-BC47-BD898340FB4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDB4BE83-E648-46BA-9CF2-D5569745F356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDB4BE83-E648-46BA-9CF2-D5569745F356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDB4BE83-E648-46BA-9CF2-D5569745F356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDB4BE83-E648-46BA-9CF2-D5569745F356}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
