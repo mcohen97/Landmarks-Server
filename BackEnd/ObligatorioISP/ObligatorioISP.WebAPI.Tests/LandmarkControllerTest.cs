@@ -12,14 +12,14 @@ namespace ObligatorioISP.WebAPI.Tests
     public class LandmarkControllerTest
     {
         private LandmarksController controller;
-        private Mock<ILandmarksRepository> landmarks;
+        private Mock<ILandmarksRepository> fakeLandmarksStorage;
     
         [TestInitialize]
         public void SetUp() {
-            landmarks = new Mock<ILandmarksRepository>();
-            landmarks.Setup(l => l.GetWithinCoordenates(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+            fakeLandmarksStorage = new Mock<ILandmarksRepository>();
+            fakeLandmarksStorage.Setup(l => l.GetWithinCoordenates(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(GetFakeLandmarks());
-            controller = new LandmarksController(landmarks.Object);
+            controller = new LandmarksController(fakeLandmarksStorage.Object);
         }
 
         [TestMethod]
@@ -31,9 +31,15 @@ namespace ObligatorioISP.WebAPI.Tests
             double topRightLng = -56.155019;
 
             IActionResult result = controller.Get(bottomLeftLat, bottomLeftLng, topRightLat, topRightLng);
-            OkResult ok = result as OkResult;
+            OkObjectResult ok = result as OkObjectResult;
             ICollection<LandmarkDto> landmarks = ok.Value as ICollection<LandmarkDto>;
 
+            fakeLandmarksStorage.Verify(r => r.GetWithinCoordenates(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(ok);
+            Assert.AreEqual(200, ok.StatusCode);
+            Assert.IsNotNull(landmarks);
+            Assert.AreEqual(GetFakeLandmarks().Count,landmarks.Count);
         }
 
         private ICollection<LandmarkDto> GetFakeLandmarks()
