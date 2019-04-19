@@ -58,21 +58,21 @@ namespace ObligatorioISP.BusinessLogic.Tests
         [ExpectedException(typeof(InvalidLandmarkException))]
         public void ShouldThrowExceptionIfImageListIsEmpty()
         {
-            Landmark landmark = new Landmark("title", "description", new List<string>(), 0.0, 0.0);
+            Landmark landmark = new Landmark(1,"title", "description", new List<string>(), 0.0, 0.0);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidLandmarkException))]
         public void ShouldThrowExceptionIfImageListHasUnexistentPath()
         {
-            Landmark landmark = new Landmark("title", "description", new List<string>() { "iconImage" }, 0.0, 0.0);
+            Landmark landmark = new Landmark(1,"title", "description", new List<string>() { "iconImage" }, 0.0, 0.0);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidLandmarkException))]
         public void ShouldThrowExceptionIfImageListIsNull()
         {
-            Landmark landmark = new Landmark("title", "description", null, 0.0, 0.0);
+            Landmark landmark = new Landmark(1,"title", "description", null, 0.0, 0.0);
         }
 
         [TestMethod]
@@ -95,9 +95,16 @@ namespace ObligatorioISP.BusinessLogic.Tests
 
         [TestMethod]
         [ExpectedException(typeof(InvalidLandmarkException))]
+        public void ShouldThrowExceptionIfIdIsNegative()
+        {
+            Landmark landmark = new Landmark(-1, "title", "description", new List<string>() { "testImage1.jpg" }, 0.0, 0.0);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidLandmarkException))]
         public void ShouldThrowExceptionIfUnexistentImageIsAdded()
         {
-            Landmark landmark = new Landmark("title", "description", new List<string>() { "testImage1.jpg" }, 0.0, 0.0);
+            Landmark landmark = new Landmark(1,"title", "description", new List<string>() { "testImage1.jpg" }, 0.0, 0.0);
             landmark.AddImage("unexistentImage.jpg");
         }
 
@@ -105,7 +112,7 @@ namespace ObligatorioISP.BusinessLogic.Tests
         [ExpectedException(typeof(InvalidLandmarkException))]
         public void ShouldThrowExceptionIfAudioListIsNull()
         {
-            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", new List<string>() { "testImage1.jpg" }, null);
+            Landmark landmark = new Landmark(1,"title", 0.0, 0.0, "description", new List<string>() { "testImage1.jpg" }, null);
         }
 
         [TestMethod]
@@ -135,7 +142,7 @@ namespace ObligatorioISP.BusinessLogic.Tests
         [ExpectedException(typeof(InvalidLandmarkException))]
         public void ShouldThrowExcetpionIfOneOfTheAudiosIsUnexistent()
         {
-            Landmark landmark = new Landmark("title", 0.0, 0.0, "description", new List<string>() { "testImage1.jpg" }, new List<string>() { "testAudio.mp3", "unexistentAudio.mp3" });
+            Landmark landmark = new Landmark(1,"title", 0.0, 0.0, "description", new List<string>() { "testImage1.jpg" }, new List<string>() { "testAudio.mp3", "unexistentAudio.mp3" });
         }
 
     }
