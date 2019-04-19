@@ -8,6 +8,7 @@ namespace ObligatorioISP.BusinessLogic
 {
     public class Landmark
     {
+        private int id;
         private string title;
         private double latitude;
         private double longitude;
@@ -15,39 +16,56 @@ namespace ObligatorioISP.BusinessLogic
         private List<string> imagesPaths;
         private List<string> audiosPaths;
 
-        public string Description { get { return description; } private set { SetDescription(value); } }
+        public int Id { get { return id; }private set { SetId(value); } }
         public string Title { get { return title; } private set { SetTitle(value); } }
+        public string Description { get { return description; } private set { SetDescription(value); } }
         public List<string> Images { get { return imagesPaths; } private set { SetImages(value); } }
         public List<string> Audios { get { return audiosPaths; } private set { SetAudios(value); } }
 
         public Landmark(string aTitle, double lat, double lng, string aDescription, string aPath)
         {
-            SetCommonAttributes(aTitle, lat, lng, aDescription);
+            SetCommonAttributes(0, aTitle, lat, lng, aDescription);
             imagesPaths = new List<string>();
             AddImage(aPath);
             audiosPaths = new List<string>();
         }
 
-        //Constructor with a list of images' paths, instead of a single path.
-        public Landmark(string aTitle, string aDescription, List<string> paths, double lat, double lng)
+        public Landmark(int anId, string aTitle, double lat, double lng, string aDescription, string aPath):this(aTitle,lat,lng,aDescription,aPath)
         {
-            SetCommonAttributes(aTitle, lat, lng, aDescription);
+            Id = anId;
+        }
+
+        //Constructor with a list of images' paths, instead of a single path.
+        public Landmark(int anId, string aTitle, string aDescription, List<string> paths, double lat, double lng)
+        {
+            SetCommonAttributes(anId,aTitle, lat, lng, aDescription);
             Images = paths;
             Audios = new List<string>();
 
         }
         //Constructor with images and audios lists.
-        public Landmark(string aTitle, double lat, double lng, string aDescription, List<string> imagesPaths, List<string> audiosPaths) {
-            SetCommonAttributes(aTitle, lat, lng, aDescription);
+        public Landmark(int anId, string aTitle, double lat, double lng, string aDescription, List<string> imagesPaths, List<string> audiosPaths) {
+            SetCommonAttributes(id,aTitle, lat, lng, aDescription);
             Images = imagesPaths;
             Audios = audiosPaths;
         }
 
-        private void SetCommonAttributes(string aTitle, double lat, double lng, string aDescription) {
+        private void SetCommonAttributes(int anId, string aTitle, double lat, double lng, string aDescription) {
+            Id = anId;
             Title = aTitle;
             latitude = lat;
             longitude = lng;
             Description = aDescription;
+
+        }
+
+        private void SetId(int value)
+        {
+            if (value<0)
+            {
+                throw new InvalidLandmarkException("id can't be negative");
+            }
+            id = value;
         }
 
         private void SetTitle(string value)
