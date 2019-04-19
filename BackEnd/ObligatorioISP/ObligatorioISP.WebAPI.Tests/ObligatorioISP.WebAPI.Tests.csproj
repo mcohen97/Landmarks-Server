@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ObligatorioISP.DataAccess.Contracts\ObligatorioISP.DataAccess.Contracts.csproj" />
+    <ProjectReference Include="..\ObligatorioISP.WebAPI\ObligatorioISP.WebAPI.csproj" />
   </ItemGroup>
 
 </Project>
