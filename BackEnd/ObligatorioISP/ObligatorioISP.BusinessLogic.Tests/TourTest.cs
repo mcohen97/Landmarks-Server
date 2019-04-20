@@ -1,0 +1,34 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using Moq;
+
+namespace ObligatorioISP.BusinessLogic.Tests
+{
+    [ExcludeFromCodeCoverage]
+    [TestClass]
+    public class TourTest
+    {
+        private ICollection<Landmark> fakeLandmarks;
+        [TestInitialize]
+        public void StartUp() {
+            fakeLandmarks = GetFakeLandmarks();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidTourException))]
+        public void ShouldThrowExceptionWhenIdIsNegative() {
+            Tour testTour = new Tour(1, "Tour 1", fakeLandmarks);
+        }
+
+        private ICollection<Landmark> GetFakeLandmarks()
+        {
+            //(string aTitle, double lat, double lng, string aDescription, string aPath)
+            Mock<Landmark> fake1 = new Mock<Landmark>("Landmark 1", -34.912126, -56.167282, "Description 1", "image 1");
+            Mock<Landmark> fake2 = new Mock<Landmark>("Landmark 2", -34.912127, -56.167281, "Description 2", "image 2");
+            Mock<Landmark> fake3 = new Mock<Landmark>("Landmark 3", -34.912128, -56.167284, "Description 3", "image 3");
+            return new List<Landmark>() { fake1.Object, fake2.Object, fake3.Object };
+        }
+    }
+}
