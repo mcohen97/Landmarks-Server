@@ -105,7 +105,6 @@ namespace ObligatorioISP.DataAccess.Tests
                     sqlCmd.ExecuteNonQuery();
                 }
             }
-              
         }
 
         private void CreateImageFiles(string connectionString,string imagesPath)
