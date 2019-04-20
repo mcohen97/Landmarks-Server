@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ObligatorioISP.BusinessLogic\ObligatorioISP.BusinessLogic.csproj" />
     <ProjectReference Include="..\ObligatorioISP.DataAccess.Contracts\ObligatorioISP.DataAccess.Contracts.csproj" />
   </ItemGroup>
 
