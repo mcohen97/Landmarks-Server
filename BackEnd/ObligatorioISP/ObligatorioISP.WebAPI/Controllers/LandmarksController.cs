@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ObligatorioISP.DataAccess.Contracts;
+using ObligatorioISP.DataAccess.Contracts.Dtos;
 
 namespace ObligatorioISP.WebAPI.Controllers
 {
@@ -17,9 +18,10 @@ namespace ObligatorioISP.WebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public IActionResult Get(double leftBottomLat, double leftBottomLng, double topRightLat, double topRightLng)
         {
-            return new string[] { "value1", "value2" };
+            ICollection<LandmarkDto> retrieved = landmarks.GetWithinCoordenates( leftBottomLat, leftBottomLng, topRightLat,topRightLng);
+            return Ok(retrieved);
         }
     }
 }
