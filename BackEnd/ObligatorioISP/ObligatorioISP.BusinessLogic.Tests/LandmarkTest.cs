@@ -3,6 +3,7 @@ using ObligatorioISP.BusinessLogic.Exceptions;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 
 namespace ObligatorioISP.BusinessLogic.Tests
 {
@@ -93,9 +94,9 @@ namespace ObligatorioISP.BusinessLogic.Tests
         public void ShouldReturnTheImagesPathsWhenAsked()
         {
             Landmark landmark = new Landmark("title", 0.0, 0.0, "description", "testImage1.jpg");
-            List<string> images = landmark.Images;
+            ICollection<string> images = landmark.Images;
             Assert.AreEqual(1, images.Count);
-            Assert.AreEqual("testImage1.jpg", images[0]);
+            Assert.AreEqual("testImage1.jpg", images.First());
         }
 
         [TestMethod]
