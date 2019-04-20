@@ -18,13 +18,15 @@ namespace ObligatorioISP.DataAccess.Tests
         private string serverString = $"Server=DESKTOP-JH1M2MF\\SQLSERVER_R14;";
         private string securityString = "Trusted_Connection=True;Integrated Security=True;";
         private string dbName = "LandmarksTestDB";
+        private string imagesPath = "Images";
+        private string audiosPath = "Audios";
 
         [TestInitialize]
         public void StartUp()
         {
             string connString = serverString + $"Initial Catalog={dbName};" + securityString;
             SetUpDatabase(connString);
-            landmarks = new SqlServerLandmarksRepository(connString);
+            landmarks = new SqlServerLandmarksRepository(connString,imagesPath,audiosPath);
         }
 
         [TestMethod]
@@ -47,9 +49,8 @@ namespace ObligatorioISP.DataAccess.Tests
                 CreateDB(dbName);
             }
             LoadDatabase(finalConnString);
-
+            CreateImageFiles(finalConnString,imagesPath);
         }
-
 
         private bool DbExists(string database)
         {
@@ -105,6 +106,29 @@ namespace ObligatorioISP.DataAccess.Tests
                 }
             }
               
+        }
+
+        private void CreateImageFiles(string connectionString,string imagesPath)
+        {
+            using (SqlConnection client = new SqlConnection(connectionString))
+            {
+                client.Open();
+                string getIdsScript = "SELECT * FROM LandmarkImages;";
+                using (SqlCommand sqlCmd = new SqlCommand(getIdsScript, client))
+                {
+                    using (SqlDataReader reader = sqlCmd.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+                            string landmarkId = reader["LANDMARK_ID"].ToString();
+                            string id = reader["ID"].ToString();
+                            string extension = reader["EXTENSION"].ToString();
+                            File.Create($"{imagesPath}/{landmarkId}_{id}.{extension}");
+                        }
+                    }
+                }
+            }
         }
     }
 }
