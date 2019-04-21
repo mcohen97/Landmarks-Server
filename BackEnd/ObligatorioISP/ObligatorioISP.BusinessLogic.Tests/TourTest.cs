@@ -54,10 +54,14 @@ namespace ObligatorioISP.BusinessLogic.Tests
 
         private ICollection<Landmark> GetFakeLandmarks()
         {
-            File.Create("1_1.jpg");
-            Mock<Landmark> fake1 = new Mock<Landmark>("Landmark 1", -34.912126, -56.167282, "Description 1", "1_1.jpg");
-            Mock<Landmark> fake2 = new Mock<Landmark>("Landmark 2", -34.912127, -56.167281, "Description 2", "1_1.jpg");
-            Mock<Landmark> fake3 = new Mock<Landmark>("Landmark 3", -34.912128, -56.167284, "Description 3", "1_1.jpg");
+            string testImage = "1_1.jpg";
+            if (!File.Exists(testImage))
+            {
+                File.Create("1_1.jpg");
+            }
+            Mock<Landmark> fake1 = new Mock<Landmark>("Landmark 1", -34.912126, -56.167282, "Description 1", testImage);
+            Mock<Landmark> fake2 = new Mock<Landmark>("Landmark 2", -34.912127, -56.167281, "Description 2", testImage);
+            Mock<Landmark> fake3 = new Mock<Landmark>("Landmark 3", -34.912128, -56.167284, "Description 3", testImage);
             return new List<Landmark>() { fake1.Object, fake2.Object, fake3.Object };
         }
     }
