@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ObligatorioISP.DataAccess.Contracts.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,12 +18,12 @@ namespace ObligatorioISP.DataAccess.Tests
             testData = new TestDatabaseManager();
             testData.SetUpDatabase();
             testData.LoadTestData();
-            tours = new SqlServerToursRepositorys(testData.ConnectionString,landmarks);
+            tours = new SqlServerToursRepository(testData.ConnectionString,landmarks);
         }
 
         [TestMethod]
         public void ShouldReturnTourGivenExistingId() {
-            LandmarkDto retrieved = tours.GetById(1);
+            TourDto retrieved = tours.GetById(1);
             Assert.AreEqual(1, retrieved.Id);
         }
     }
