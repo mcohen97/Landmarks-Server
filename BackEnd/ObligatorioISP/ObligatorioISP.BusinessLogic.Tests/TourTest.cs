@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Moq;
@@ -28,7 +27,29 @@ namespace ObligatorioISP.BusinessLogic.Tests
         [ExpectedException(typeof(InvalidTourException))]
         public void ShouldThrowExceptionWhenTitleEmpty()
         {
-            Tour testTour = new Tour(-1, " ", fakeLandmarks);
+            Tour testTour = new Tour(1, " ", fakeLandmarks);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidTourException))]
+        public void ShouldThrowExceptionWhenToursListIsNull()
+        {
+            Tour testTour = new Tour(1, "Tour 1", null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidTourException))]
+        public void ShouldThrowExceptionWhenToursListIsEmpty()
+        {
+            Tour testTour = new Tour(1, "Tour 1", new List<Landmark>());
+        }
+
+        [TestMethod]
+        public void ShouldHaveSameDataGivenInConstructor() {
+            Tour testTour = new Tour(1, "Tour 1", fakeLandmarks);
+            Assert.AreEqual(1, testTour.Id);
+            Assert.AreEqual("Tour 1", testTour.Title);
+            Assert.AreEqual(3, fakeLandmarks.Count);
         }
 
         private ICollection<Landmark> GetFakeLandmarks()
