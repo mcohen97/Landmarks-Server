@@ -85,7 +85,6 @@ namespace ObligatorioISP.DataAccess.Tests
 
         private void ResetDatabase(SqlConnection client)
         {
-            client.Open();
             string createScript = File.ReadAllText(@"..\..\..\..\Database\create_tables.sql");
             using (SqlCommand sqlCmd = new SqlCommand(createScript, client))
             {
@@ -109,7 +108,10 @@ namespace ObligatorioISP.DataAccess.Tests
                             string landmarkId = reader["LANDMARK_ID"].ToString();
                             string id = reader["ID"].ToString();
                             string extension = reader["EXTENSION"].ToString();
-                            File.Create($"{imagesPath}/{landmarkId}_{id}.{extension}");
+                            string fullPath = $"{imagesPath}/{landmarkId}_{id}.{extension}";
+                            if (!File.Exists(fullPath)) {
+                                File.Create(fullPath);
+                            }
                         }
                     }
                 }
