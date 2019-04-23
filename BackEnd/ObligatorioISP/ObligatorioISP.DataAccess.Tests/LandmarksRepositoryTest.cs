@@ -38,5 +38,12 @@ namespace ObligatorioISP.DataAccess.Tests
             ICollection<LandmarkDto> withinBounds = landmarks.GetWithinCoordenates(bottomLeftLat, bottomLeftLng, topRightLat, topRightLng);
             Assert.AreEqual(3, withinBounds.Count);
         }
+
+        [TestMethod]
+        public void ShouldGiveLandmarksCoveredByTour() {
+            int tourId = 1;
+            ICollection<LandmarkDto> fromTour = landmarks.GetTourLandmarks(tourId);
+            Assert.AreEqual(3, fromTour.Count);
+        }
     }
 }
