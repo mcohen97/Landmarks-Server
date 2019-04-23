@@ -18,6 +18,7 @@ namespace ObligatorioISP.DataAccess.Tests
             testData = new TestDatabaseManager();
             testData.SetUpDatabase();
             testData.LoadTestData();
+            landmarks = new SqlServerLandmarksRepository(testData.ConnectionString, testData.ImagesPath, testData.AudiosPath);
             tours = new SqlServerToursRepository(testData.ConnectionString,landmarks);
         }
 
@@ -25,6 +26,15 @@ namespace ObligatorioISP.DataAccess.Tests
         public void ShouldReturnTourGivenExistingId() {
             TourDto retrieved = tours.GetById(1);
             Assert.AreEqual(1, retrieved.Id);
+        }
+
+        [TestMethod]
+        public void ShouldReturnToursWhoseCenterIsWithinRange() {
+            double lat = -34.923844;
+            double lng = -56.170590;
+
+            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, 2);
+            Assert.AreEqual(2, retrieved.Count);
         }
     }
 }
