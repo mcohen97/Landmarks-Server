@@ -90,6 +90,18 @@ namespace ObligatorioISP.DataAccess.Tests
             {
                 sqlCmd.ExecuteNonQuery();
             }
+            string createFunctions = File.ReadAllText(@"..\..\..\..\Database\stored_functions.sql");
+            string[] functionCommands = createFunctions.Split("GO");
+            for (int i = 0; i < functionCommands.Length; i++)
+            {
+                if (!String.IsNullOrEmpty(functionCommands[i])) {
+                    using (SqlCommand sqlCmd = new SqlCommand(functionCommands[i], client))
+                    {
+                        sqlCmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
         }
 
         private void CreateImageFiles(string connectionString, string imagesPath)
