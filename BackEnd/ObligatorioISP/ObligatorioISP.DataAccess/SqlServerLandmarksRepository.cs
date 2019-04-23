@@ -49,6 +49,33 @@ namespace ObligatorioISP.DataAccess
             return result;
         }
 
+        public ICollection<LandmarkDto> GetTourLandmarks(int tourId)
+        {
+            string command = $"SELECT L.* FROM Landmark L, LandmarkTour LT" 
+                + $" WHERE LT.TOUR_ID = {tourId} AND LT.LANDMARK_ID = L.ID;";
+
+            ICollection<LandmarkDto> result = new List<LandmarkDto>();
+
+            using (SqlConnection client = new SqlConnection(connectionString))
+            {
+                client.Open();
+                using (SqlCommand sqlCmd = new SqlCommand(command, client))
+                {
+                    using (SqlDataReader reader = sqlCmd.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+                            LandmarkDto dto = BuildLandmark(reader);
+                            result.Add(dto);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
         private LandmarkDto BuildLandmark(SqlDataReader reader)
         {
             int id = Int32.Parse(reader["ID"].ToString());
