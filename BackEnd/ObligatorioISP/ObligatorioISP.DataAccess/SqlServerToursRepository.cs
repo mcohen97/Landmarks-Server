@@ -39,6 +39,35 @@ namespace ObligatorioISP.DataAccess
             }
         }
 
+        public ICollection<TourDto> GetToursWithinKmRange(double centerLat, double centerLng, double rangeInKm)
+        {
+            string command = $"SELECT T.* FROM Tour T " 
+                + $"WHERE NOT EXISTS (" 
+                + $"SELECT 1 FROM Landmark L, LandmarkTour LT" 
+                + $" WHERE L.ID = LT.LANDMARK_ID AND T.ID = LT.TOUR_ID " 
+                + $"AND dbo.DISTANCE({centerLat},{centerLng},L.LATITUDE, L.LONGITUDE) > {rangeInKm});";
+
+            ICollection<TourDto> result = new List<TourDto>();
+
+            using (SqlConnection client = new SqlConnection(connectionString))
+            {
+                client.Open();
+                using (SqlCommand sqlCmd = new SqlCommand(command, client))
+                {
+                    using (SqlDataReader reader = sqlCmd.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+                            TourDto retrieved = BuildTour(reader);
+                            result.Add(retrieved);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         private TourDto BuildTour(SqlDataReader reader)
         {
             int tourId = Int32.Parse(reader["ID"].ToString());
