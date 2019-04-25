@@ -24,5 +24,12 @@ namespace ObligatorioISP.WebAPI.Controllers
             ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(leftBottomLat, leftBottomLng, distanceInKm);
             return Ok(retrieved);
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            TourDto retrieved = tours.GetById(id);
+            return Ok(retrieved);
+        }
     }
 }
