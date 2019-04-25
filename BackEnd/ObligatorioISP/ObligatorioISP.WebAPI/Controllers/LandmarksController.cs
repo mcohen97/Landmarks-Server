@@ -18,9 +18,9 @@ namespace ObligatorioISP.WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(double leftBottomLat, double leftBottomLng, double topRightLat, double topRightLng)
+        public IActionResult Get(double leftBottomLat, double leftBottomLng, double distanceInKm)
         {
-            ICollection<LandmarkDto> retrieved = landmarks.GetWithinCoordenates( leftBottomLat, leftBottomLng, topRightLat,topRightLng);
+            ICollection<LandmarkDto> retrieved = landmarks.GetWithinZone( leftBottomLat, leftBottomLng, distanceInKm);
             return Ok(retrieved);
         }
     }
