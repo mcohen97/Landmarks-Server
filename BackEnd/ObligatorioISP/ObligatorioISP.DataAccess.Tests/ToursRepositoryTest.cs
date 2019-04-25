@@ -29,6 +29,12 @@ namespace ObligatorioISP.DataAccess.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(TourNotFoundException))]
+        public void ShouldThrowExceptionIfTourIsUnexistent() {
+            TourDto retrieved = tours.GetById(101);
+        }
+
+        [TestMethod]
         public void ShouldReturnTourWhoseStopsAreInRange() {
             double lat = -34.923844;
             double lng = -56.170590;
