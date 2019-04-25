@@ -7,7 +7,7 @@ namespace ObligatorioISP.DataAccess.Contracts
 {
     public interface ILandmarksRepository
     {
-        ICollection<LandmarkDto> GetWithinCoordenates(double leftBottomLat, double leftBottomLng, double topRightLat, double topRightLng);
+        ICollection<LandmarkDto> GetWithinZone(double centerLat, double centerLng, double distanceInKm);
 
         ICollection<LandmarkDto> GetTourLandmarks(int tourId);
     }

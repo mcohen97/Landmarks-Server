@@ -23,11 +23,12 @@ namespace ObligatorioISP.DataAccess
             connectionString = connString;
         }
 
-        public ICollection<LandmarkDto> GetWithinCoordenates(double leftBottomLat, double leftBottomLng, double topRightLat, double topRightLng)
+        public ICollection<LandmarkDto> GetWithinZone(double centerLat, double centerLng, double distanceInKm)
         {
-            string command = $"SELECT * FROM Landmark " 
-                +$"WHERE ((LATITUDE>= {topRightLat} AND LATITUDE <= {leftBottomLat}) OR (LATITUDE>= {leftBottomLat} AND LATITUDE <= {topRightLat}))"
-                +$"AND ((LONGITUDE >= {topRightLng} AND LONGITUDE <= {leftBottomLng}) OR (LONGITUDE >= {leftBottomLng} AND LONGITUDE <= {topRightLng}));";
+            string command = $"SELECT * "
+                +$"FROM Landmark " 
+                +$"WHERE dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) <= {distanceInKm};";
+
 
             ICollection<LandmarkDto> result = new List<LandmarkDto>();
 
