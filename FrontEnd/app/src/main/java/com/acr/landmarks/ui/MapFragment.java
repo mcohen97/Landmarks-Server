@@ -368,7 +368,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void calculateDirections(Marker marker){
-        Log.d(TAG, "calculateDirections: calculating directions.");
 
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
                 marker.getPosition().latitude,
@@ -383,18 +382,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                         mUserLocation.getLongitude()
                 )
         );
-        Log.d(TAG, "calculateDirections: destination: " + destination.toString());
         directions.destination(destination).setCallback(new PendingResult.Callback<DirectionsResult>() {
             @Override
             public void onResult(DirectionsResult result) {
-                Log.d(TAG, "onResult: routes: " + result.routes[0].toString());
-                Log.d(TAG, "onResult: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
                 addPolylinesToMap(result);
             }
 
             @Override
             public void onFailure(Throwable e) {
-                Log.e(TAG, "onFailure: " + e.getMessage() );
 
             }
         });
@@ -404,7 +399,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "run: result routes: " + result.routes.length);
+
                 //Evitar polylines duplicadas, en mapa y lista
                 if(mPolyLinesData.size() > 0){
                     for(PolylineData polylineData: mPolyLinesData){
@@ -416,7 +411,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
                 double duration = 999999999;
                 for(DirectionsRoute route: result.routes){
-                    Log.d(TAG, "run: leg: " + route.legs[0].toString());
+
                     List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
 
                     List<LatLng> newDecodedPath = new ArrayList<>();
@@ -457,7 +452,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         int index = 0;
         for(PolylineData polylineData: mPolyLinesData){
             index++;
-            Log.d(TAG, "onPolylineClick: toString: " + polylineData.toString());
+
             if(polyline.getId().equals(polylineData.getPolyline().getId())){
                 polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.blue1));
                 polylineData.getPolyline().setZIndex(1);

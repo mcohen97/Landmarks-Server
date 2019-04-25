@@ -94,16 +94,16 @@ public class MainActivity extends AppCompatActivity {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
             if("com.acr.landmarks.service.LocationService".equals(service.service.getClassName())) {
-                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+
                 return true;
             }
         }
-        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+
         return false;
     }
 
     private void getLastKnownLocation() {
-        Log.d(TAG, "getLastKnownLocation: called.");
+
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -173,18 +173,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean isServicesOK(){
-        Log.d(TAG, "isServicesOK: checking google services version");
+
 
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
 
         if(available == ConnectionResult.SUCCESS){
             //everything is fine and the user can make map requests
-            Log.d(TAG, "isServicesOK: Google Play Services is working");
+
             return true;
         }
         else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
             //an error occured but we can resolve it
-            Log.d(TAG, "isServicesOK: an error occured but we can fix it");
+
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
         }else{
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: called.");
+
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ENABLE_GPS: {
                 if(mLocationPermissionGranted){
