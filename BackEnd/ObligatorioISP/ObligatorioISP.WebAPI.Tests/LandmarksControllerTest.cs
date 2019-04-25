@@ -11,7 +11,7 @@ namespace ObligatorioISP.WebAPI.Tests
 {
     [ExcludeFromCodeCoverage]
     [TestClass]
-    public class LandmarkControllerTest
+    public class LandmarksControllerTest
     {
         private LandmarksController controller;
         private Mock<ILandmarksRepository> fakeLandmarksStorage;
