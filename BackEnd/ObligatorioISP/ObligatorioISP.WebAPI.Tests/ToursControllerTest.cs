@@ -45,6 +45,23 @@ namespace ObligatorioISP.WebAPI.Tests
             Assert.AreEqual(GetFakeTours().Count, tours.Count);
         }
 
+        [TestMethod]
+        public void ShouldReturnTheTourOfIdGiven()
+        {
+            int id = 1;
+
+            IActionResult result = controller.Get(id);
+            OkObjectResult ok = result as OkObjectResult;
+            TourDto tour = ok.Value as TourDto;
+
+            fakeToursStorage.Verify(r => r.GetById(id));
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(ok);
+            Assert.AreEqual(200, ok.StatusCode);
+            Assert.IsNotNull(tour);
+            Assert.AreEqual(id, tour.Id);
+        }
+
         private ICollection<TourDto> GetFakeTours()
         {
             return new List<TourDto>() {
