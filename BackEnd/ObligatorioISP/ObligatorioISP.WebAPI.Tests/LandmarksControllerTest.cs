@@ -29,12 +29,13 @@ namespace ObligatorioISP.WebAPI.Tests
 
             double centerLat = -34.923844;
             double centerLng = -56.170590;
+            double distance = 2;
 
-            IActionResult result = controller.Get(centerLat, centerLng, 2);
+            IActionResult result = controller.Get(centerLat, centerLng, distance);
             OkObjectResult ok = result as OkObjectResult;
             ICollection<LandmarkDto> landmarks = ok.Value as ICollection<LandmarkDto>;
 
-            fakeLandmarksStorage.Verify(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
+            fakeLandmarksStorage.Verify(r => r.GetWithinZone(centerLat, centerLng, distance), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(ok);
             Assert.AreEqual(200, ok.StatusCode);
