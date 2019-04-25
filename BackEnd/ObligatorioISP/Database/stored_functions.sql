@@ -14,7 +14,7 @@ DECLARE @dLng FLOAT=RADIANS(@lng_2 - @lng_1);
 DECLARE @lat_1_rad FLOAT = RADIANS(@lat_1);
 DECLARE @lat_2_rad FLOAT = RADIANS(@lat_2);
 
-DECLARE @a FLOAT = POWER(SIN(@lat_1_rad/2),2) + POWER(SIN(@lat_2_rad/2),2) * COS(@lat_1_rad) * COS(@lat_2_rad);
+DECLARE @a FLOAT = POWER(SIN(@dLat/2),2) + POWER(SIN(@dLng/2),2) * COS(@lat_1_rad) * COS(@lat_2_rad);
 DECLARE @c FLOAT = 2 * ATN2(SQUARE(@a),SQUARE(1-@a));
 RETURN @earthRadiusKm * @c;
 END;
