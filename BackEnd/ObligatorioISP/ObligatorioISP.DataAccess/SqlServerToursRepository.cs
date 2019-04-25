@@ -2,10 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using ObligatorioISP.BusinessLogic;
+using System.Linq;
 using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.DataAccess.Contracts.Dtos;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 
 namespace ObligatorioISP.DataAccess
 {
@@ -14,29 +14,24 @@ namespace ObligatorioISP.DataAccess
         private string connectionString;
         private ILandmarksRepository landmarks;
 
+        private SqlServerConnectionManager connection;
+
         public SqlServerToursRepository(string aConnectionString, ILandmarksRepository aRepository) {
             connectionString = aConnectionString;
             landmarks = aRepository;
+            connection = new SqlServerConnectionManager(aConnectionString);
         }
 
         public TourDto GetById(int id)
         {
             string command = $"SELECT * FROM Tour WHERE ID = {id};";
 
-            using (SqlConnection client = new SqlConnection(connectionString))
-            {
-                client.Open();
-                using (SqlCommand sqlCmd = new SqlCommand(command, client))
-                {
-                    using (SqlDataReader reader = sqlCmd.ExecuteReader())
-                    {
-
-                        reader.Read();
-                        TourDto retrieved = BuildTour(reader);
-                        return retrieved;                     
-                    }
-                }
+            ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
+            if (!rows.Any()) {
+                throw new TourNotFoundException("Tour not found");
             }
+            ICollection<TourDto> result = rows.Select(r => BuildTour(r)).ToList();
+            return result.First();
         }
 
         public ICollection<TourDto> GetToursWithinKmRange(double centerLat, double centerLng, double rangeInKm)
@@ -46,32 +41,16 @@ namespace ObligatorioISP.DataAccess
                 + $"SELECT 1 FROM Landmark L, LandmarkTour LT" 
                 + $" WHERE L.ID = LT.LANDMARK_ID AND T.ID = LT.TOUR_ID " 
                 + $"AND dbo.DISTANCE({centerLat},{centerLng},L.LATITUDE, L.LONGITUDE) > {rangeInKm});";
-
-            ICollection<TourDto> result = new List<TourDto>();
-
-            using (SqlConnection client = new SqlConnection(connectionString))
-            {
-                client.Open();
-                using (SqlCommand sqlCmd = new SqlCommand(command, client))
-                {
-                    using (SqlDataReader reader = sqlCmd.ExecuteReader())
-                    {
-
-                        while (reader.Read())
-                        {
-                            TourDto retrieved = BuildTour(reader);
-                            result.Add(retrieved);
-                        }
-                    }
-                }
-            }
+       
+            ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
+            ICollection<TourDto> result = rows.Select(r => BuildTour(r)).ToList();
             return result;
         }
 
-        private TourDto BuildTour(SqlDataReader reader)
+        private TourDto BuildTour(Dictionary<string, object> rawData)
         {
-            int tourId = Int32.Parse(reader["ID"].ToString());
-            string title = reader["TITLE"].ToString();
+            int tourId = Int32.Parse(rawData["ID"].ToString());
+            string title = rawData["TITLE"].ToString();
             ICollection<LandmarkDto> tourStops = landmarks.GetTourLandmarks(tourId);
             TourDto tour = new TourDto() {Id=tourId };
             return tour;
