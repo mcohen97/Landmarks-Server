@@ -19,7 +19,7 @@ namespace ObligatorioISP.WebAPI.Tests
         [TestInitialize]
         public void SetUp() {
             fakeLandmarksStorage = new Mock<ILandmarksRepository>();
-            fakeLandmarksStorage.Setup(l => l.GetWithinCoordenates(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+            fakeLandmarksStorage.Setup(l => l.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
                 .Returns(GetFakeLandmarks());
             controller = new LandmarksController(fakeLandmarksStorage.Object);
         }
@@ -27,16 +27,14 @@ namespace ObligatorioISP.WebAPI.Tests
         [TestMethod]
         public void ShouldReturn200OKWhenGET() {
 
-            double bottomLeftLat = -34.923844;
-            double bottomLeftLng = -56.170590;
-            double topRightLat = -34.908501;
-            double topRightLng = -56.155019;
+            double centerLat = -34.923844;
+            double centerLng = -56.170590;
 
-            IActionResult result = controller.Get(bottomLeftLat, bottomLeftLng, topRightLat, topRightLng);
+            IActionResult result = controller.Get(centerLat, centerLng, 2);
             OkObjectResult ok = result as OkObjectResult;
             ICollection<LandmarkDto> landmarks = ok.Value as ICollection<LandmarkDto>;
 
-            fakeLandmarksStorage.Verify(r => r.GetWithinCoordenates(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
+            fakeLandmarksStorage.Verify(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(ok);
             Assert.AreEqual(200, ok.StatusCode);
@@ -47,12 +45,10 @@ namespace ObligatorioISP.WebAPI.Tests
         [TestMethod]
         public void ShouldResturnTheDtosAsRetrieved() {
 
-            double bottomLeftLat = -34.912127;
-            double bottomLeftLng = -56.167283;
-            double topRightLat = -34.912125;
-            double topRightLng = -56.167281;
+            double centerLat = -34.912127;
+            double centerLng = -56.167283;
 
-            IActionResult result = controller.Get(bottomLeftLat, bottomLeftLng, topRightLat, topRightLng);
+            IActionResult result = controller.Get(centerLat, centerLng, 2);
             OkObjectResult ok = result as OkObjectResult;
             List<LandmarkDto> landmarks = ok.Value as List<LandmarkDto>;
             LandmarkDto firstLandmark = landmarks[0];
