@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ObligatorioISP.DataAccess.Contracts\ObligatorioISP.DataAccess.Contracts.csproj" />
     <ProjectReference Include="..\ObligatorioISP.DataAccess\ObligatorioISP.DataAccess.csproj" />
   </ItemGroup>
 
