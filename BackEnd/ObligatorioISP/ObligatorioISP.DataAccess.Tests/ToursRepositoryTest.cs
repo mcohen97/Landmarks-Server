@@ -29,12 +29,34 @@ namespace ObligatorioISP.DataAccess.Tests
         }
 
         [TestMethod]
-        public void ShouldReturnToursWhoseCenterIsWithinRange() {
+        public void ShouldReturnTourWhoseStopsAreInRange() {
             double lat = -34.923844;
             double lng = -56.170590;
+            double distance = 3;
 
-            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, 2);
+            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
+            Assert.AreEqual(1, retrieved.Count);
+        }
+
+        [TestMethod]
+        public void ShouldReturnToursWhoseStopsAreInRange()
+        {
+            double lat = -34.923844;
+            double lng = -56.170590;
+            double distance = 20;
+
+            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
             Assert.AreEqual(2, retrieved.Count);
+        }
+
+        [TestMethod]
+        public void ShouldReturnNoToursIfNoneIsWithinRange() {
+            double lat = -34.923844;
+            double lng = -56.170590;
+            double distance = 1;
+
+            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
+            Assert.AreEqual(0, retrieved.Count);
         }
     }
 }
