@@ -9,7 +9,7 @@ using ObligatorioISP.DataAccess.Contracts.Dtos;
 
 namespace ObligatorioISP.DataAccess
 {
-    public class SqlServerToursRepository
+    public class SqlServerToursRepository: IToursRepository
     {
         private string connectionString;
         private ILandmarksRepository landmarks;
