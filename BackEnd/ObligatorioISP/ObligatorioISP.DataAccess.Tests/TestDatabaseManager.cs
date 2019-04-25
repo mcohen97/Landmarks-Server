@@ -101,7 +101,6 @@ namespace ObligatorioISP.DataAccess.Tests
                     }
                 }
             }
-
         }
 
         private void CreateImageFiles(string connectionString, string imagesPath)

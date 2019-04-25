@@ -30,12 +30,10 @@ namespace ObligatorioISP.DataAccess.Tests
         [TestMethod]
         public void ShouldGiveLandmarksWithinBounds()
         {
-            double bottomLeftLat = -34.923844;
-            double bottomLeftLng = -56.170590;
-            double topRightLat = -34.908501;
-            double topRightLng = -56.155019;
+            double centerLat = -34.923844;
+            double centerLng = -56.170590;
 
-            ICollection<LandmarkDto> withinBounds = landmarks.GetWithinCoordenates(bottomLeftLat, bottomLeftLng, topRightLat, topRightLng);
+            ICollection<LandmarkDto> withinBounds = landmarks.GetWithinZone(centerLat, centerLng, 2);
             Assert.AreEqual(3, withinBounds.Count);
         }
 
