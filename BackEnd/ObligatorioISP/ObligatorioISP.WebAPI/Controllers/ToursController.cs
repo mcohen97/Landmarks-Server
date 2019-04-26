@@ -19,9 +19,9 @@ namespace ObligatorioISP.WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(double leftBottomLat, double leftBottomLng, double distanceInKm)
+        public IActionResult Get([FromQuery]double lat, [FromQuery]double lng, [FromQuery]double dist)
         {
-            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(leftBottomLat, leftBottomLng, distanceInKm);
+            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, dist);
             return Ok(retrieved);
         }
 
