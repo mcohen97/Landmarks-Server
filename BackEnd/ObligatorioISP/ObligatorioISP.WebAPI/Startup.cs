@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ObligatorioISP.DataAccess;
+using ObligatorioISP.DataAccess.Contracts;
 
 namespace ObligatorioISP.WebAPI
 {
@@ -26,6 +28,16 @@ namespace ObligatorioISP.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddScoped<ILandmarksRepository>(provider=> new SqlServerLandmarksRepository(
+                Configuration.GetConnectionString("Landmarks"),
+                GetMediaPath("Images","Uri"),
+                GetMediaPath("Audios", "Uri")));
+            services.AddScoped<IToursRepository, SqlServerToursRepository>();
+        }
+
+        private string GetMediaPath(string section, string key)
+        {
+            return Configuration.GetSection(section).GetValue<string>(key);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
