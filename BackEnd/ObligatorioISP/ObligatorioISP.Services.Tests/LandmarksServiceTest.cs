@@ -14,13 +14,22 @@ namespace ObligatorioISP.Services.Tests
     {
         private ILandmarksService service;
         private Mock<ILandmarksRepository> landmarks;
+        private Mock<IImagesRepository> images;
+        private string testImageData;
 
         [TestInitialize]
         public void SetUp() {
+            SetUpRepositories();
+            service = new LandmarksService(landmarks.Object, images.Object);
+        }
+
+        private void SetUpRepositories() {
+            testImageData = "data";
+            images = new Mock<IImagesRepository>();
+            images.Setup(i => i.GetImageInBase64(It.IsAny<string>())).Returns(testImageData);
             landmarks = new Mock<ILandmarksRepository>();
             landmarks.Setup(r => r.GetTourLandmarks(It.IsAny<int>())).Returns(GetFakeLandmarks());
             landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>())).Returns(GetFakeLandmarks());
-            service = new LandmarksService(landmarks.Object);
         }
 
         [TestMethod]
@@ -31,6 +40,7 @@ namespace ObligatorioISP.Services.Tests
 
             ICollection<LandmarkDto> retrieved = service.GetLandmarksWithinZone(lat, lng, dist);
             landmarks.Verify(l => l.GetWithinZone(lat, lng, dist), Times.Once);
+            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
         }
 
@@ -39,6 +49,7 @@ namespace ObligatorioISP.Services.Tests
             int id = 1;
             ICollection<LandmarkDto> retrieved = service.GetLandmarksOfTour(id);
             landmarks.Verify(l => l.GetTourLandmarks(id),Times.Once);
+            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
         }
 
