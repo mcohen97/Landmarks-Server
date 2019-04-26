@@ -4,7 +4,8 @@ using System.Text;
 
 namespace ObligatorioISP.Services.Contracts
 {
-    interface IImagesService
+    public interface IImagesService
     {
+        string GetImageInBase64(string imageName);
     }
 }
