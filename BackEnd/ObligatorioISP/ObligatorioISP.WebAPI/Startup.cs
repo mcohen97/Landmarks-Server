@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ObligatorioISP.DataAccess;
 using ObligatorioISP.DataAccess.Contracts;
+using ObligatorioISP.Services;
+using ObligatorioISP.Services.Contracts;
 
 namespace ObligatorioISP.WebAPI
 {
@@ -33,6 +35,11 @@ namespace ObligatorioISP.WebAPI
                 GetMediaPath("Images","Uri"),
                 GetMediaPath("Audios", "Uri")));
             services.AddScoped<IToursRepository, SqlServerToursRepository>();
+            //services.AddScoped<IImagesRepository>(provider => new DiskImagesRepository(GetMediaPath("Images", "Uri")));
+            services.AddScoped<IImagesRepository, DiskImagesRepository>();
+
+            services.AddScoped<ILandmarksService, LandmarksService>();
+            services.AddScoped<IToursService, ToursService>();
         }
 
         private string GetMediaPath(string section, string key)
