@@ -1,10 +1,10 @@
-﻿using ObligatorioISP.Services.Contracts;
+﻿using ObligatorioISP.DataAccess.Contracts;
 using System;
 using System.IO;
 
-namespace ObligatorioISP.Services
+namespace ObligatorioISP.DataAccess
 {
-    public class DiskImagesService : IImagesService
+    public class DiskImagesService : IImagesRepository
     {
 
         private string directory;

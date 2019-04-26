@@ -1,9 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ObligatorioISP.Services.Contracts;
+using ObligatorioISP.DataAccess.Contracts;
 using System;
 using System.IO;
 
-namespace ObligatorioISP.Services.Tests
+namespace ObligatorioISP.DataAccess.Tests
 {
     [TestClass]
     public class ImagesServiceTest
@@ -13,7 +13,7 @@ namespace ObligatorioISP.Services.Tests
         private string testImageName;
         private string pixelImageBase64;
 
-        private IImagesService service;
+        private IImagesRepository service;
 
         [TestInitialize]
         public void StartUp() {
