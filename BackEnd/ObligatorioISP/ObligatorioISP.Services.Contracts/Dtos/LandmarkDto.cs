@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ObligatorioISP.DataAccess.Contracts.Dtos
+namespace ObligatorioISP.Services.Contracts.Dtos
 {
     public class LandmarkDto
     {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts;
-using ObligatorioISP.DataAccess.Contracts.Dtos;
 
 namespace ObligatorioISP.DataAccess
 {
@@ -24,28 +23,28 @@ namespace ObligatorioISP.DataAccess
             connection = new SqlServerConnectionManager(connectionString);
         }
 
-        public ICollection<LandmarkDto> GetWithinZone(double centerLat, double centerLng, double distanceInKm)
+        public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm)
         {
             string command = $"SELECT * "
                 + $"FROM Landmark "
                 + $"WHERE dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) <= {distanceInKm};";
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
-            ICollection<LandmarkDto> result = rows.Select(r => BuildLandmark(r)).ToList();
+            ICollection<Landmark> result = rows.Select(r => BuildLandmark(r)).ToList();
             return result;
         }
 
-        public ICollection<LandmarkDto> GetTourLandmarks(int tourId)
+        public ICollection<Landmark> GetTourLandmarks(int tourId)
         {
             string command = $"SELECT L.* FROM Landmark L, LandmarkTour LT"
                 + $" WHERE LT.TOUR_ID = {tourId} AND LT.LANDMARK_ID = L.ID;";
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
-            ICollection<LandmarkDto> result = rows.Select(r => BuildLandmark(r)).ToList();
+            ICollection<Landmark> result = rows.Select(r => BuildLandmark(r)).ToList();
             return result;
         }
 
-        private LandmarkDto BuildLandmark(Dictionary<string,object> rawData)
+        private Landmark BuildLandmark(Dictionary<string,object> rawData)
         {
 
             int id = Int32.Parse(rawData["ID"].ToString());
@@ -56,23 +55,9 @@ namespace ObligatorioISP.DataAccess
             ICollection<string> images = GetMediaResources(id, IMAGES_TABLE);
             ICollection<string> audios = GetMediaResources(id, AUDIOS_TABLE);
 
-            //important to instantiate Landmark first, because it checks that database data is consistent.
             Landmark landmark = new Landmark(id, title, lat, lng, description, images, audios);
 
-            return ConvertToDto(landmark);
-        }
-
-        private LandmarkDto ConvertToDto(Landmark landmark)
-        {
-            return new LandmarkDto()
-            {
-                Id = landmark.Id,
-                Title = landmark.Title,
-                Latitude = landmark.Latitude,
-                Longitude = landmark.Longitude,
-                Description = landmark.Description,
-                ImageBase64 = landmark.Images.First()
-            };
+            return landmark;
         }
 
         private ICollection<string> GetMediaResources(int landmarkId, string table)

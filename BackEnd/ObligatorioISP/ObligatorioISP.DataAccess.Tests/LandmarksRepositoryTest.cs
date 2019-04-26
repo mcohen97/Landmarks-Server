@@ -1,12 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ObligatorioISP.DataAccess.Contracts.Dtos;
-using System;
+using ObligatorioISP.BusinessLogic;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 
 namespace ObligatorioISP.DataAccess.Tests
 {
@@ -33,14 +28,14 @@ namespace ObligatorioISP.DataAccess.Tests
             double centerLat = -34.923844;
             double centerLng = -56.170590;
 
-            ICollection<LandmarkDto> withinBounds = landmarks.GetWithinZone(centerLat, centerLng, 2);
+            ICollection<Landmark> withinBounds = landmarks.GetWithinZone(centerLat, centerLng, 2);
             Assert.AreEqual(3, withinBounds.Count);
         }
 
         [TestMethod]
         public void ShouldGiveLandmarksCoveredByTour() {
             int tourId = 1;
-            ICollection<LandmarkDto> fromTour = landmarks.GetTourLandmarks(tourId);
+            ICollection<Landmark> fromTour = landmarks.GetTourLandmarks(tourId);
             Assert.AreEqual(3, fromTour.Count);
         }
     }

@@ -3,8 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using ObligatorioISP.DataAccess.Contracts;
-using ObligatorioISP.DataAccess.Contracts.Dtos;
+using ObligatorioISP.Services.Contracts;
+using ObligatorioISP.Services.Contracts.Dtos;
 using ObligatorioISP.WebAPI.Controllers;
 
 namespace ObligatorioISP.WebAPI.Tests
@@ -14,14 +14,14 @@ namespace ObligatorioISP.WebAPI.Tests
     public class LandmarksControllerTest
     {
         private LandmarksController controller;
-        private Mock<ILandmarksRepository> fakeLandmarksStorage;
+        private Mock<ILandmarksService> fakeLandmarksService;
     
         [TestInitialize]
         public void SetUp() {
-            fakeLandmarksStorage = new Mock<ILandmarksRepository>();
-            fakeLandmarksStorage.Setup(l => l.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+            fakeLandmarksService = new Mock<ILandmarksService>();
+            fakeLandmarksService.Setup(l => l.GetLandmarksWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
                 .Returns(GetFakeLandmarks());
-            controller = new LandmarksController(fakeLandmarksStorage.Object);
+            controller = new LandmarksController(fakeLandmarksService.Object);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace ObligatorioISP.WebAPI.Tests
             OkObjectResult ok = result as OkObjectResult;
             ICollection<LandmarkDto> landmarks = ok.Value as ICollection<LandmarkDto>;
 
-            fakeLandmarksStorage.Verify(r => r.GetWithinZone(centerLat, centerLng, distance), Times.Once);
+            fakeLandmarksService.Verify(r => r.GetLandmarksWithinZone(centerLat, centerLng, distance), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(ok);
             Assert.AreEqual(200, ok.StatusCode);
@@ -44,7 +44,7 @@ namespace ObligatorioISP.WebAPI.Tests
         }
 
         [TestMethod]
-        public void ShouldResturnTheDtosAsRetrieved() {
+        public void ShouldReturnTheDtosAsRetrieved() {
 
             double centerLat = -34.912127;
             double centerLng = -56.167283;

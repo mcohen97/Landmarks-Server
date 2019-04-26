@@ -2,12 +2,11 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using ObligatorioISP.DataAccess.Contracts;
-using ObligatorioISP.DataAccess.Contracts.Dtos;
+using ObligatorioISP.Services.Contracts;
+using ObligatorioISP.Services.Contracts.Dtos;
 using ObligatorioISP.WebAPI.Controllers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ObligatorioISP.WebAPI.Tests
 {
@@ -15,13 +14,13 @@ namespace ObligatorioISP.WebAPI.Tests
     public class ToursControllerTest
     {
         private ToursController controller;
-        private Mock<IToursRepository> fakeToursStorage;
+        private Mock<IToursService> fakeToursStorage;
 
         [TestInitialize]
         public void StartUp()
         {
-            fakeToursStorage = new Mock<IToursRepository>();
-            fakeToursStorage.Setup(r => r.GetById(It.IsAny<int>())).Returns((int x) => GetFakeTours().FirstOrDefault(t => t.Id == x));
+            fakeToursStorage = new Mock<IToursService>();
+            fakeToursStorage.Setup(r => r.GetTourById(It.IsAny<int>())).Returns((int x) => GetFakeTours().FirstOrDefault(t => t.Id == x));
             fakeToursStorage.Setup(r => r.GetToursWithinKmRange(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>())).Returns(GetFakeTours());
             controller = new ToursController(fakeToursStorage.Object);
         }
@@ -54,7 +53,7 @@ namespace ObligatorioISP.WebAPI.Tests
             OkObjectResult ok = result as OkObjectResult;
             TourDto tour = ok.Value as TourDto;
 
-            fakeToursStorage.Verify(r => r.GetById(id));
+            fakeToursStorage.Verify(r => r.GetTourById(id));
             Assert.IsNotNull(result);
             Assert.IsNotNull(ok);
             Assert.AreEqual(200, ok.StatusCode);

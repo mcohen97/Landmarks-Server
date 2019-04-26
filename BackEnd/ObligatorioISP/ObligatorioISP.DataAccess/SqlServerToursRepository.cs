@@ -1,10 +1,8 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts;
-using ObligatorioISP.DataAccess.Contracts.Dtos;
 using ObligatorioISP.DataAccess.Contracts.Exceptions;
 
 namespace ObligatorioISP.DataAccess
@@ -22,7 +20,7 @@ namespace ObligatorioISP.DataAccess
             connection = new SqlServerConnectionManager(aConnectionString);
         }
 
-        public TourDto GetById(int id)
+        public Tour GetById(int id)
         {
             string command = $"SELECT * FROM Tour WHERE ID = {id};";
 
@@ -30,11 +28,11 @@ namespace ObligatorioISP.DataAccess
             if (!rows.Any()) {
                 throw new TourNotFoundException("Tour not found");
             }
-            ICollection<TourDto> result = rows.Select(r => BuildTour(r)).ToList();
+            ICollection<Tour> result = rows.Select(r => BuildTour(r)).ToList();
             return result.First();
         }
 
-        public ICollection<TourDto> GetToursWithinKmRange(double centerLat, double centerLng, double rangeInKm)
+        public ICollection<Tour> GetToursWithinKmRange(double centerLat, double centerLng, double rangeInKm)
         {
             string command = $"SELECT T.* FROM Tour T " 
                 + $"WHERE NOT EXISTS (" 
@@ -43,16 +41,16 @@ namespace ObligatorioISP.DataAccess
                 + $"AND dbo.DISTANCE({centerLat},{centerLng},L.LATITUDE, L.LONGITUDE) > {rangeInKm});";
        
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
-            ICollection<TourDto> result = rows.Select(r => BuildTour(r)).ToList();
+            ICollection<Tour> result = rows.Select(r => BuildTour(r)).ToList();
             return result;
         }
 
-        private TourDto BuildTour(Dictionary<string, object> rawData)
+        private Tour BuildTour(Dictionary<string, object> rawData)
         {
             int tourId = Int32.Parse(rawData["ID"].ToString());
             string title = rawData["TITLE"].ToString();
-            ICollection<LandmarkDto> tourStops = landmarks.GetTourLandmarks(tourId);
-            TourDto tour = new TourDto() {Id=tourId };
+            ICollection<Landmark> tourStops = landmarks.GetTourLandmarks(tourId);
+            Tour tour = new Tour(tourId, title, tourStops);
             return tour;
         }
     }

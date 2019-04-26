@@ -1,9 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts;
-using ObligatorioISP.DataAccess.Contracts.Dtos;
 using ObligatorioISP.Services.Contracts;
+using ObligatorioISP.Services.Contracts.Dtos;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ObligatorioISP.Services.Tests
 {
@@ -15,6 +17,7 @@ namespace ObligatorioISP.Services.Tests
 
         [TestInitialize]
         public void SetUp() {
+            landmarks = new Mock<ILandmarksRepository>();
             landmarks.Setup(r => r.GetTourLandmarks(It.IsAny<int>())).Returns(GetFakeLandmarks());
             landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>())).Returns(GetFakeLandmarks());
             service = new LandmarksService(landmarks.Object);
@@ -39,42 +42,17 @@ namespace ObligatorioISP.Services.Tests
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
         }
 
-        private ICollection<LandmarkDto> GetFakeLandmarks()
+        private ICollection<Landmark> GetFakeLandmarks()
         {
-            ICollection<LandmarkDto> sampleList = new List<LandmarkDto>() {
-                new LandmarkDto(){
-                    Id = 1,
-                    Title = "Landmark 1",
-                    Latitude = -34.912126,
-                    Longitude =-56.167282,
-                    Description = "Description 1",
-                    ImageBase64 = ""
-                },
-                new LandmarkDto(){
-                    Id = 2,
-                    Title = "Landmark 2",
-                    Latitude = -34.912900,
-                    Longitude =-56.162263,
-                    Description = "Description 2",
-                    ImageBase64 = ""
-                },
-                new LandmarkDto(){
-                    Id = 3,
-                    Title = "Landmark 3",
-                    Latitude = -34.914202,
-                    Longitude =-56.157930,
-                    Description = "Description 3",
-                    ImageBase64 = ""
-                },
-                new LandmarkDto(){
-                    Id = 4,
-                    Title = "Landmark 4",
-                    Latitude = -34.910866,
-                    Longitude =-56.183353,
-                    Description = "Description 4",
-                    ImageBase64 = ""
-                }
-
+            string testImage = "testImage.jpg";
+            if (!File.Exists(testImage)) {
+                File.Create(testImage);
+            }
+            ICollection<Landmark> sampleList = new List<Landmark>() {
+                new Landmark(1, "Landmark 1",-34.912126,-56.167282,"Description 1", testImage),
+                new Landmark(2,"Landmark 2",-34.912900,-56.162263,"Description 2",testImage),
+                new Landmark(3,"Landmark 3",-34.914202,-56.157930,"Description 3",testImage),
+                new Landmark(4,"Landmark 4", -34.910866,-56.183353,"Description 4",testImage)
             };
             return sampleList;
         }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ObligatorioISP.DataAccess.Contracts.Dtos;
+using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using System.Collections.Generic;
 
@@ -23,14 +23,14 @@ namespace ObligatorioISP.DataAccess.Tests
 
         [TestMethod]
         public void ShouldReturnTourGivenExistingId() {
-            TourDto retrieved = tours.GetById(1);
+            Tour retrieved = tours.GetById(1);
             Assert.AreEqual(1, retrieved.Id);
         }
 
         [TestMethod]
         [ExpectedException(typeof(TourNotFoundException))]
         public void ShouldThrowExceptionIfTourIsUnexistent() {
-            TourDto retrieved = tours.GetById(101);
+            Tour retrieved = tours.GetById(101);
         }
 
         [TestMethod]
@@ -39,7 +39,7 @@ namespace ObligatorioISP.DataAccess.Tests
             double lng = -56.170590;
             double distance = 3;
 
-            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
+            ICollection<Tour> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
             Assert.AreEqual(1, retrieved.Count);
         }
 
@@ -50,7 +50,7 @@ namespace ObligatorioISP.DataAccess.Tests
             double lng = -56.170590;
             double distance = 20;
 
-            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
+            ICollection<Tour> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
             Assert.AreEqual(2, retrieved.Count);
         }
 
@@ -60,7 +60,7 @@ namespace ObligatorioISP.DataAccess.Tests
             double lng = -56.170590;
             double distance = 1;
 
-            ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
+            ICollection<Tour> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
             Assert.AreEqual(0, retrieved.Count);
         }
     }

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using ObligatorioISP.DataAccess.Contracts;
-using ObligatorioISP.DataAccess.Contracts.Dtos;
+using ObligatorioISP.Services.Contracts;
+using ObligatorioISP.Services.Contracts.Dtos;
 
 namespace ObligatorioISP.WebAPI.Controllers
 {
@@ -12,8 +9,8 @@ namespace ObligatorioISP.WebAPI.Controllers
     [ApiController]
     public class ToursController : ControllerBase
     {
-        private IToursRepository tours;
-        public ToursController(IToursRepository toursRepo)
+        private IToursService tours;
+        public ToursController(IToursService toursRepo)
         {
             tours = toursRepo;
         }
@@ -28,7 +25,7 @@ namespace ObligatorioISP.WebAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            TourDto retrieved = tours.GetById(id);
+            TourDto retrieved = tours.GetTourById(id);
             return Ok(retrieved);
         }
     }
