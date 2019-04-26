@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ObligatorioISP.DataAccess.Contracts.Dtos;
-using System;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ObligatorioISP.DataAccess.Tests
 {
