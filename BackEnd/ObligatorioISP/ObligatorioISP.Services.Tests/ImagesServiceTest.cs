@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ObligatorioISP.Services.Contracts;
 using System;
 using System.IO;
 
@@ -25,7 +26,8 @@ namespace ObligatorioISP.Services.Tests
 
         [TestMethod]
         public void ShouldGetExistentImage() {
-
+            string image =service.GetImageInBase64(testImageName);
+            Assert.AreEqual(pixelImageBase64, image);
         }
 
         private void WriteTestImage() {
