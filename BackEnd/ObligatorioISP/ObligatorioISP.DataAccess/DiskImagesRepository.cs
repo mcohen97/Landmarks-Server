@@ -4,14 +4,10 @@ using System.IO;
 
 namespace ObligatorioISP.DataAccess
 {
-    public class DiskImagesService : IImagesRepository
+    public class DiskImagesRepository : IImagesRepository
     {
 
-        private string directory;
-        public DiskImagesService(string imagesFolder)
-        {
-            directory = imagesFolder;
-        }
+ 
 
         public string GetImageInBase64(string imageName)
         {
@@ -30,8 +26,7 @@ namespace ObligatorioISP.DataAccess
         private byte[] TryRead(string path)
         {
             byte[] bytes = new byte[0];
-            string fullPath = directory + "/" + path;
-            using (Stream source = File.OpenRead(fullPath))
+            using (Stream source = File.OpenRead(path))
             {
                 bytes = new byte[source.Length];
                 source.Read(bytes, 0, bytes.Length);
