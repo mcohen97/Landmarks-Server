@@ -23,7 +23,7 @@ namespace ObligatorioISP.DataAccess.Tests
             Directory.CreateDirectory(imagesDirectory);
 
             pixelImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
-            service = new DiskImagesService(imagesDirectory);
+            service = new DiskImagesRepository(imagesDirectory);
             WriteTestImage();
         }
 
