@@ -11,6 +11,6 @@ namespace ObligatorioISP.Services.Contracts.Dtos
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string Description { get; set; }
-        public string ImageBase64 { get; set; }
+        public ICollection<string> ImagesBase64 { get; set; }
     }
 }

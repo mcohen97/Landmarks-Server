@@ -59,7 +59,7 @@ namespace ObligatorioISP.WebAPI.Tests
             Assert.AreEqual(-34.912126, firstLandmark.Latitude);
             Assert.AreEqual(-56.167282, firstLandmark.Longitude);
             Assert.AreEqual("Description 1", firstLandmark.Description);
-            Assert.AreEqual("", firstLandmark.ImageBase64);
+            Assert.AreEqual(3, firstLandmark.ImagesBase64.Count);
         }
 
         private ICollection<LandmarkDto> GetFakeLandmarks()
@@ -71,7 +71,7 @@ namespace ObligatorioISP.WebAPI.Tests
                     Latitude = -34.912126,
                     Longitude =-56.167282,
                     Description = "Description 1",
-                    ImageBase64 = ""
+                    ImagesBase64 = new List<string>(){"image1","image2","image3" }
                 },
                 new LandmarkDto(){
                     Id = 2,
@@ -79,7 +79,7 @@ namespace ObligatorioISP.WebAPI.Tests
                     Latitude = -34.912900,
                     Longitude =-56.162263,
                     Description = "Description 2",
-                    ImageBase64 = ""
+                    ImagesBase64 = new List<string>(){"image1","image2","image3" }
                 },
                 new LandmarkDto(){
                     Id = 3,
@@ -87,7 +87,7 @@ namespace ObligatorioISP.WebAPI.Tests
                     Latitude = -34.914202,
                     Longitude =-56.157930,
                     Description = "Description 3",
-                    ImageBase64 = ""
+                    ImagesBase64 = new List<string>(){"image1","image2","image3" }
                 },
                 new LandmarkDto(){
                     Id = 4,
@@ -95,7 +95,7 @@ namespace ObligatorioISP.WebAPI.Tests
                     Latitude = -34.910866,
                     Longitude =-56.183353,
                     Description = "Description 4",
-                    ImageBase64 = ""
+                    ImagesBase64 = new List<string>(){"image1","image2","image3" }
                 }
 
             };

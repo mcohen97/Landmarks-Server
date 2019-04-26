@@ -12,24 +12,41 @@ namespace ObligatorioISP.Services
     public class LandmarksService: ILandmarksService
     {
         private ILandmarksRepository landmarks;
+        private IImagesRepository images;
 
-        public LandmarksService(ILandmarksRepository landmarksStorage) {
+        public LandmarksService(ILandmarksRepository landmarksStorage, IImagesRepository imagesStorage) {
             landmarks = landmarksStorage;
+            images = imagesStorage;
         }
 
         public ICollection<LandmarkDto> GetLandmarksOfTour(int id)
         {
-            ICollection<Landmark> retrieved =landmarks.GetTourLandmarks(id);
-            return retrieved.Select(l => ConvertToDto(l)).ToList();
+            ICollection<Landmark> retrieved = landmarks.GetTourLandmarks(id);
+            ICollection<LandmarkDto> dtos = GenerateDtos(retrieved);
+            return dtos;
         }
 
         public ICollection<LandmarkDto> GetLandmarksWithinZone(double latitude, double longitude, double distance)
         {
             ICollection<Landmark> retrieved = landmarks.GetWithinZone(latitude, longitude, distance);
-            return retrieved.Select(l => ConvertToDto(l)).ToList();
+            ICollection<LandmarkDto> dtos = GenerateDtos(retrieved);
+            return dtos;
+        }
+        private ICollection<LandmarkDto> GenerateDtos(ICollection<Landmark> retrievedLandmarks)
+        {
+            ICollection<LandmarkDto> result = new List<LandmarkDto>();
+
+            foreach (Landmark current in retrievedLandmarks) {
+                ICollection<string> currentImages = current.Images
+                    .Select(path => images.GetImageInBase64(path))
+                    .ToList();
+                LandmarkDto dto = ConvertToDto(current, currentImages);
+                result.Add(dto);
+            }
+            return result;
         }
 
-        private LandmarkDto ConvertToDto(Landmark landmark)
+        private LandmarkDto ConvertToDto(Landmark landmark, ICollection<string> images)
         {
             return new LandmarkDto()
             {
@@ -38,7 +55,7 @@ namespace ObligatorioISP.Services
                 Latitude = landmark.Latitude,
                 Longitude = landmark.Longitude,
                 Description = landmark.Description,
-                //ImageBase64 = landmark.Images.First()
+                ImagesBase64 = images
             };
         }
     }
