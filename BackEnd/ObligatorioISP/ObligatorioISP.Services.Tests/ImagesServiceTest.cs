@@ -18,9 +18,12 @@ namespace ObligatorioISP.Services.Tests
         [TestInitialize]
         public void StartUp() {
             testImageName = "testImage.jpg";
+
             imagesDirectory = "Images";
+            Directory.CreateDirectory(imagesDirectory);
+
             pixelImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
-            service = new DiskImageService(imagesDirectory);
+            service = new DiskImagesService(imagesDirectory);
             WriteTestImage();
         }
 
