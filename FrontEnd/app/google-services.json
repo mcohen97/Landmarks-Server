@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "32666165459",
+    "firebase_url": "https://landmarksv1.firebaseio.com",
+    "project_id": "landmarksv1",
+    "storage_bucket": "landmarksv1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32666165459:android:36ac1b7db31b4ed1",
+        "android_client_info": {
+          "package_name": "com.acr.landmarks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcncn8rPBz-UJIDQbU8626KR2LQ3QKIC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32666165459-jeoufg790h4c0rhgcc0if3plt3q559j0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
