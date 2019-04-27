@@ -16,6 +16,14 @@ public class Landmark {
         this.lon = lon;
     }
 
+    public Landmark(String name, String description, double lat, double lon, int imgResourceId ) {
+        this.name = name;
+        this.description = description;
+        this.lat = lat;
+        this.lon = lon;
+        this.img = imgResourceId + "";
+    }
+
     public String getName() {
         return name;
     }

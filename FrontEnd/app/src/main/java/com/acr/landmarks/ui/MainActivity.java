@@ -17,6 +17,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -35,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.adapters.LandmarkCardAdapter;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.service.LocationService;
 import com.google.android.gms.common.ConnectionResult;
@@ -258,6 +261,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mainLandmarks = new ArrayList<Landmark>();
+        //--TEST--
+        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
+        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
+        //--------
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.cards_recyclerview_id);
+        LandmarkCardAdapter adapter = new LandmarkCardAdapter(this, mainLandmarks);
+        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        recyclerView.setAdapter(adapter);
     }
 
 
@@ -352,5 +375,7 @@ public class MainActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 3;
         }
+
+
     }
 }
