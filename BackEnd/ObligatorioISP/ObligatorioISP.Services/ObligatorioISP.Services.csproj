@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ObligatorioISP.DataAccess.Contracts\ObligatorioISP.DataAccess.Contracts.csproj" />
+    <ProjectReference Include="..\ObligatorioISP.Services.Contracts\ObligatorioISP.Services.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
