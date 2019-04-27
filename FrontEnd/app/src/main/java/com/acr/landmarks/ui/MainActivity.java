@@ -261,26 +261,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mainLandmarks = new ArrayList<Landmark>();
-        //--TEST--
-        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Monumento a Damoxeno","Esto es una descripcion",-34.896398, -56.162552, R.drawable.test_image));
-        mainLandmarks.add(new Landmark("Obelisco a los Constituyentes de 1830","Esto es una descripcion",-34.897322, -56.164429, R.drawable.test_image));
-        //--------
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.cards_recyclerview_id);
-        LandmarkCardAdapter adapter = new LandmarkCardAdapter(this, mainLandmarks);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
-        recyclerView.setAdapter(adapter);
     }
 
 
@@ -363,8 +344,8 @@ public class MainActivity extends AppCompatActivity {
                     MapFragment mapFragment = new MapFragment();
                     return mapFragment;
                 case 2:
-                    LandmarkListFragment landmarkListFragment = new LandmarkListFragment();
-                    return landmarkListFragment;
+                    LandmarkCardsFragment cardsFragment = new LandmarkCardsFragment();
+                    return cardsFragment;
                 default:
                     return null;
             }
