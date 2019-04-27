@@ -1,0 +1,78 @@
+{
+	"info": {
+		"_postman_id": "d6c5e970-7c44-458e-a30c-fb8fcf5bf333",
+		"name": "ObligatorioISP-Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetLandmarksWithinZoneTest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44310/api/landmarks?lat=-34.923844&lng=-56.170590&dist=2",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44310",
+					"path": [
+						"api",
+						"landmarks"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "-34.923844"
+						},
+						{
+							"key": "lng",
+							"value": "-56.170590"
+						},
+						{
+							"key": "dist",
+							"value": "2"
+						}
+					]
+				},
+				"description": "It is a replica of the unit test on test class LandmarksRepositoryTest. It should return the same data, displayed in a json file."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "67cf9b3e-023f-4819-962d-3e86604ce80d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b69c7aef-0dfe-4127-9954-3678b627367d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ae039673-cafd-48a5-a1ac-fd684bee965c",
+			"key": "Domain",
+			"value": "https://localhost:44310/api/landmarks",
+			"type": "string"
+		}
+	]
+}
