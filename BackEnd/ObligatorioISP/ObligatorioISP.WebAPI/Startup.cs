@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using ObligatorioISP.DataAccess;
 using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.Services;
@@ -34,8 +27,13 @@ namespace ObligatorioISP.WebAPI
                 Configuration.GetConnectionString("Landmarks"),
                 GetMediaPath("Images","Uri"),
                 GetMediaPath("Audios", "Uri")));
-            services.AddScoped<IToursRepository, SqlServerToursRepository>();
-            //services.AddScoped<IImagesRepository>(provider => new DiskImagesRepository(GetMediaPath("Images", "Uri")));
+            services.AddScoped<IToursRepository>(provider => new SqlServerToursRepository(
+                Configuration.GetConnectionString("Landmarks"),
+                new SqlServerLandmarksRepository(
+                Configuration.GetConnectionString("Landmarks"),
+                GetMediaPath("Images", "Uri"),
+                GetMediaPath("Audios", "Uri"))
+                ));
             services.AddScoped<IImagesRepository, DiskImagesRepository>();
 
             services.AddScoped<ILandmarksService, LandmarksService>();
