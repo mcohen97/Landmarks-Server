@@ -6,9 +6,6 @@ namespace ObligatorioISP.DataAccess
 {
     public class DiskImagesRepository : IImagesRepository
     {
-
- 
-
         public string GetImageInBase64(string imageName)
         {
             byte[] data;

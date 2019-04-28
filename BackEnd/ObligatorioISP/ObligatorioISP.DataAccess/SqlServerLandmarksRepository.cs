@@ -13,14 +13,16 @@ namespace ObligatorioISP.DataAccess
         private static string SEPARATOR = "_";
 
         private string connectionString;
-        private string imagesDirectory = "Images";
-        private string audiosDirectory = "Audios";
+        private string imagesDirectory;
+        private string audiosDirectory;
 
         private SqlServerConnectionManager connection;
         public SqlServerLandmarksRepository(string connString, string imagesPath, string audiosPath)
         {
             connectionString = connString;
             connection = new SqlServerConnectionManager(connectionString);
+            imagesDirectory = imagesPath;
+            audiosDirectory = audiosPath;
         }
 
         public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm)
