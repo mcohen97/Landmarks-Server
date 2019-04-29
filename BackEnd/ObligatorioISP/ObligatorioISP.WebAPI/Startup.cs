@@ -23,17 +23,20 @@ namespace ObligatorioISP.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddScoped<ILandmarksRepository>(provider=> new SqlServerLandmarksRepository(
-                Configuration.GetConnectionString("Landmarks"),
+                new SqlServerConnectionManager(Configuration.GetConnectionString("Landmarks")),
                 GetMediaPath("Images","Uri"),
                 GetMediaPath("Audios", "Uri")));
+
             services.AddScoped<IToursRepository>(provider => new SqlServerToursRepository(
-                Configuration.GetConnectionString("Landmarks"),
+                new SqlServerConnectionManager(Configuration.GetConnectionString("Landmarks")),
                 new SqlServerLandmarksRepository(
-                Configuration.GetConnectionString("Landmarks"),
+                new SqlServerConnectionManager(Configuration.GetConnectionString("Landmarks")),
                 GetMediaPath("Images", "Uri"),
                 GetMediaPath("Audios", "Uri"))
                 ));
+
             services.AddScoped<IImagesRepository, DiskImagesRepository>();
 
             services.AddScoped<ILandmarksService, LandmarksService>();
