@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.service.LandmarksService;
 
 import org.w3c.dom.Text;
 
@@ -20,11 +21,11 @@ import java.util.List;
 public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<Landmark> mData;
+    private LandmarksService landmarksProvider;
 
-    public LandmarkCardAdapter(Context mContext, List<Landmark> mData){
+    public LandmarkCardAdapter(Context mContext, LandmarksService landmarksService){
         this.mContext = mContext;
-        this.mData = mData;
+        this.landmarksProvider = landmarksService;
     }
 
     @NonNull
@@ -38,15 +39,17 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String landmarkName = mData.get(position).getName();
+        List<Landmark> lastAvailableData = landmarksProvider.getAllLandmarks();
+        Landmark requestedLandmark = lastAvailableData.get(position);
+        String landmarkName = requestedLandmark.getName();
         holder.title.setText(landmarkName);
-        int imgId = Integer.parseInt(mData.get(position).getImg());
+        int imgId = Integer.parseInt(requestedLandmark.getImg());
         holder.thumbnail.setImageResource(imgId);
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return landmarksProvider.getLandmarksCount();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -56,8 +59,8 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
         public ViewHolder(View itemView){
             super(itemView);
 
-            title = (TextView) itemView.findViewById(R.id.landmark_card_title);
-            thumbnail = (ImageView) itemView.findViewById(R.id.landmark_card_img_id);
+            title = itemView.findViewById(R.id.landmark_card_title);
+            thumbnail = itemView.findViewById(R.id.landmark_card_img_id);
         }
     }
 }
