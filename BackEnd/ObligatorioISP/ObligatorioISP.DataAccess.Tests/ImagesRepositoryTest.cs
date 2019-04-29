@@ -14,7 +14,7 @@ namespace ObligatorioISP.DataAccess.Tests
         private string pixelImageBase64;
         private string imagePath;
 
-        private IImagesRepository service;
+        private IImagesRepository images;
 
         [TestInitialize]
         public void StartUp() {
@@ -26,13 +26,13 @@ namespace ObligatorioISP.DataAccess.Tests
 
 
             pixelImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
-            service = new DiskImagesRepository();
+            images = new DiskImagesRepository();
             WriteTestImage();
         }
 
         [TestMethod]
         public void ShouldGetExistentImage() {
-            string image =service.GetImageInBase64(imagePath);
+            string image =images.GetImageInBase64(imagePath);
             Assert.AreEqual(pixelImageBase64, image);
         }
 
