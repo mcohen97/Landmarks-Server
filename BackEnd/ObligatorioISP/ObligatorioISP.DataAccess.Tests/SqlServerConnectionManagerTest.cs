@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
