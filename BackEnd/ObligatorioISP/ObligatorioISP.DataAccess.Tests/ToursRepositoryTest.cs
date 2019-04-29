@@ -11,14 +11,16 @@ namespace ObligatorioISP.DataAccess.Tests
         private SqlServerLandmarksRepository landmarks;
         private SqlServerToursRepository tours;
         private TestDatabaseManager testData;
+        private ISqlContext context;
 
         [TestInitialize]
         public void SetUp() {
             testData = new TestDatabaseManager();
             testData.SetUpDatabase();
             testData.LoadTestData();
-            landmarks = new SqlServerLandmarksRepository(testData.ConnectionString, testData.ImagesPath, testData.AudiosPath);
-            tours = new SqlServerToursRepository(testData.ConnectionString,landmarks);
+            context = new SqlServerConnectionManager(testData.ConnectionString);
+            landmarks = new SqlServerLandmarksRepository(context, testData.ImagesPath, testData.AudiosPath);
+            tours = new SqlServerToursRepository(context,landmarks);
         }
 
         [TestMethod]

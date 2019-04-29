@@ -9,15 +9,13 @@ namespace ObligatorioISP.DataAccess
 {
     public class SqlServerToursRepository: IToursRepository
     {
-        private string connectionString;
         private ILandmarksRepository landmarks;
 
-        private SqlServerConnectionManager connection;
+        private ISqlContext connection;
 
-        public SqlServerToursRepository(string aConnectionString, ILandmarksRepository aRepository) {
-            connectionString = aConnectionString;
+        public SqlServerToursRepository(ISqlContext context, ILandmarksRepository aRepository) {
             landmarks = aRepository;
-            connection = new SqlServerConnectionManager(aConnectionString);
+            connection = context;
         }
 
         public Tour GetById(int id)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
+using ObligatorioISP.BusinessLogic.Exceptions;
 using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.DataAccess.Contracts.Exceptions;
 
@@ -13,15 +14,13 @@ namespace ObligatorioISP.DataAccess
         private static string AUDIOS_TABLE = "LandmarkAudios";
         private static string SEPARATOR = "_";
 
-        private string connectionString;
         private string imagesDirectory;
         private string audiosDirectory;
 
-        private SqlServerConnectionManager connection;
-        public SqlServerLandmarksRepository(string connString, string imagesPath, string audiosPath)
+        private ISqlContext connection;
+        public SqlServerLandmarksRepository(ISqlContext context, string imagesPath, string audiosPath)
         {
-            connectionString = connString;
-            connection = new SqlServerConnectionManager(connectionString);
+            connection = context;
             imagesDirectory = imagesPath;
             audiosDirectory = audiosPath;
         }
@@ -73,7 +72,6 @@ namespace ObligatorioISP.DataAccess
             ICollection<string> audios = GetMediaResources(id, AUDIOS_TABLE);
 
             Landmark landmark = new Landmark(id, title, lat, lng, description, images, audios);
-
             return landmark;
         }
 
