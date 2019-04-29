@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ObligatorioISP.BusinessLogic;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -43,8 +44,8 @@ namespace ObligatorioISP.DataAccess.Tests
         public void ShouldReturnLandmarkWithTheId() {
             int landmarkId = 2;
             Landmark retrieved = landmarks.GetById(2);
-            Assert.AreEqual(retrieved.Id, 2);
-            Assert.AreEqual(retrieved.Title, "Monumento 2");
+            Assert.AreEqual(2, retrieved.Id);
+            Assert.AreEqual("Monumento 2",retrieved.Title);
         }
 
         [TestMethod]

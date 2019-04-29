@@ -45,7 +45,7 @@ namespace ObligatorioISP.BusinessLogic
         }
         //Constructor with images and audios lists.
         public Landmark(int anId, string aTitle, double lat, double lng, string aDescription, ICollection<string> imagesPaths, ICollection<string> audiosPaths) {
-            SetCommonAttributes(id,aTitle, lat, lng, aDescription);
+            SetCommonAttributes(anId,aTitle, lat, lng, aDescription);
             Images = imagesPaths;
             Audios = audiosPaths;
         }

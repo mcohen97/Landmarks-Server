@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 
 namespace ObligatorioISP.DataAccess
 {
@@ -44,6 +45,20 @@ namespace ObligatorioISP.DataAccess
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
             ICollection<Landmark> result = rows.Select(r => BuildLandmark(r)).ToList();
             return result;
+        }
+
+        public Landmark GetById(int id)
+        {
+            string command = $"SELECT * "
+                + $"FROM Landmark "
+                + $"WHERE ID = {id};";
+            ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
+
+            if (!rows.Any()) {
+                throw new LandmarkNotFoundException("Landmark not found");
+            }
+            Landmark selected = BuildLandmark(rows.First());
+            return selected;
         }
 
         private Landmark BuildLandmark(Dictionary<string,object> rawData)
