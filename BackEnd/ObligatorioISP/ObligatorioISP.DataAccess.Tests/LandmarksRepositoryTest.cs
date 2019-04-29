@@ -38,5 +38,19 @@ namespace ObligatorioISP.DataAccess.Tests
             ICollection<Landmark> fromTour = landmarks.GetTourLandmarks(tourId);
             Assert.AreEqual(3, fromTour.Count);
         }
+
+        [TestMethod]
+        public void ShouldReturnLandmarkWithTheId() {
+            int landmarkId = 2;
+            Landmark retrieved = landmarks.GetById(2);
+            Assert.AreEqual(retrieved.Id, 2);
+            Assert.AreEqual(retrieved.Title, "Monumento 2");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(LandmarkNotFoundException))]
+        public void ShouldThrowExceptionIfLandmarkNotFound() {
+            Landmark retrieved = landmarks.GetById(32);
+        }
     }
 }
