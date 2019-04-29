@@ -21,6 +21,8 @@ import android.util.Log;
 
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.service.contracts.LandmarkService;
 import com.acr.landmarks.ui.MainActivity;
 import com.acr.landmarks.ui.MapFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,6 +33,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
+
 
 public class LocationService extends Service {
 
@@ -40,6 +44,8 @@ public class LocationService extends Service {
     private final static long UPDATE_INTERVAL = 4 * 1000;  /* 4 secs */
     private final static long FASTEST_INTERVAL = 2000; /* 2 sec */
     private Location userLocation;
+    private LandmarkService landmarkService = new TestLandmarkService(this);
+    public static ArrayList<Landmark> mLandmarks;
 
     @Nullable
     @Override
@@ -71,7 +77,6 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         getLocation();
         return START_NOT_STICKY;
     }
@@ -114,10 +119,21 @@ public class LocationService extends Service {
     private void saveUserLocation(final Location location){
 
         userLocation = location;
+        downloadLandmarks();
         setUserLocation();
     }
 
     public void setUserLocation(){
         MainActivity.mUserLocation = userLocation;
+    }
+
+    private void downloadLandmarks() {
+
+        mLandmarks = landmarkService.getHardCodedLandmarks();
+        setLandmarks();
+    }
+
+    private void setLandmarks() {
+        MainActivity.mLandmarks = mLandmarks;
     }
 }

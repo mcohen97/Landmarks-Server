@@ -60,7 +60,11 @@ public class MainActivity extends AppCompatActivity {
     public static Location mUserLocation;
     public ArrayList<Landmark> mainLandmarks;
     private ViewPager mViewPager;
+    private static ArrayList<Landmark> mLandmarks = new ArrayList<>();
 
+    public static ArrayList<Landmark> getLandmarks() {
+        return mLandmarks;
+    }
 
 
     @Override
@@ -248,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        downloadLandmarks();//Hacer service que descargue y haga loops
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -281,6 +286,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void downloadLandmarks() {
+        mLandmarks = new ArrayList<>();
+        Landmark lm1 = new Landmark("Prueba1","Landmark de prueba 1",-34.859270,-56.034038);
+        Landmark lm2 = new Landmark("Prueba2","Landmark de prueba 2",-34.859258,-56.030105);
+        Landmark lm3 = new Landmark("Prueba3","Landmark de prueba 3",-34.864186,-56.027584);
+        mLandmarks.add(lm1);
+        mLandmarks.add(lm2);
+        mLandmarks.add(lm3);
     }
 
     /**
@@ -317,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
             return rootView;
         }
     }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
