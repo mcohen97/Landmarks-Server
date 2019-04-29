@@ -76,7 +76,8 @@ namespace ObligatorioISP.DataAccess.Tests
             faultyToursData.Add("TITLE", "");
             ICollection<Dictionary<string, object>> fakeReturn = new List<Dictionary<string, object>>() { faultyToursData };
             fakeContext.Setup(c => c.ExcecuteRead(It.IsAny<string>())).Returns(fakeReturn);
-            landmarks.GetById(1);
+            tours = new SqlServerToursRepository(fakeContext.Object, landmarks);
+            tours.GetById(1);
         }
     }
 }
