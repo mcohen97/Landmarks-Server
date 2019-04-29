@@ -71,7 +71,14 @@ namespace ObligatorioISP.DataAccess
             ICollection<string> images = GetMediaResources(id, IMAGES_TABLE);
             ICollection<string> audios = GetMediaResources(id, AUDIOS_TABLE);
 
-            Landmark landmark = new Landmark(id, title, lat, lng, description, images, audios);
+            Landmark landmark;
+            try
+            {
+                landmark = new Landmark(id, title, lat, lng, description, images, audios);
+            }
+            catch (InvalidLandmarkException) {
+                throw new CorruptedDataException();
+            }
             return landmark;
         }
 
