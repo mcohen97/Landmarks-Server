@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
+using ObligatorioISP.BusinessLogic.Exceptions;
 using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.DataAccess.Contracts.Exceptions;
 
@@ -48,7 +49,14 @@ namespace ObligatorioISP.DataAccess
             int tourId = Int32.Parse(rawData["ID"].ToString());
             string title = rawData["TITLE"].ToString();
             ICollection<Landmark> tourStops = landmarks.GetTourLandmarks(tourId);
-            Tour tour = new Tour(tourId, title, tourStops);
+            Tour tour;
+            try
+            {
+                tour = new Tour(tourId, title, tourStops);
+            }
+            catch (InvalidTourException) {
+                throw new CorruptedDataException();
+            }
             return tour;
         }
     }
