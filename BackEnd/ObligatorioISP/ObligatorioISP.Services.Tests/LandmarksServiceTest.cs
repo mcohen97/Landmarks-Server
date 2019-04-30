@@ -6,6 +6,7 @@ using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ObligatorioISP.Services.Tests
 {
@@ -36,7 +37,8 @@ namespace ObligatorioISP.Services.Tests
             landmarks = new Mock<ILandmarksRepository>();
             landmarks.Setup(r => r.GetTourLandmarks(It.IsAny<int>())).Returns(GetFakeLandmarks());
             landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>())).Returns(GetFakeLandmarks());
-        }
+            landmarks.Setup(r => r.GetById(It.IsAny<int>())).Returns((int id) => GetFakeLandmarks().First(l => l.Id == id));
+        }  
 
         [TestMethod]
         public void ShouldReturnLandmarksFromRepository() {
@@ -58,6 +60,15 @@ namespace ObligatorioISP.Services.Tests
             landmarks.Verify(l => l.GetTourLandmarks(id),Times.Once);
             images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
+        }
+
+        [TestMethod]
+        public void ShouldReturnLandmarkOfIdGivenFromRepository() {
+            int id = 2;
+            Landmark fake = GetFakeLandmarks().First(l => l.Id == id);
+            LandmarkDetailedDto retrieved = service.GetLandmarkById(id);
+            landmarks.Verify(l => l.GetById(id), Times.Once);
+            Assert.AreEqual(fake.Title, retrieved.Title);
         }
 
         private ICollection<Landmark> GetFakeLandmarks()
