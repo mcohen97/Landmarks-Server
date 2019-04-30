@@ -19,7 +19,11 @@ namespace ObligatorioISP.BusinessLogic.Tests
             {
                 File.Create("testImage1.jpg");
             }
-            if (!File.Exists("testImage1.jpg"))
+            if (!File.Exists("testImage2.jpg"))
+            {
+                File.Create("testImage2.jpg");
+            }
+            if (!File.Exists("testAudio.mp3"))
             {
                 File.Create("testAudio.mp3");
             }
@@ -67,6 +71,12 @@ namespace ObligatorioISP.BusinessLogic.Tests
         {
             Landmark landmark = new Landmark(0, "title", 0.0, 0.0, "description", "testImage1.jpg");
             Assert.AreEqual(0, landmark.Id);
+        }
+
+        [TestMethod]
+        public void ShouldHaveTheFirstImageInTheCollectionAsIcon() {
+            Landmark landmark = new Landmark(1, "title", 0.0, 0.0, "description", new List<string>() { "testImage1.jpg", "testImage2.jpg" }, new List<string>() { "testAudio.mp3" });
+            Assert.AreEqual("testImage1.jpg", landmark.Icon);
         }
 
         [TestMethod]
