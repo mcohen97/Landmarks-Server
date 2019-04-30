@@ -13,10 +13,12 @@ namespace ObligatorioISP.Services
     {
         private ILandmarksRepository landmarks;
         private IImagesRepository images;
+        private IAudiosRepository audios;
 
-        public LandmarksService(ILandmarksRepository landmarksStorage, IImagesRepository imagesStorage) {
+        public LandmarksService(ILandmarksRepository landmarksStorage, IImagesRepository imagesStorage, IAudiosRepository audiosStorage) {
             landmarks = landmarksStorage;
             images = imagesStorage;
+            audios = audiosStorage;
         }
 
         public ICollection<LandmarkDto> GetLandmarksOfTour(int id)
@@ -40,13 +42,16 @@ namespace ObligatorioISP.Services
                 ICollection<string> currentImages = current.Images
                     .Select(path => images.GetImageInBase64(path))
                     .ToList();
-                LandmarkDto dto = ConvertToDto(current, currentImages);
+                ICollection<string> currentAudios = current.Audios
+                    .Select(path => audios.GetAudioInBase64(path))
+                    .ToList();
+                LandmarkDto dto = ConvertToDto(current, currentImages, currentAudios);
                 result.Add(dto);
             }
             return result;
         }
 
-        private LandmarkDto ConvertToDto(Landmark landmark, ICollection<string> images)
+        private LandmarkDto ConvertToDto(Landmark landmark, ICollection<string> images, ICollection<string> audios)
         {
             return new LandmarkDto()
             {
@@ -55,7 +60,8 @@ namespace ObligatorioISP.Services
                 Latitude = landmark.Latitude,
                 Longitude = landmark.Longitude,
                 Description = landmark.Description,
-                ImagesBase64 = images
+                ImagesBase64 = images, 
+                AudiosBase64 = audios
             };
         }
     }
