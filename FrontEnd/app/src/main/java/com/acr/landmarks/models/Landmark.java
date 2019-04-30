@@ -59,14 +59,14 @@ public class Landmark implements Comparable<Landmark> {
         this.img = img;
     }
 
-    public int getDistance() {
-        return (int)distance;
+    public double getDistance() {
+        return distance;
     }
 
     @Override
     public int compareTo(@NonNull Landmark landmark) {
-        if(this.distance < landmark.distance) return 1;
-        if(this.distance > landmark.distance) return -1;
+        if(this.distance < landmark.distance) return -1;
+        if(this.distance > landmark.distance) return 1;
         return 0;
     }
 }

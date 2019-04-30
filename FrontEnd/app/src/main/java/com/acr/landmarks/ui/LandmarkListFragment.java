@@ -65,6 +65,7 @@ public class LandmarkListFragment extends Fragment implements
                         600,
                         null
                 );
+
                 break;
             }
         }

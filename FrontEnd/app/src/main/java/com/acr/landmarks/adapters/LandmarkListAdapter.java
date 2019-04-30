@@ -14,6 +14,7 @@ import com.acr.landmarks.service.HaversineDistanceCalculatorService;
 import com.acr.landmarks.service.contracts.IDistanceCalculatorService;
 import com.acr.landmarks.ui.MainActivity;
 
+import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,10 +55,13 @@ public class LandmarkListAdapter extends RecyclerView.Adapter<LandmarkListAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+        DecimalFormat FORMATTER = new DecimalFormat("0.###");
+        String distance = FORMATTER.format(mLandmarks.get(position).getDistance());
+        distance += " Km";
+
         ((ViewHolder)holder).name.setText(mLandmarks.get(position).getName());
         ((ViewHolder)holder).description.setText(mLandmarks.get(position).getDescription());
-
-        ((ViewHolder)holder).distance.setText(Double.toString(mLandmarks.get(position).getDistance()));
+        ((ViewHolder)holder).distance.setText( distance );
     }
 
     @Override

@@ -134,10 +134,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private void setCameraView() {
         mUserLocation = MainActivity.mUserLocation;
         // Set a boundary to start
-        double bottomBoundary = mUserLocation.getLatitude() - .1;
-        double leftBoundary = mUserLocation.getLongitude() - .1;
-        double topBoundary = mUserLocation.getLatitude() + .1;
-        double rightBoundary = mUserLocation.getLongitude() + .1;
+        double bottomBoundary = mUserLocation.getLatitude() - .01;
+        double leftBoundary = mUserLocation.getLongitude() - .01;
+        double topBoundary = mUserLocation.getLatitude() + .01;
+        double rightBoundary = mUserLocation.getLongitude() + .01;
 
         mMapBoundary = new LatLngBounds(
                 new LatLng(bottomBoundary, leftBoundary),
