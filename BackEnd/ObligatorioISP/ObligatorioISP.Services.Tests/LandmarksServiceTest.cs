@@ -44,7 +44,7 @@ namespace ObligatorioISP.Services.Tests
             double lng = -56.170590;
             double dist = 2;
 
-            ICollection<LandmarkDto> retrieved = service.GetLandmarksWithinZone(lat, lng, dist);
+            ICollection<LandmarkSummarizedDto> retrieved = service.GetLandmarksWithinZone(lat, lng, dist);
             landmarks.Verify(l => l.GetWithinZone(lat, lng, dist), Times.Once);
             images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
             audios.Verify(a => a.GetAudioInBase64(It.IsAny<string>()), Times.Exactly(2));
@@ -54,7 +54,7 @@ namespace ObligatorioISP.Services.Tests
         [TestMethod]
         public void ShouldReturnTourLandmarksFromRepository() {
             int id = 1;
-            ICollection<LandmarkDto> retrieved = service.GetLandmarksOfTour(id);
+            ICollection<LandmarkSummarizedDto> retrieved = service.GetLandmarksOfTour(id);
             landmarks.Verify(l => l.GetTourLandmarks(id),Times.Once);
             images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
