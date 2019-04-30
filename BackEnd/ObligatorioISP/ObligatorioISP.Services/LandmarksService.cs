@@ -21,22 +21,22 @@ namespace ObligatorioISP.Services
             audios = audiosStorage;
         }
 
-        public ICollection<LandmarkDto> GetLandmarksOfTour(int id)
+        public ICollection<LandmarkSummarizedDto> GetLandmarksOfTour(int id)
         {
             ICollection<Landmark> retrieved = landmarks.GetTourLandmarks(id);
-            ICollection<LandmarkDto> dtos = GenerateDtos(retrieved);
+            ICollection<LandmarkSummarizedDto> dtos = GetSummarizedDtos(retrieved);
             return dtos;
         }
 
-        public ICollection<LandmarkDto> GetLandmarksWithinZone(double latitude, double longitude, double distance)
+        public ICollection<LandmarkSummarizedDto> GetLandmarksWithinZone(double latitude, double longitude, double distance)
         {
             ICollection<Landmark> retrieved = landmarks.GetWithinZone(latitude, longitude, distance);
-            ICollection<LandmarkDto> dtos = GenerateDtos(retrieved);
+            ICollection<LandmarkSummarizedDto> dtos = GetSummarizedDtos(retrieved);
             return dtos;
         }
-        private ICollection<LandmarkDto> GenerateDtos(ICollection<Landmark> retrievedLandmarks)
+        private ICollection<LandmarkDetailedDto> GenerateDetailedDtos(ICollection<Landmark> retrievedLandmarks)
         {
-            ICollection<LandmarkDto> result = new List<LandmarkDto>();
+            ICollection<LandmarkDetailedDto> result = new List<LandmarkDetailedDto>();
 
             foreach (Landmark current in retrievedLandmarks) {
                 ICollection<string> currentImages = current.Images
@@ -45,15 +45,36 @@ namespace ObligatorioISP.Services
                 ICollection<string> currentAudios = current.Audios
                     .Select(path => audios.GetAudioInBase64(path))
                     .ToList();
-                LandmarkDto dto = ConvertToDto(current, currentImages, currentAudios);
+                LandmarkDetailedDto dto = ConvertToDto(current, currentImages, currentAudios);
                 result.Add(dto);
             }
             return result;
         }
 
-        private LandmarkDto ConvertToDto(Landmark landmark, ICollection<string> images, ICollection<string> audios)
+        private ICollection<LandmarkSummarizedDto> GetSummarizedDtos(ICollection<Landmark> retrievedLandmarks) {
+            ICollection<LandmarkSummarizedDto> result = new List<LandmarkSummarizedDto>();
+            foreach (Landmark current in retrievedLandmarks) {
+                LandmarkSummarizedDto dto = ConvertToDto(current);
+                result.Add(dto);
+            }
+            return result;
+        }
+
+        private LandmarkSummarizedDto ConvertToDto(Landmark landmark)
         {
-            return new LandmarkDto()
+            return new LandmarkSummarizedDto()
+            {
+                Id = landmark.Id,
+                Title = landmark.Title,
+                Latitude = landmark.Latitude,
+                Longitude = landmark.Longitude,
+                IconBase64 = landmark.Icon
+            };
+        }
+
+        private LandmarkDetailedDto ConvertToDto(Landmark landmark, ICollection<string> images, ICollection<string> audios)
+        {
+            return new LandmarkDetailedDto()
             {
                 Id = landmark.Id,
                 Title = landmark.Title,
