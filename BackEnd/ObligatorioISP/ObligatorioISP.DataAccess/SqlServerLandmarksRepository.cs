@@ -54,7 +54,7 @@ namespace ObligatorioISP.DataAccess
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
 
             if (!rows.Any()) {
-                throw new LandmarkNotFoundException("Landmark not found");
+                throw new LandmarkNotFoundException();
             }
             Landmark selected = BuildLandmark(rows.First());
             return selected;

@@ -6,7 +6,7 @@ namespace ObligatorioISP.DataAccess.Contracts.Exceptions
 {
     public class LandmarkNotFoundException : Exception
     {
-        public LandmarkNotFoundException(string message) : base(message)
+        public LandmarkNotFoundException() : base("Landmark not found")
         {
         }
     }
