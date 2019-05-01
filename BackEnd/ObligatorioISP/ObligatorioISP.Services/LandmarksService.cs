@@ -1,7 +1,10 @@
 ﻿using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
+using ObligatorioISP.Services.Contracts.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,6 +25,18 @@ namespace ObligatorioISP.Services
 
         public ICollection<LandmarkSummarizedDto> GetLandmarksOfTour(int id)
         {
+            try
+            {
+                return TryGetLandmarksOfTour(id);
+            }
+            catch (DataInaccessibleException e)
+            {
+                throw new ServiceException(e.Message, ErrorType.DATA_INACCESSIBLE);
+            }
+        }
+
+        private ICollection<LandmarkSummarizedDto> TryGetLandmarksOfTour(int id)
+        {
             ICollection<Landmark> retrieved = landmarks.GetTourLandmarks(id);
             ICollection<LandmarkSummarizedDto> dtos = GetSummarizedDtos(retrieved);
             return dtos;
@@ -29,12 +44,32 @@ namespace ObligatorioISP.Services
 
         public ICollection<LandmarkSummarizedDto> GetLandmarksWithinZone(double latitude, double longitude, double distance)
         {
+            try {
+                return TryGetLandmarksWithinZone(latitude, longitude, distance);
+            }
+            catch (DataInaccessibleException e) {
+                throw new ServiceException(e.Message, ErrorType.DATA_INACCESSIBLE);
+            }
+        }
+
+        private ICollection<LandmarkSummarizedDto> TryGetLandmarksWithinZone(double latitude, double longitude, double distance)
+        {
             ICollection<Landmark> retrieved = landmarks.GetWithinZone(latitude, longitude, distance);
             ICollection<LandmarkSummarizedDto> dtos = GetSummarizedDtos(retrieved);
             return dtos;
         }
 
         public LandmarkDetailedDto GetLandmarkById(int id)
+        {
+            try {
+                return TryGetLandmarkById(id);
+            }
+            catch (DataInaccessibleException e) {
+                throw new ServiceException(e.Message, ErrorType.DATA_INACCESSIBLE);
+            }
+        }
+
+        private LandmarkDetailedDto TryGetLandmarkById(int id)
         {
             Landmark retrieved = landmarks.GetById(id);
             ICollection<string> currentImages = retrieved.Images
