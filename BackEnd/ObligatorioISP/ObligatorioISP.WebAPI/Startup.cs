@@ -38,6 +38,7 @@ namespace ObligatorioISP.WebAPI
                 ));
 
             services.AddScoped<IImagesRepository, DiskImagesRepository>();
+            services.AddScoped<IAudiosRepository, DiskAudiosRepository>();
 
             services.AddScoped<ILandmarksService, LandmarksService>();
             services.AddScoped<IToursService, ToursService>();
