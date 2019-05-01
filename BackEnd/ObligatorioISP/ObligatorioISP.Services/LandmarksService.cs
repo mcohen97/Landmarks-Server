@@ -2,20 +2,19 @@
 using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ObligatorioISP.Services
 {
-    public class LandmarksService: ILandmarksService
+    public class LandmarksService : ILandmarksService
     {
         private ILandmarksRepository landmarks;
         private IImagesRepository images;
         private IAudiosRepository audios;
 
-        public LandmarksService(ILandmarksRepository landmarksStorage, IImagesRepository imagesStorage, IAudiosRepository audiosStorage) {
+        public LandmarksService(ILandmarksRepository landmarksStorage, IImagesRepository imagesStorage, IAudiosRepository audiosStorage)
+        {
             landmarks = landmarksStorage;
             images = imagesStorage;
             audios = audiosStorage;
@@ -34,33 +33,33 @@ namespace ObligatorioISP.Services
             ICollection<LandmarkSummarizedDto> dtos = GetSummarizedDtos(retrieved);
             return dtos;
         }
-        private ICollection<LandmarkDetailedDto> GenerateDetailedDtos(ICollection<Landmark> retrievedLandmarks)
+
+        public LandmarkDetailedDto GetLandmarkById(int id)
         {
-            ICollection<LandmarkDetailedDto> result = new List<LandmarkDetailedDto>();
-
-            foreach (Landmark current in retrievedLandmarks) {
-                ICollection<string> currentImages = current.Images
-                    .Select(path => images.GetImageInBase64(path))
-                    .ToList();
-                ICollection<string> currentAudios = current.Audios
-                    .Select(path => audios.GetAudioInBase64(path))
-                    .ToList();
-                LandmarkDetailedDto dto = ConvertToDto(current, currentImages, currentAudios);
-                result.Add(dto);
-            }
-            return result;
+            Landmark retrieved = landmarks.GetById(id);
+            ICollection<string> currentImages = retrieved.Images
+                                                .Select(path => images.GetImageInBase64(path))
+                                                .ToList();
+            ICollection<string> currentAudios = retrieved.Audios
+                                                .Select(path => audios.GetAudioInBase64(path))
+                                                .ToList();
+            LandmarkDetailedDto dto = ConvertToDto(retrieved, currentImages, currentAudios);
+            return dto;
         }
 
-        private ICollection<LandmarkSummarizedDto> GetSummarizedDtos(ICollection<Landmark> retrievedLandmarks) {
+        private ICollection<LandmarkSummarizedDto> GetSummarizedDtos(ICollection<Landmark> retrievedLandmarks)
+        {
             ICollection<LandmarkSummarizedDto> result = new List<LandmarkSummarizedDto>();
-            foreach (Landmark current in retrievedLandmarks) {
-                LandmarkSummarizedDto dto = ConvertToDto(current);
+            foreach (Landmark current in retrievedLandmarks)
+            {
+                string icon = images.GetImageInBase64(current.Icon);
+                LandmarkSummarizedDto dto = ConvertToDto(current,icon);
                 result.Add(dto);
             }
             return result;
         }
 
-        private LandmarkSummarizedDto ConvertToDto(Landmark landmark)
+        private LandmarkSummarizedDto ConvertToDto(Landmark landmark, string icon)
         {
             return new LandmarkSummarizedDto()
             {
@@ -68,7 +67,7 @@ namespace ObligatorioISP.Services
                 Title = landmark.Title,
                 Latitude = landmark.Latitude,
                 Longitude = landmark.Longitude,
-                IconBase64 = landmark.Icon
+                IconBase64 = icon
             };
         }
 
@@ -81,9 +80,10 @@ namespace ObligatorioISP.Services
                 Latitude = landmark.Latitude,
                 Longitude = landmark.Longitude,
                 Description = landmark.Description,
-                ImagesBase64 = images, 
+                ImagesBase64 = images,
                 AudiosBase64 = audios
             };
         }
+
     }
 }
