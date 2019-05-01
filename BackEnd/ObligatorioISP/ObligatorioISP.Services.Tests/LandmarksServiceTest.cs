@@ -100,6 +100,32 @@ namespace ObligatorioISP.Services.Tests
             service.GetLandmarksOfTour(9);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
+        public void ShouldFailWhenDataCorruptedInGetLandmarkById()
+        {
+            landmarks.Setup(r => r.GetById(It.IsAny<int>())).Throws(new CorruptedDataException());
+            service.GetLandmarkById(3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
+        public void ShouldFailWhenDataCorruptedInGetLandmarksWithinZone()
+        {
+            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+                .Throws(new CorruptedDataException());
+            service.GetLandmarksWithinZone(-34.923844, -56.170590, 2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
+        public void ShouldFailWhenDataCorruptedInGetLandmarksOfTour()
+        {
+            landmarks.Setup(r => r.GetTourLandmarks(It.IsAny<int>()))
+                .Throws(new CorruptedDataException());
+            service.GetLandmarksOfTour(9);
+        }
+
         private ICollection<Landmark> GetFakeLandmarks()
         {
             string testImage = "testImage.jpg";
