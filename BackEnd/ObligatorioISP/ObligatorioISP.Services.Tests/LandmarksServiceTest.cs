@@ -48,8 +48,8 @@ namespace ObligatorioISP.Services.Tests
 
             ICollection<LandmarkSummarizedDto> retrieved = service.GetLandmarksWithinZone(lat, lng, dist);
             landmarks.Verify(l => l.GetWithinZone(lat, lng, dist), Times.Once);
-            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
-            audios.Verify(a => a.GetAudioInBase64(It.IsAny<string>()), Times.Exactly(2));
+            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Never);
+            audios.Verify(a => a.GetAudioInBase64(It.IsAny<string>()), Times.Never);
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
         }
 
@@ -58,7 +58,7 @@ namespace ObligatorioISP.Services.Tests
             int id = 1;
             ICollection<LandmarkSummarizedDto> retrieved = service.GetLandmarksOfTour(id);
             landmarks.Verify(l => l.GetTourLandmarks(id),Times.Once);
-            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
+            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Never);
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
         }
 
@@ -68,6 +68,8 @@ namespace ObligatorioISP.Services.Tests
             Landmark fake = GetFakeLandmarks().First(l => l.Id == id);
             LandmarkDetailedDto retrieved = service.GetLandmarkById(id);
             landmarks.Verify(l => l.GetById(id), Times.Once);
+            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(2));
+            audios.Verify(a => a.GetAudioInBase64(It.IsAny<string>()), Times.Once);
             Assert.AreEqual(fake.Title, retrieved.Title);
         }
 
@@ -83,7 +85,7 @@ namespace ObligatorioISP.Services.Tests
             }
 
             ICollection<string> testAudios = new List<string>() { testAudio };
-            ICollection<string> testImages = new List<string>() { testImage };
+            ICollection<string> testImages = new List<string>() { testImage,testImage };
 
             ICollection<Landmark> sampleList = new List<Landmark>() {
                 new Landmark(1, "Landmark 1",-34.912126,-56.167282,"Description 1", testImage),
