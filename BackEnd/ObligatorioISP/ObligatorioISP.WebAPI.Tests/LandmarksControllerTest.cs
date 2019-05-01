@@ -5,8 +5,10 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
+using ObligatorioISP.Services.Contracts.Exceptions;
 using ObligatorioISP.WebAPI.Controllers;
 
 namespace ObligatorioISP.WebAPI.Tests
@@ -83,12 +85,12 @@ namespace ObligatorioISP.WebAPI.Tests
         [TestMethod]
         public void ShouldReturn404IfLandmarkDoesNotExist() {
             Exception internalEx = new LandmarkNotFoundException();
-            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.DATA_INACCESSIBLE);
+            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.ENTITY_NOT_FOUND);
             fakeLandmarksService.Setup(s => s.GetLandmarkById(It.IsAny<int>())).Throws(toThrow);
 
             IActionResult result = controller.Get(2);
             ObjectResult notFound = result as ObjectResult;
-            ErrorModelOut error = notFound.Value as ErrorModelOut;
+            ErrorDto error = notFound.Value as ErrorDto;
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(notFound);
