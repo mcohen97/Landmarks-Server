@@ -2,8 +2,10 @@
 using Moq;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
+using ObligatorioISP.Services.Contracts.Exceptions;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -48,7 +50,7 @@ namespace ObligatorioISP.Services.Tests
 
             ICollection<LandmarkSummarizedDto> retrieved = service.GetLandmarksWithinZone(lat, lng, dist);
             landmarks.Verify(l => l.GetWithinZone(lat, lng, dist), Times.Once);
-            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Never);
+            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
             audios.Verify(a => a.GetAudioInBase64(It.IsAny<string>()), Times.Never);
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
         }
@@ -58,7 +60,8 @@ namespace ObligatorioISP.Services.Tests
             int id = 1;
             ICollection<LandmarkSummarizedDto> retrieved = service.GetLandmarksOfTour(id);
             landmarks.Verify(l => l.GetTourLandmarks(id),Times.Once);
-            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Never);
+            images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
+            audios.Verify(a => a.GetAudioInBase64(It.IsAny<string>()), Times.Never);
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
         }
 
@@ -71,6 +74,30 @@ namespace ObligatorioISP.Services.Tests
             images.Verify(i => i.GetImageInBase64(It.IsAny<string>()), Times.Exactly(2));
             audios.Verify(a => a.GetAudioInBase64(It.IsAny<string>()), Times.Once);
             Assert.AreEqual(fake.Title, retrieved.Title);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
+        public void ShouldFailWhenCantGetDataInGetLandmarkById() {
+            landmarks.Setup(r => r.GetById(It.IsAny<int>())).Throws(new DataInaccessibleException());
+            service.GetLandmarkById(3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
+        public void ShouldFailWhenCantGetDataInGetLandmarksWithinZone()
+        {
+            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+                .Throws(new DataInaccessibleException());
+            service.GetLandmarksWithinZone(-34.923844, -56.170590, 2);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
+        public void ShouldFailWhenCantGetDataInGetLandmarksOfTour() {
+            landmarks.Setup(r => r.GetTourLandmarks(It.IsAny<int>()))
+                .Throws(new DataInaccessibleException());
+            service.GetLandmarksOfTour(9);
         }
 
         private ICollection<Landmark> GetFakeLandmarks()
