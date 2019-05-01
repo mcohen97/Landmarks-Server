@@ -7,4 +7,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="custom_marker_image">50dp</dimen>
     <dimen name="custom_marker_padding">2dp</dimen>
+    <dimen name="activity_margin">80dp</dimen>
 </resources>
