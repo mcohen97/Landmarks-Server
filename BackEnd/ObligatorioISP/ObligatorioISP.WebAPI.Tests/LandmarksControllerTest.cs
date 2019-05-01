@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -22,6 +23,8 @@ namespace ObligatorioISP.WebAPI.Tests
             fakeLandmarksService = new Mock<ILandmarksService>();
             fakeLandmarksService.Setup(l => l.GetLandmarksWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
                 .Returns(GetFakeSummarizedLandmarks());
+            fakeLandmarksService.Setup(l => l.GetLandmarkById(It.IsAny<int>()))
+                .Returns((int id) => GetFakeDetailedLandmarks().First(lm => lm.Id == id));
             controller = new LandmarksController(fakeLandmarksService.Object);
         }
 
@@ -34,7 +37,7 @@ namespace ObligatorioISP.WebAPI.Tests
 
             IActionResult result = controller.Get(centerLat, centerLng, distance);
             OkObjectResult ok = result as OkObjectResult;
-            ICollection<LandmarkDetailedDto> landmarks = ok.Value as ICollection<LandmarkDetailedDto>;
+            ICollection<LandmarkSummarizedDto> landmarks = ok.Value as ICollection<LandmarkSummarizedDto>;
 
             fakeLandmarksService.Verify(r => r.GetLandmarksWithinZone(centerLat, centerLng, distance), Times.Once);
             Assert.IsNotNull(result);
@@ -52,15 +55,46 @@ namespace ObligatorioISP.WebAPI.Tests
 
             IActionResult result = controller.Get(centerLat, centerLng, 2);
             OkObjectResult ok = result as OkObjectResult;
-            List<LandmarkDetailedDto> landmarks = ok.Value as List<LandmarkDetailedDto>;
-            LandmarkDetailedDto firstLandmark = landmarks[0];
+            List<LandmarkSummarizedDto> landmarks = ok.Value as List<LandmarkSummarizedDto>;
+            LandmarkSummarizedDto firstLandmark = landmarks[0];
 
             Assert.AreEqual(1, firstLandmark.Id);
             Assert.AreEqual("Landmark 1", firstLandmark.Title);
             Assert.AreEqual(-34.912126, firstLandmark.Latitude);
             Assert.AreEqual(-56.167282, firstLandmark.Longitude);
-            Assert.AreEqual("Description 1", firstLandmark.Description);
-            Assert.AreEqual(3, firstLandmark.ImagesBase64.Count);
+            Assert.AreEqual("image1", firstLandmark.IconBase64);
+        }
+
+        [TestMethod]
+        public void ShouldReturnTheLandmarkWithTheIdInGET() {
+            int id = 2;
+
+            IActionResult result = controller.Get(id);
+            OkObjectResult ok = result as OkObjectResult;
+            LandmarkDetailedDto landmark = ok.Value as LandmarkDetailedDto;
+
+            fakeLandmarksService.Verify(r => r.GetLandmarkById(id), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(ok);
+            Assert.AreEqual(200, ok.StatusCode);
+            Assert.IsNotNull(landmark);
+        }
+
+        [TestMethod]
+        public void ShouldReturn404IfLandmarkDoesNotExist() {
+            Exception internalEx = new LandmarkNotFoundException();
+            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.DATA_INACCESSIBLE);
+            fakeLandmarksService.Setup(s => s.GetLandmarkById(It.IsAny<int>())).Throws(toThrow);
+
+            IActionResult result = controller.Get(2);
+            ObjectResult notFound = result as ObjectResult;
+            ErrorModelOut error = notFound.Value as ErrorModelOut;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(notFound);
+            Assert.AreEqual(404, notFound.StatusCode);
+            Assert.IsNotNull(error);
+            Assert.AreEqual(toThrow.Message, error.ErrorMessage);
         }
 
         private ICollection<LandmarkDetailedDto> GetFakeDetailedLandmarks()
