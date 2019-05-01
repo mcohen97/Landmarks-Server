@@ -29,9 +29,12 @@ namespace ObligatorioISP.Services
             {
                 return TryGetLandmarksOfTour(id);
             }
-            catch (DataInaccessibleException e)
+            catch (DataInaccessibleException e1)
             {
-                throw new ServiceException(e.Message, ErrorType.DATA_INACCESSIBLE);
+                throw new ServiceException(e1.Message, ErrorType.DATA_INACCESSIBLE);
+            }
+            catch (CorruptedDataException e2) {
+                throw new ServiceException(e2.Message, ErrorType.DATA_CORRUPTED);
             }
         }
 
@@ -50,6 +53,10 @@ namespace ObligatorioISP.Services
             catch (DataInaccessibleException e) {
                 throw new ServiceException(e.Message, ErrorType.DATA_INACCESSIBLE);
             }
+            catch (CorruptedDataException e2)
+            {
+                throw new ServiceException(e2.Message, ErrorType.DATA_CORRUPTED);
+            }
         }
 
         private ICollection<LandmarkSummarizedDto> TryGetLandmarksWithinZone(double latitude, double longitude, double distance)
@@ -66,6 +73,10 @@ namespace ObligatorioISP.Services
             }
             catch (DataInaccessibleException e) {
                 throw new ServiceException(e.Message, ErrorType.DATA_INACCESSIBLE);
+            }
+            catch (CorruptedDataException e2)
+            {
+                throw new ServiceException(e2.Message, ErrorType.DATA_CORRUPTED);
             }
         }
 

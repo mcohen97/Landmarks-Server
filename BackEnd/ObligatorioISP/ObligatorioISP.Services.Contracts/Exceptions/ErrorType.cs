@@ -7,7 +7,7 @@ namespace ObligatorioISP.Services.Contracts.Exceptions
     public enum ErrorType
     {
         DATA_INACCESSIBLE,
-        ENTITY_ALREADY_EXISTS,
+        DATA_CORRUPTED,
         ENTITY_NOT_FOUND
     }
 }

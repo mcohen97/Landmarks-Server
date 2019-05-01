@@ -19,12 +19,10 @@ namespace ObligatorioISP.WebAPI
             ErrorDto errorMessage = new ErrorDto() { ErrorMessage = e.Message };
             switch (e.Error)
             {
-                case ErrorType.ENTITY_ALREADY_EXISTS:
-                    errorResponse = GenerateBadRequest(e);
-                    break;
                 case ErrorType.ENTITY_NOT_FOUND:
                     errorResponse = sender.NotFound(errorMessage);
                     break;
+                case ErrorType.DATA_CORRUPTED:
                 case ErrorType.DATA_INACCESSIBLE:
                     errorResponse = sender.StatusCode((int)HttpStatusCode.InternalServerError, errorMessage);
                     break;
