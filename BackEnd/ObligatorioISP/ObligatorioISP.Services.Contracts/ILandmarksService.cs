@@ -9,5 +9,6 @@ namespace ObligatorioISP.Services.Contracts
     {
         ICollection<LandmarkSummarizedDto> GetLandmarksWithinZone(double latitude, double longitude, double distance);
         ICollection<LandmarkSummarizedDto> GetLandmarksOfTour(int id);
+        LandmarkDetailedDto GetLandmarkById(int id);
     }
 }
