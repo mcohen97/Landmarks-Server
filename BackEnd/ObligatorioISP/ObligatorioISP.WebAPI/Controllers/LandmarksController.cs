@@ -25,7 +25,7 @@ namespace ObligatorioISP.WebAPI.Controllers
             return Ok(retrieved);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             IActionResult result;
