@@ -7,6 +7,7 @@ using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
 using ObligatorioISP.Services.Contracts.Exceptions;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace ObligatorioISP.Services.Tests
@@ -102,18 +103,23 @@ namespace ObligatorioISP.Services.Tests
             List<Landmark> testLandmarks = GetFakeLandmarks() as List<Landmark>;
             return new List<Tour>() {
                 new Tour(1,"Tour 1",testLandmarks),
-                new Tour(2,"Tour 2", new List<Landmark>(){testLandmarks[0],testLandmarks[4],testLandmarks[2] }),
+                new Tour(2,"Tour 2", new List<Landmark>(){testLandmarks[0],testLandmarks[3],testLandmarks[2] }),
                 new Tour(3,"Tour 3", new List<Landmark>(){testLandmarks[1],testLandmarks[3] })
             };
         }
 
         private ICollection<Landmark> GetFakeLandmarks()
         {
+            string testImagePath = "testImage.jpg";
+            if (!File.Exists(testImagePath)) {
+                File.Create(testImagePath);
+            }
+
             ICollection<Landmark> sampleList = new List<Landmark>() {
-                new Landmark(1, "Landmark 1",-34.912126,-56.167282,"Description 1", ""),
-                new Landmark(2,"Landmark 2",-34.912900,-56.162263,"Description 2",""),
-                new Landmark(3,"Landmark 3",-34.914202,-56.157930,"Description 3",""),
-                new Landmark(4,"Landmark 4", -34.910866,-56.183353,"Description 4","")
+                new Landmark(1, "Landmark 1",-34.912126,-56.167282,"Description 1", testImagePath),
+                new Landmark(2,"Landmark 2",-34.912900,-56.162263,"Description 2",testImagePath),
+                new Landmark(3,"Landmark 3",-34.914202,-56.157930,"Description 3",testImagePath),
+                new Landmark(4,"Landmark 4", -34.910866,-56.183353,"Description 4",testImagePath)
             };
             return sampleList;
         }
