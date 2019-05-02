@@ -37,7 +37,6 @@ namespace ObligatorioISP.Services.Tests
             ICollection<TourDto> retrieved =service.GetToursWithinKmRange(lat, lng, distance);
 
             fakeToursStorage.Verify(r => r.GetToursWithinKmRange(lat, lng, distance), Times.Once);
-            fakeLandmarksStorage.Verify(r => r.GetTourLandmarks(It.IsAny<int>()), Times.Exactly(GetFakeTours().Count));
             Assert.AreEqual(GetFakeTours().Count, retrieved.Count);
         }
 
@@ -48,7 +47,6 @@ namespace ObligatorioISP.Services.Tests
             TourDto retrieved = service.GetTourById(id);
 
             fakeToursStorage.Verify(r => r.GetById(id), Times.Once);
-            fakeLandmarksStorage.Verify(r => r.GetTourLandmarks(It.IsAny<int>()), Times.Once);
             Assert.AreEqual(id,retrieved.Id);
         }
 
@@ -58,7 +56,7 @@ namespace ObligatorioISP.Services.Tests
             double lat = -34.912126;
             double lng = -56.167282;
             double distance = 2;
-            fakeLandmarksStorage.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+            fakeToursStorage.Setup(r => r.GetToursWithinKmRange(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
                 .Throws(new DataInaccessibleException());
 
             service.GetToursWithinKmRange(lat, lng, distance);
@@ -69,7 +67,7 @@ namespace ObligatorioISP.Services.Tests
         public void ShouldFailWhenCantAccessDataGetTourById() { 
             int id = 3;
 
-            fakeLandmarksStorage.Setup(r => r.GetById(It.IsAny<int>()))
+            fakeToursStorage.Setup(r => r.GetById(It.IsAny<int>()))
                 .Throws(new DataInaccessibleException());
 
             service.GetTourById(id);
@@ -81,7 +79,7 @@ namespace ObligatorioISP.Services.Tests
             double lat = -34.912126;
             double lng = -56.167282;
             double distance = 2;
-            fakeLandmarksStorage.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+            fakeToursStorage.Setup(r => r.GetToursWithinKmRange(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
                 .Throws(new CorruptedDataException());
 
             service.GetToursWithinKmRange(lat, lng, distance);
@@ -92,7 +90,7 @@ namespace ObligatorioISP.Services.Tests
         public void ShouldFailWhenDataIsCorruptedGetTourById() {
             int id = 3;
 
-            fakeLandmarksStorage.Setup(r => r.GetById(It.IsAny<int>()))
+            fakeToursStorage.Setup(r => r.GetById(It.IsAny<int>()))
                 .Throws(new CorruptedDataException());
 
             service.GetTourById(id);
