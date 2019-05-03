@@ -26,12 +26,15 @@ namespace ObligatorioISP.Services
             {
                 return TryGetTourById(id);
             }
-            catch (DataInaccessibleException e1)
-            {
-                throw new ServiceException(e1.Message, ErrorType.DATA_INACCESSIBLE);
+            catch (TourNotFoundException e1) {
+                throw new ServiceException(e1.Message, ErrorType.ENTITY_NOT_FOUND);
             }
-            catch (CorruptedDataException e2) {
-                throw new ServiceException(e2.Message, ErrorType.DATA_CORRUPTED);
+            catch (DataInaccessibleException e2)
+            {
+                throw new ServiceException(e2.Message, ErrorType.DATA_INACCESSIBLE);
+            }
+            catch (CorruptedDataException e3) {
+                throw new ServiceException(e3.Message, ErrorType.DATA_CORRUPTED);
             }
         }
 

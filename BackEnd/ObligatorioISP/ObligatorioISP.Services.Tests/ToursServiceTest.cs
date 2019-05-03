@@ -52,6 +52,15 @@ namespace ObligatorioISP.Services.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ServiceException))]
+        public void ShoulThrowExceptionWhenLandmarkNotFound()
+        {
+            int id = 3;
+            fakeToursStorage.Setup(r => r.GetById(It.IsAny<int>())).Throws(new TourNotFoundException());
+            service.GetTourById(id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
         public void ShoulFailWhenCantAccessDataGetToursWithinKmRange() {
             double lat = -34.912126;
             double lng = -56.167282;
