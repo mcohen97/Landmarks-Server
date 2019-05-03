@@ -1,7 +1,6 @@
 package com.acr.landmarks.ui;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,17 +9,19 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkListAdapter;
@@ -28,7 +29,6 @@ import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
 import com.acr.landmarks.util.ClusterManagerRenderer;
-import com.acr.landmarks.util.ViewWeightAnimationWrapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -47,6 +47,7 @@ import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,33 +55,26 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener,
-        LandmarkListAdapter.LandmarkListRecyclerClickListener
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener
 {
 
     private static final String TAG = "UserListFragment";
 
     //widgets
-    private RecyclerView mLandmarkListRecyclerView;
-    private LandmarkListAdapter mLandmarkListRecyclerAdapter;
+
     private MapView mMapView;
 
     //location y camara update
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
     private LatLngBounds mMapBoundary;
     public static Location mUserLocation;
     private RelativeLayout mMapContainer;
 
-    //Click variables
-
-    private static final int MAP_LAYOUT_STATE_CONTRACTED = 0;
-    private static final int MAP_LAYOUT_STATE_EXPANDED = 1;
-    private int mMapLayoutState = 0;
 
     //Clustering
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
     private ClusterManagerRenderer mClusterManagerRenderer;
-    private ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
+    private static ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
     private ArrayList<Landmark> mLandmarks = new ArrayList<>();
 
     //Directions
@@ -89,6 +83,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 
+    //BottomSheet Info
+    private Landmark selectedLandmark;
+
+    public static GoogleMap getMap() {
+        return mMap;
+    }
+
+    public static ArrayList<LandmarkClusterMarker> getMarkers() {
+        return mClusterMarkers;
+    }
+
+    //Bottom sheet
+    BottomSheetBehavior sheetBehavior;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,15 +108,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        mLandmarkListRecyclerView = view.findViewById(R.id.landmark_list_recycler_view);
         mMapView = view.findViewById(R.id.fragmented_map);
 
-        initLandmarkListRecyclerView();
         initGoogleMap(savedInstanceState);
 
-        view.findViewById(R.id.btn_full_screen_map).setOnClickListener(this);
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
         mMapContainer = view.findViewById(R.id.map_container);
+
+        sheetBehavior = MainActivity.getSheetBehavior();
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         return view;
     }
 
@@ -130,15 +137,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                     .apiKey(getString(R.string.google_map_api_key))
                     .build();
         }
+
+
     }
 
     private void setCameraView() {
         mUserLocation = MainActivity.mUserLocation;
         // Set a boundary to start
-        double bottomBoundary = mUserLocation.getLatitude() - .1;
-        double leftBoundary = mUserLocation.getLongitude() - .1;
-        double topBoundary = mUserLocation.getLatitude() + .1;
-        double rightBoundary = mUserLocation.getLongitude() + .1;
+        double bottomBoundary = mUserLocation.getLatitude() - .01;
+        double leftBoundary = mUserLocation.getLongitude() - .01;
+        double topBoundary = mUserLocation.getLatitude() + .01;
+        double rightBoundary = mUserLocation.getLongitude() + .01;
 
         mMapBoundary = new LatLngBounds(
                 new LatLng(bottomBoundary, leftBoundary),
@@ -198,6 +207,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mMap = map;
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnPolylineClickListener(this);
+        mMap.setOnMarkerClickListener(this);
         addMapMarkers();
     }
 
@@ -221,61 +231,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
 
-    //Animation
-    private void expandMapAnimation(){
-        ViewWeightAnimationWrapper mapAnimationWrapper = new ViewWeightAnimationWrapper(mMapContainer);
-        ObjectAnimator mapAnimation = ObjectAnimator.ofFloat(mapAnimationWrapper,
-                "weight",
-                50,
-                100);
-        mapAnimation.setDuration(800);
 
-        ViewWeightAnimationWrapper recyclerAnimationWrapper = new ViewWeightAnimationWrapper(mLandmarkListRecyclerView);
-        ObjectAnimator recyclerAnimation = ObjectAnimator.ofFloat(recyclerAnimationWrapper,
-                "weight",
-                50,
-                0);
-        recyclerAnimation.setDuration(800);
-
-        recyclerAnimation.start();
-        mapAnimation.start();
-    }
-
-    private void contractMapAnimation(){
-        ViewWeightAnimationWrapper mapAnimationWrapper = new ViewWeightAnimationWrapper(mMapContainer);
-        ObjectAnimator mapAnimation = ObjectAnimator.ofFloat(mapAnimationWrapper,
-                "weight",
-                100,
-                50);
-        mapAnimation.setDuration(800);
-
-        ViewWeightAnimationWrapper recyclerAnimationWrapper = new ViewWeightAnimationWrapper(mLandmarkListRecyclerView);
-        ObjectAnimator recyclerAnimation = ObjectAnimator.ofFloat(recyclerAnimationWrapper,
-                "weight",
-                0,
-                50);
-        recyclerAnimation.setDuration(800);
-
-        recyclerAnimation.start();
-        mapAnimation.start();
-    }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_full_screen_map:{
-
-                if(mMapLayoutState == MAP_LAYOUT_STATE_CONTRACTED){
-                    mMapLayoutState = MAP_LAYOUT_STATE_EXPANDED;
-                    expandMapAnimation();
-                }
-                else if(mMapLayoutState == MAP_LAYOUT_STATE_EXPANDED){
-                    mMapLayoutState = MAP_LAYOUT_STATE_CONTRACTED;
-                    contractMapAnimation();
-                }
-                break;
-            }
             case R.id.btn_reset_map:{
                 addMapMarkers();
                 break;
@@ -284,7 +245,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void addMapMarkers(){
-        downloadLandmarks();//Hardcoded ver donde colocarlo para el flujo correcto
+        updateLandmarks();//Hardcoded ver donde colocarlo para el flujo correcto
         if(mMap != null){
             resetMap();
             if(mClusterManager == null){
@@ -334,15 +295,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
     }
     //Hardcoded
-    private void downloadLandmarks() {
-        mLandmarks = new ArrayList<>();
-        Landmark lm1 = new Landmark("Prueba1","Landmark de prueba 1",-34.859270,-56.034038);
-        Landmark lm2 = new Landmark("Prueba2","Landmark de prueba 2",-34.859258,-56.030105);
-        Landmark lm3 = new Landmark("Prueba3","Landmark de prueba 3",-34.864186,-56.027584);
-        mLandmarks.add(lm1);
-        mLandmarks.add(lm2);
-        mLandmarks.add(lm3);
-        initLandmarkListRecyclerView();
+    private void updateLandmarks() {
+        mLandmarks = MainActivity.getLandmarks();
     }
 
     @Override
@@ -363,8 +317,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                         dialog.cancel();
                     }
                 });
+
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        mSelectedMarker = marker;
+        selectedLandmark = mClusterManagerRenderer.getClusterItem(marker).getLandmark();
+        showBottomSheet();
+        return true;
+    }
+
+    private void showBottomSheet() {
+        LinearLayout layoutBottomSheet= getActivity().findViewById(R.id.bottom_sheet_layout) ;
+        ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
+        TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
+        TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
+        TextView sheetLandmarkDistance =  layoutBottomSheet.findViewById(R.id.landmarkDistance) ;
+
+        //IMAGEN POR DEFECTO, RESOLVER CARGA DE IMÁGENES DESDE BASE DE DATOS
+        int avatar = R.drawable.test_image;
+
+        sheetLandmarkImage.setImageResource(avatar);
+        sheetLandmarkName.setText(selectedLandmark.getName());
+        sheetLandmarkDescription.setText(selectedLandmark.getDescription());
+
+        DecimalFormat FORMATTER = new DecimalFormat("0.###");
+        String distance = FORMATTER.format(selectedLandmark.getDistance());
+        distance += " Km";
+
+        sheetLandmarkDistance.setText(distance);
+
+        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void calculateDirections(Marker marker){
@@ -531,26 +517,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
     }
 
-    private void initLandmarkListRecyclerView() {
-        mLandmarkListRecyclerAdapter = new LandmarkListAdapter(mLandmarks, this);
-        mLandmarkListRecyclerView.setAdapter(mLandmarkListRecyclerAdapter);
-        mLandmarkListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
 
-    @Override
-    public void onLandmarkClicked(int position) {
-        String selectedUserId = mLandmarks.get(position).getName();
 
-        for(LandmarkClusterMarker clusterMarker: mClusterMarkers){
-            if(selectedUserId.equals(clusterMarker.getLandmark().getName())){
-                mMap.animateCamera(
-                        CameraUpdateFactory.newLatLng(
-                                new LatLng(clusterMarker.getPosition().latitude, clusterMarker.getPosition().longitude)),
-                        600,
-                        null
-                );
-                break;
-            }
-        }
-    }
 }

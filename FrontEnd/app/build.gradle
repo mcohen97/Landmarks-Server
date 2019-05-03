@@ -49,6 +49,8 @@ dependencies {
     //Utils for clustering
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
 
+    //Library for sheet UI (material design)
+    implementation 'com.android.support:design:27.1.1'
 
 }
 

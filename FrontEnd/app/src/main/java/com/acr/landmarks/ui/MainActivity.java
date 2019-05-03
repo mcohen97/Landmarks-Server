@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,8 +62,19 @@ public class MainActivity extends AppCompatActivity {
     public static Location mUserLocation;
     public ArrayList<Landmark> mainLandmarks;
     private ViewPager mViewPager;
+    private static ArrayList<Landmark> mLandmarks = new ArrayList<>();
 
+    public static ArrayList<Landmark> getLandmarks() {
+        return mLandmarks;
+    }
 
+    //Bottom sheet
+
+    static BottomSheetBehavior sheetBehavior;
+
+    public static BottomSheetBehavior getSheetBehavior() {
+        return sheetBehavior;
+    }
 
     @Override
     protected void onResume() {
@@ -248,16 +261,47 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        downloadLandmarks();//Hacer service que descargue y haga loops
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        createBottomSheet();
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
+    private void createBottomSheet() {
+        LinearLayout layoutBottomSheet= (LinearLayout) findViewById(R.id.bottom_sheet_layout) ;
+
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+         /**
+         * bottom sheet state change listener
+         * we are changing button text when sheet changed state
+         * */
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+
+                    case BottomSheetBehavior.STATE_EXPANDED:
+
+                    break;
+
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                    break;
+
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
             }
         });
-
     }
 
 
@@ -281,6 +325,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void downloadLandmarks() {
+        mLandmarks = new ArrayList<>();
+        Landmark lm1 = new Landmark("Prueba1","Landmark de prueba 1",-34.859270,-56.034038);
+        Landmark lm2 = new Landmark("Prueba2","Landmark de prueba 2",-34.859258,-56.030105);
+        Landmark lm3 = new Landmark("Prueba3","Landmark de prueba 3",-34.864186,-56.027584);
+        mLandmarks.add(lm1);
+        mLandmarks.add(lm2);
+        mLandmarks.add(lm3);
     }
 
     /**
@@ -318,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -335,12 +390,15 @@ public class MainActivity extends AppCompatActivity {
             switch(position){
                 case 0:
                     ToursFragment toursFragment = new ToursFragment();
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     return toursFragment;
                 case 1:
                     MapFragment mapFragment = new MapFragment();
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     return mapFragment;
                 case 2:
                     LandmarkListFragment landmarkListFragment = new LandmarkListFragment();
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     return landmarkListFragment;
                 default:
                     return null;
