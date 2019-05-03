@@ -1,6 +1,7 @@
 package com.acr.landmarks.models;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterItem;
 
 public class LandmarkClusterMarker implements ClusterItem {
@@ -9,6 +10,7 @@ public class LandmarkClusterMarker implements ClusterItem {
     private String snippet; // required field
     private int iconPicture; //dirección de memoria, investigar como cargar imagenes, a que carpeta se descargan
     private Landmark landmark;
+    private Marker marker;
 
     public LandmarkClusterMarker(LatLng position, String title, String snippet, int iconPicture , Landmark lm) {
         this.position = position;

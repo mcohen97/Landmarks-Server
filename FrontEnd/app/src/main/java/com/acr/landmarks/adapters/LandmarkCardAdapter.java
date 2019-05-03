@@ -1,7 +1,6 @@
 package com.acr.landmarks.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,19 +13,21 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.service.LandmarksService;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
-public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapter.ViewHolder> {
+public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapter.ViewHolder>  {
 
     private Context mContext;
     private LandmarksService landmarksProvider;
+    private LandmarkCardClickListener clickListener;
 
-    public LandmarkCardAdapter(Context mContext, LandmarksService landmarksService){
+    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, LandmarksService landmarksService){
         this.mContext = mContext;
         this.landmarksProvider = landmarksService;
+        this.clickListener = clickListener;
+
     }
+
 
     @NonNull
     @Override
@@ -34,7 +35,7 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
         View view;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         view = mInflater.inflate(R.layout.cardview_item,parent,false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, clickListener);
     }
 
     @Override
@@ -52,15 +53,34 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
         return landmarksProvider.getLandmarksCount();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public List<Landmark> getLandmarks(){
+        return landmarksProvider.getAllLandmarks();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
         ImageView thumbnail;
+        LandmarkCardClickListener clickListener;
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView,  LandmarkCardClickListener clickListener){
             super(itemView);
 
-            title = itemView.findViewById(R.id.landmark_card_title);
-            thumbnail = itemView.findViewById(R.id.landmark_card_img_id);
+            this.title = itemView.findViewById(R.id.landmark_card_title);
+            this.thumbnail = itemView.findViewById(R.id.landmark_card_img_id);
+            this.clickListener = clickListener;
+            itemView.setOnClickListener(this);
+
+        }
+        @Override
+        public void onClick(View v) {
+            clickListener.onLandmarkClicked(getAdapterPosition());
         }
     }
+
+    public interface LandmarkCardClickListener {
+        void onLandmarkClicked(int position);
+    }
+
 }
+
+
