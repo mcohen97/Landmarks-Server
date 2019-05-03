@@ -99,6 +99,41 @@ namespace ObligatorioISP.WebAPI.Tests
             Assert.AreEqual(toThrow.Message, error.ErrorMessage);
         }
 
+        [TestMethod]
+        public void ShouldReturn500IfCantAccessDataInGET() {
+            Exception internalEx = new DataInaccessibleException();
+            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.DATA_INACCESSIBLE);
+            fakeLandmarksService.Setup(s => s.GetLandmarkById(It.IsAny<int>())).Throws(toThrow);
+
+            IActionResult result = controller.Get(2);
+            ObjectResult internalServerError = result as ObjectResult;
+            ErrorDto error = internalServerError.Value as ErrorDto;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(internalServerError);
+            Assert.AreEqual(500, internalServerError.StatusCode);
+            Assert.IsNotNull(error);
+            Assert.AreEqual(toThrow.Message, error.ErrorMessage);
+        }
+
+        /*[TestMethod]
+        public void ShouldReturn500ifCantAccessDataInGETFromTour()
+        {
+            Exception internalEx = new DataInaccessibleException();
+            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.DATA_INACCESSIBLE);
+            fakeLandmarksService.Setup(s => s.GetLandmarkById(It.IsAny<int>())).Throws(toThrow);
+
+            IActionResult result = controller.Get(2);
+            ObjectResult internalServerError = result as ObjectResult;
+            ErrorDto error = internalServerError.Value as ErrorDto;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(internalServerError);
+            Assert.AreEqual(500, internalServerError.StatusCode);
+            Assert.IsNotNull(error);
+            Assert.AreEqual(toThrow.Message, error.ErrorMessage);
+        }*/
+
         private ICollection<LandmarkDetailedDto> GetFakeDetailedLandmarks()
         {
             ICollection<LandmarkDetailedDto> sampleList = new List<LandmarkDetailedDto>() {
