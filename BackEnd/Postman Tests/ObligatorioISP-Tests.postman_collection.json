@@ -268,6 +268,145 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GetUnexistentTourTest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "62174c9d-619f-489f-a1c8-49d6ac44fc25",
+						"exec": [
+							"pm.test(\"Status code is 404\",function(){",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Has error message\",function(){",
+							"  pm.expect(jsonData).to.have.property('errorMessage');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{Domain}}/api/tours/15",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"tours",
+						"15"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLandmarksOfTour",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e874fd3a-2aec-499b-9c48-bdcc7755e393",
+						"exec": [
+							"pm.test(\"Status code is 200\",function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"returned 3 landmarks\",function(){",
+							"    pm.expect(jsonData.length).to.eql(3);",
+							"});",
+							"",
+							"pm.test(\"has landmarks sumarized data\", function(){",
+							"    pm.expect(jsonData[0]).to.have.property('id');",
+							"    pm.expect(jsonData[0]).to.have.property('title');",
+							"    pm.expect(jsonData[0]).to.have.property('latitude');",
+							"    pm.expect(jsonData[0]).to.have.property('longitude');",
+							"    pm.expect(jsonData[0]).to.have.property('iconBase64');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{Domain}}/api/landmarks/tour/1",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"landmarks",
+						"tour",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLandmarksOfUnexistentTour",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "da97b26e-02c5-4874-9bd4-c5ebde4eb6f4",
+						"exec": [
+							"pm.test(\"Status code is 404\",function(){",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Has error message\",function(){",
+							"  pm.expect(jsonData).to.have.property('errorMessage');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{Domain}}/api/landmarks/tour/1",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"landmarks",
+						"tour",
+						"1"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -294,9 +433,9 @@
 	],
 	"variable": [
 		{
-			"id": "6b03b623-dbe1-49dc-bafe-6987bd54e8aa",
+			"id": "73781e55-08e6-4bd2-88c6-2aa12b5113af",
 			"key": "Domain",
-			"value": "http://192.168.0.110",
+			"value": "https://localhost:44310",
 			"type": "string"
 		}
 	]
