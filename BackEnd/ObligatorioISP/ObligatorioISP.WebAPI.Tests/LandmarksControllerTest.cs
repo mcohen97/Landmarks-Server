@@ -27,6 +27,8 @@ namespace ObligatorioISP.WebAPI.Tests
                 .Returns(GetFakeSummarizedLandmarks());
             fakeLandmarksService.Setup(l => l.GetLandmarkById(It.IsAny<int>()))
                 .Returns((int id) => GetFakeDetailedLandmarks().First(lm => lm.Id == id));
+            fakeLandmarksService.Setup(l => l.GetLandmarksOfTour(It.IsAny<int>()))
+                .Returns(GetFakeSummarizedLandmarks());
             controller = new LandmarksController(fakeLandmarksService.Object);
         }
 
@@ -116,14 +118,31 @@ namespace ObligatorioISP.WebAPI.Tests
             Assert.AreEqual(toThrow.Message, error.ErrorMessage);
         }
 
-        /*[TestMethod]
-        public void ShouldReturn500ifCantAccessDataInGETFromTour()
+        [TestMethod]
+        public void ShouldReturn200WhenSuccessfulGETFromTour()
         {
-            Exception internalEx = new DataInaccessibleException();
-            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.DATA_INACCESSIBLE);
+            int id = 2;
+
+            IActionResult result = controller.GetByTour(id);
+            OkObjectResult ok = result as OkObjectResult;
+            ICollection<LandmarkSummarizedDto> landmarks = ok.Value as ICollection<LandmarkSummarizedDto>;
+
+            fakeLandmarksService.Verify(r => r.GetLandmarksOfTour(id), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(ok);
+            Assert.AreEqual(200, ok.StatusCode);
+            Assert.IsNotNull(landmarks);
+            Assert.AreEqual(GetFakeSummarizedLandmarks().Count, landmarks.Count);
+        }
+
+        [TestMethod]
+        public void ShouldReturn404WhenGETFromUnexistentTour()
+        {
+            Exception internalEx = new TourNotFoundException();
+            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.ENTITY_NOT_FOUND);
             fakeLandmarksService.Setup(s => s.GetLandmarkById(It.IsAny<int>())).Throws(toThrow);
 
-            IActionResult result = controller.Get(2);
+            IActionResult result = controller.GetByTour(2);
             ObjectResult internalServerError = result as ObjectResult;
             ErrorDto error = internalServerError.Value as ErrorDto;
 
@@ -132,7 +151,7 @@ namespace ObligatorioISP.WebAPI.Tests
             Assert.AreEqual(500, internalServerError.StatusCode);
             Assert.IsNotNull(error);
             Assert.AreEqual(toThrow.Message, error.ErrorMessage);
-        }*/
+        }
 
         private ICollection<LandmarkDetailedDto> GetFakeDetailedLandmarks()
         {
