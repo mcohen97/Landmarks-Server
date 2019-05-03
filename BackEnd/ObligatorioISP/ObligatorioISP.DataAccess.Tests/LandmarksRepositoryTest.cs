@@ -57,6 +57,13 @@ namespace ObligatorioISP.DataAccess.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(TourNotFoundException))]
+        public void ShouldThrowExceptionInGettingLandmarksOfUnexistentTour()
+        {
+            landmarks.GetTourLandmarks(9);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(CorruptedDataException))]
         public void ShouldThrowExceptionWhenDatabaseHasInconsistencies() {
             Mock<ISqlContext> fakeContext = new Mock<ISqlContext>();
