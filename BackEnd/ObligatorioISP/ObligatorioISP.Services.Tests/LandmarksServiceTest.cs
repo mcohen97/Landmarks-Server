@@ -78,6 +78,26 @@ namespace ObligatorioISP.Services.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ServiceException))]
+        public void ShouldThrowExceptionIfTourNotFound()
+        {
+            int id = 3;
+            landmarks.Setup(r => r.GetTourLandmarks(It.IsAny<int>())).Throws(new TourNotFoundException());
+
+            service.GetLandmarkById(id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
+        public void ShouldThrowExceptionIfLandmarkNotFound()
+        {
+            int id = 3;
+            landmarks.Setup(r => r.GetById(It.IsAny<int>())).Throws(new LandmarkNotFoundException());
+
+            service.GetLandmarkById(id);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ServiceException))]
         public void ShouldFailWhenCantGetDataInGetLandmarkById() {
             landmarks.Setup(r => r.GetById(It.IsAny<int>())).Throws(new DataInaccessibleException());
             service.GetLandmarkById(3);
