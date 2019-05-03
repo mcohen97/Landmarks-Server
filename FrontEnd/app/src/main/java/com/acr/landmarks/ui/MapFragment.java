@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -17,7 +18,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkListAdapter;
@@ -43,6 +47,7 @@ import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +55,7 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener
 {
 
     private static final String TAG = "UserListFragment";
@@ -65,11 +70,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     public static Location mUserLocation;
     private RelativeLayout mMapContainer;
 
-    //Click variables
-
-    private static final int MAP_LAYOUT_STATE_CONTRACTED = 0;
-    private static final int MAP_LAYOUT_STATE_EXPANDED = 1;
-    private int mMapLayoutState = 0;
 
     //Clustering
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
@@ -83,6 +83,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 
+    //BottomSheet Info
+    private Landmark selectedLandmark;
+
     public static GoogleMap getMap() {
         return mMap;
     }
@@ -91,6 +94,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         return mClusterMarkers;
     }
 
+    //Bottom sheet
+    BottomSheetBehavior sheetBehavior;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,6 +114,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
         mMapContainer = view.findViewById(R.id.map_container);
+
+        sheetBehavior = MainActivity.getSheetBehavior();
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         return view;
     }
 
@@ -129,6 +137,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                     .apiKey(getString(R.string.google_map_api_key))
                     .build();
         }
+
+
     }
 
     private void setCameraView() {
@@ -197,6 +207,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mMap = map;
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnPolylineClickListener(this);
+        mMap.setOnMarkerClickListener(this);
         addMapMarkers();
     }
 
@@ -306,8 +317,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                         dialog.cancel();
                     }
                 });
+
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        mSelectedMarker = marker;
+        selectedLandmark = mClusterManagerRenderer.getClusterItem(marker).getLandmark();
+        showBottomSheet();
+        return true;
+    }
+
+    private void showBottomSheet() {
+        LinearLayout layoutBottomSheet= getActivity().findViewById(R.id.bottom_sheet_layout) ;
+        ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
+        TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
+        TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
+        TextView sheetLandmarkDistance =  layoutBottomSheet.findViewById(R.id.landmarkDistance) ;
+
+        //IMAGEN POR DEFECTO, RESOLVER CARGA DE IMÁGENES DESDE BASE DE DATOS
+        int avatar = R.drawable.test_image;
+
+        sheetLandmarkImage.setImageResource(avatar);
+        sheetLandmarkName.setText(selectedLandmark.getName());
+        sheetLandmarkDescription.setText(selectedLandmark.getDescription());
+
+        DecimalFormat FORMATTER = new DecimalFormat("0.###");
+        String distance = FORMATTER.format(selectedLandmark.getDistance());
+        distance += " Km";
+
+        sheetLandmarkDistance.setText(distance);
+
+        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void calculateDirections(Marker marker){

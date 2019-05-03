@@ -70,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
     //Bottom sheet
 
-    BottomSheetBehavior sheetBehavior;
+    static BottomSheetBehavior sheetBehavior;
+
+    public static BottomSheetBehavior getSheetBehavior() {
+        return sheetBehavior;
+    }
 
     @Override
     protected void onResume() {
@@ -260,13 +264,14 @@ public class MainActivity extends AppCompatActivity {
         downloadLandmarks();//Hacer service que descargue y haga loops
 
         createBottomSheet();
-
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     private void createBottomSheet() {
         LinearLayout layoutBottomSheet= (LinearLayout) findViewById(R.id.bottom_sheet_layout) ;
+
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-        /**
+         /**
          * bottom sheet state change listener
          * we are changing button text when sheet changed state
          * */
@@ -276,16 +281,17 @@ public class MainActivity extends AppCompatActivity {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
 
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                    case BottomSheetBehavior.STATE_EXPANDED:
 
-                    }
                     break;
+
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                    break;
+
                     case BottomSheetBehavior.STATE_DRAGGING:
                         break;
+
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;
                 }
@@ -388,11 +394,11 @@ public class MainActivity extends AppCompatActivity {
                     return toursFragment;
                 case 1:
                     MapFragment mapFragment = new MapFragment();
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     return mapFragment;
                 case 2:
                     LandmarkListFragment landmarkListFragment = new LandmarkListFragment();
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     return landmarkListFragment;
                 default:
                     return null;
