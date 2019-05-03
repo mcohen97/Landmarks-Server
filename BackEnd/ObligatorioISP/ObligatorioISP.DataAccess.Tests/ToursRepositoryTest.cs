@@ -72,7 +72,7 @@ namespace ObligatorioISP.DataAccess.Tests
         public void ShouldThrowExceptionIfToursDataIsInconsistent() {
             Mock<ISqlContext> fakeContext = new Mock<ISqlContext>();
             Dictionary<string, object> faultyToursData = new Dictionary<string, object>();
-            faultyToursData.Add("ID", -3);
+            faultyToursData.Add("ID", 1);
             faultyToursData.Add("TITLE", "");
             ICollection<Dictionary<string, object>> fakeReturn = new List<Dictionary<string, object>>() { faultyToursData };
             fakeContext.Setup(c => c.ExcecuteRead(It.IsAny<string>())).Returns(fakeReturn);

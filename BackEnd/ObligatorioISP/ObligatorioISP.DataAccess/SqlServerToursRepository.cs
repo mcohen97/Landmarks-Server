@@ -25,7 +25,7 @@ namespace ObligatorioISP.DataAccess
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
             if (!rows.Any()) {
-                throw new TourNotFoundException("Tour not found");
+                throw new TourNotFoundException();
             }
             ICollection<Tour> result = rows.Select(r => BuildTour(r)).ToList();
             return result.First();

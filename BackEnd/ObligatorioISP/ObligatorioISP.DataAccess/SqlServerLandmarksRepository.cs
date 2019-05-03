@@ -38,10 +38,18 @@ namespace ObligatorioISP.DataAccess
 
         public ICollection<Landmark> GetTourLandmarks(int tourId)
         {
-            string command = $"SELECT L.* FROM Landmark L, LandmarkTour LT"
-                + $" WHERE LT.TOUR_ID = {tourId} AND LT.LANDMARK_ID = L.ID;";
+            string command = $"SELECT 1 FROM Tour WHERE ID = {tourId};";
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
+
+            if (!rows.Any()) {
+                throw new TourNotFoundException();
+            }
+
+            command = $"SELECT L.* FROM Landmark L, LandmarkTour LT"
+                + $" WHERE LT.TOUR_ID = {tourId} AND LT.LANDMARK_ID = L.ID;";
+
+            rows = connection.ExcecuteRead(command);
             ICollection<Landmark> result = rows.Select(r => BuildLandmark(r)).ToList();
             return result;
         }
