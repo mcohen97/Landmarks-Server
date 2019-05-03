@@ -3,70 +3,61 @@ package com.acr.landmarks.ui;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.adapters.LandmarkCardAdapter;
 import com.acr.landmarks.models.Landmark;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.acr.landmarks.adapters.LandmarkListAdapter;
 import com.acr.landmarks.models.LandmarkClusterMarker;
+import com.acr.landmarks.service.LandmarksService;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class LandmarkListFragment extends Fragment implements
-        LandmarkListAdapter.LandmarkListRecyclerClickListener {
+public class LandmarkCardsFragment extends android.support.v4.app.Fragment implements LandmarkCardAdapter.LandmarkCardClickListener {
 
-    private RecyclerView mLandmarkListRecyclerView;
-    private LandmarkListAdapter mLandmarkListRecyclerAdapter;
-    private List<Landmark> mLandmarks;
-
-    //Bottom sheet
-    BottomSheetBehavior sheetBehavior;
+    private BottomSheetBehavior sheetBehavior;
+    private LandmarkCardAdapter  adapter;
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_landmark_list, container, false);
-        updateLandmarks();
-        mLandmarkListRecyclerView = view.findViewById(R.id.cards_recyclerview_id);
-        initLandmarkListRecyclerView();
+
+        initRecyclerView(inflater, view);
+
         sheetBehavior = MainActivity.getSheetBehavior();
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        // Inflate the layout for this fragment
+
         return view;
+
     }
 
-    private void initLandmarkListRecyclerView() {
-        mLandmarkListRecyclerAdapter = new LandmarkListAdapter(mLandmarks, this);
-        mLandmarkListRecyclerView.setAdapter(mLandmarkListRecyclerAdapter);
-        mLandmarkListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
-
-    //Hardcoded
-    private void updateLandmarks() {
-        mLandmarks = MainActivity.getLandmarks();
+    private void initRecyclerView(LayoutInflater inflater, View view) {
+        recyclerView = view.findViewById(R.id.cards_recyclerview_id);
+        adapter = new LandmarkCardAdapter(inflater.getContext(), this, new LandmarksService());
+        recyclerView.setLayoutManager(new GridLayoutManager(inflater.getContext(),3));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onLandmarkClicked(int position) {
-        String selectedLandmarkId = mLandmarks.get(position).getName();
+        List<Landmark> landmarks = adapter.getLandmarks();
+        String selectedLandmarkId = landmarks.get(position).getName();
         GoogleMap mMap = MapFragment.getMap();
         ArrayList<LandmarkClusterMarker> mClusterMarkers = MapFragment.getMarkers();
 
@@ -83,9 +74,8 @@ public class LandmarkListFragment extends Fragment implements
             }
         }
 
-        TabLayout tabhost = (TabLayout) getActivity().findViewById(R.id.tabs);
+        TabLayout tabhost = getActivity().findViewById(R.id.tabs);
         tabhost.getTabAt(1).select();
-
     }
 
     private void showBottomSheet(Landmark selectedLandmark) {

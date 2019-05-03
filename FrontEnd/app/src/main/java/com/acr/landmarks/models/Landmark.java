@@ -19,6 +19,14 @@ public class Landmark implements Comparable<Landmark> {
         this.distance = 9999;
     }
 
+    public Landmark(String name, String description, double lat, double lon, int imgResourceId ) {
+        this.name = name;
+        this.description = description;
+        this.lat = lat;
+        this.lon = lon;
+        this.img = imgResourceId + "";
+    }
+
     public String getName() {
         return name;
     }

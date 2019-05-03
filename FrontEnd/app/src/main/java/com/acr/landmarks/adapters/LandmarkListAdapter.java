@@ -19,15 +19,16 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public class LandmarkListAdapter extends RecyclerView.Adapter<LandmarkListAdapter.ViewHolder>{
 
     private final IDistanceCalculatorService listCalculatorService;
-    private ArrayList<Landmark> mLandmarks = new ArrayList<>();
+    private List<Landmark> mLandmarks;
     private LandmarkListRecyclerClickListener mClickListener;
 
-    public LandmarkListAdapter(ArrayList<Landmark> lms, LandmarkListRecyclerClickListener clickListener) {
+    public LandmarkListAdapter(List<Landmark> lms, LandmarkListRecyclerClickListener clickListener) {
         mLandmarks = lms;
         mClickListener = clickListener;
         listCalculatorService = new HaversineDistanceCalculatorService();
@@ -35,7 +36,7 @@ public class LandmarkListAdapter extends RecyclerView.Adapter<LandmarkListAdapte
         Collections.sort(mLandmarks);
     }
 
-    private void updateDistances(ArrayList<Landmark> mLandmarks) {
+    private void updateDistances(List<Landmark> mLandmarks) {
         Location mUserLocation = MainActivity.mUserLocation;
         for(Landmark landmark:mLandmarks){
             double distance = listCalculatorService.calculateDistanceInKm(mUserLocation,landmark);

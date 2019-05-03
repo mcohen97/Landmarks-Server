@@ -18,6 +18,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -37,7 +39,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.adapters.LandmarkCardAdapter;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.service.LandmarksService;
 import com.acr.landmarks.service.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -47,6 +51,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
@@ -64,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private static ArrayList<Landmark> mLandmarks = new ArrayList<>();
 
-    public static ArrayList<Landmark> getLandmarks() {
-        return mLandmarks;
+    public static List<Landmark> getLandmarks() {
+        //return mLandmarks;
+        LandmarksService service = new LandmarksService();
+        return service.getAllLandmarks();
     }
 
     //Bottom sheet
@@ -397,9 +404,13 @@ public class MainActivity extends AppCompatActivity {
                     sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     return mapFragment;
                 case 2:
-                    LandmarkListFragment landmarkListFragment = new LandmarkListFragment();
+
+                    LandmarkCardsFragment cardsFragment = new LandmarkCardsFragment();
+                    return cardsFragment;
+
+                     /*LandmarkListFragment landmarkListFragment = new LandmarkListFragment();
                     sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    return landmarkListFragment;
+                    return landmarkListFragment;*/
                 default:
                     return null;
             }
@@ -410,5 +421,7 @@ public class MainActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 3;
         }
+
+
     }
 }

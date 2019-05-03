@@ -75,7 +75,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
     private ClusterManagerRenderer mClusterManagerRenderer;
     private static ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
-    private ArrayList<Landmark> mLandmarks = new ArrayList<>();
+    private List<Landmark> mLandmarks = new ArrayList<>();
 
     //Directions
     private GeoApiContext mGeoApiContext;

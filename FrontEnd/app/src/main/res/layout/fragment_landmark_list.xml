@@ -3,13 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.LandmarkListFragment">
+    tools:context=".ui.LandmarkListFragment"
+    android:gravity="center"
+    >
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/landmark_list_recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="8dp"
+        android:layout_gravity="center"
         >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cards_recyclerview_id"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            >
+        </android.support.v7.widget.RecyclerView>
 
-    </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+
 </FrameLayout>
