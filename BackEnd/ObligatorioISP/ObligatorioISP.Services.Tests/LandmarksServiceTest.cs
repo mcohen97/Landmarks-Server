@@ -83,7 +83,7 @@ namespace ObligatorioISP.Services.Tests
             int id = 3;
             landmarks.Setup(r => r.GetTourLandmarks(It.IsAny<int>())).Throws(new TourNotFoundException());
 
-            service.GetLandmarkById(id);
+            service.GetLandmarksOfTour(id);
         }
 
         [TestMethod]
