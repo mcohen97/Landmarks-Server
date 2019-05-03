@@ -39,5 +39,21 @@ namespace ObligatorioISP.WebAPI.Controllers
             }
             return result;
         }
+
+        [HttpGet("tour/{id}")]
+        public IActionResult GetByTour(int id)
+        {
+            IActionResult result;
+            try
+            {
+                ICollection<LandmarkSummarizedDto> retrieved = landmarks.GetLandmarksOfTour(id);
+                result = Ok(retrieved);
+            }
+            catch (ServiceException e)
+            {
+                result = errorFactory.GenerateError(e);
+            }
+            return result;
+        }
     }
 }

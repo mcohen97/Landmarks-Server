@@ -94,6 +94,7 @@ namespace ObligatorioISP.WebAPI.Tests
             ObjectResult notFound = result as ObjectResult;
             ErrorDto error = notFound.Value as ErrorDto;
 
+            fakeLandmarksService.Verify(l => l.GetLandmarkById(2), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(notFound);
             Assert.AreEqual(404, notFound.StatusCode);
@@ -111,6 +112,7 @@ namespace ObligatorioISP.WebAPI.Tests
             ObjectResult internalServerError = result as ObjectResult;
             ErrorDto error = internalServerError.Value as ErrorDto;
 
+            fakeLandmarksService.Verify(l => l.GetLandmarkById(2), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(internalServerError);
             Assert.AreEqual(500, internalServerError.StatusCode);
@@ -140,15 +142,16 @@ namespace ObligatorioISP.WebAPI.Tests
         {
             Exception internalEx = new TourNotFoundException();
             Exception toThrow = new ServiceException(internalEx.Message, ErrorType.ENTITY_NOT_FOUND);
-            fakeLandmarksService.Setup(s => s.GetLandmarkById(It.IsAny<int>())).Throws(toThrow);
+            fakeLandmarksService.Setup(s => s.GetLandmarksOfTour(It.IsAny<int>())).Throws(toThrow);
 
             IActionResult result = controller.GetByTour(2);
             ObjectResult internalServerError = result as ObjectResult;
             ErrorDto error = internalServerError.Value as ErrorDto;
 
+            fakeLandmarksService.Verify(l => l.GetLandmarksOfTour(2), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(internalServerError);
-            Assert.AreEqual(500, internalServerError.StatusCode);
+            Assert.AreEqual(404, internalServerError.StatusCode);
             Assert.IsNotNull(error);
             Assert.AreEqual(toThrow.Message, error.ErrorMessage);
         }
