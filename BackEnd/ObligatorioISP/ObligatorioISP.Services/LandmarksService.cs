@@ -29,12 +29,15 @@ namespace ObligatorioISP.Services
             {
                 return TryGetLandmarksOfTour(id);
             }
-            catch (DataInaccessibleException e1)
-            {
-                throw new ServiceException(e1.Message, ErrorType.DATA_INACCESSIBLE);
+            catch (EntityNotFoundException e1) {
+                throw new ServiceException(e1.Message, ErrorType.ENTITY_NOT_FOUND);
             }
-            catch (CorruptedDataException e2) {
-                throw new ServiceException(e2.Message, ErrorType.DATA_CORRUPTED);
+            catch (DataInaccessibleException e2)
+            {
+                throw new ServiceException(e2.Message, ErrorType.DATA_INACCESSIBLE);
+            }
+            catch (CorruptedDataException e3) {
+                throw new ServiceException(e3.Message, ErrorType.DATA_CORRUPTED);
             }
         }
 
@@ -71,12 +74,16 @@ namespace ObligatorioISP.Services
             try {
                 return TryGetLandmarkById(id);
             }
-            catch (DataInaccessibleException e) {
-                throw new ServiceException(e.Message, ErrorType.DATA_INACCESSIBLE);
-            }
-            catch (CorruptedDataException e2)
+            catch (EntityNotFoundException e1)
             {
-                throw new ServiceException(e2.Message, ErrorType.DATA_CORRUPTED);
+                throw new ServiceException(e1.Message, ErrorType.ENTITY_NOT_FOUND);
+            }
+            catch (DataInaccessibleException e2) {
+                throw new ServiceException(e2.Message, ErrorType.DATA_INACCESSIBLE);
+            }
+            catch (CorruptedDataException e3)
+            {
+                throw new ServiceException(e3.Message, ErrorType.DATA_CORRUPTED);
             }
         }
 

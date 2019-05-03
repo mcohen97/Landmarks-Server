@@ -4,10 +4,9 @@ using System.Text;
 
 namespace ObligatorioISP.DataAccess.Contracts.Exceptions
 {
-    public class LandmarkNotFoundException : EntityNotFoundException
+    public abstract class EntityNotFoundException:Exception
     {
-        public LandmarkNotFoundException() : base("Landmark not found")
-        {
+        public EntityNotFoundException(string message) : base(message) {
         }
     }
 }
