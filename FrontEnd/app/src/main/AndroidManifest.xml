@@ -46,7 +46,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <service android:name=".service.LocationService"
+        <service android:name=".services.LocationService"
             android:stopWithTask="true"
             >
         </service>

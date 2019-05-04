@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.service.HaversineDistanceCalculatorService;
-import com.acr.landmarks.service.contracts.IDistanceCalculatorService;
+import com.acr.landmarks.services.HaversineDistanceCalculatorService;
+import com.acr.landmarks.services.contracts.IDistanceCalculatorService;
 import com.acr.landmarks.ui.MainActivity;
 
 import java.text.DecimalFormat;

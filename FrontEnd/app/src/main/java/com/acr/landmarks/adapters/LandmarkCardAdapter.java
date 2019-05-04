@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.service.LandmarksService;
+import com.acr.landmarks.services.contracts.ILandmarksService;
 
 import java.util.List;
 

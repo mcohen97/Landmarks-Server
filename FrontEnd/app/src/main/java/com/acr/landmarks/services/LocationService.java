@@ -1,4 +1,4 @@
-package com.acr.landmarks.service;
+package com.acr.landmarks.services;
 
 import android.Manifest;
 import android.app.Notification;

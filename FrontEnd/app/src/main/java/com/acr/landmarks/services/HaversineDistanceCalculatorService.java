@@ -1,9 +1,9 @@
-package com.acr.landmarks.service;
+package com.acr.landmarks.services;
 
 import android.location.Location;
 
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.service.contracts.IDistanceCalculatorService;
+import com.acr.landmarks.services.contracts.IDistanceCalculatorService;
 
 public class HaversineDistanceCalculatorService implements IDistanceCalculatorService {
     @Override
