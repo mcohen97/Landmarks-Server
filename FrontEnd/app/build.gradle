@@ -54,6 +54,14 @@ dependencies {
     //Library for sheet UI (material design)
     implementation 'com.android.support:design:27.1.1'
 
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.2.0'
+
+    //Gson converter for Retrofit
+    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
+
+    implementation "android.arch.lifecycle:extensions:1.1.0"
+    implementation "android.arch.lifecycle:viewmodel:1.1.0"
 }
 
 
