@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
+using ObligatorioISP.BusinessLogic.Exceptions;
 using ObligatorioISP.DataAccess.Contracts;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 
 namespace ObligatorioISP.DataAccess
 {
@@ -12,15 +14,15 @@ namespace ObligatorioISP.DataAccess
         private static string AUDIOS_TABLE = "LandmarkAudios";
         private static string SEPARATOR = "_";
 
-        private string connectionString;
-        private string imagesDirectory = "Images";
-        private string audiosDirectory = "Audios";
+        private string imagesDirectory;
+        private string audiosDirectory;
 
-        private SqlServerConnectionManager connection;
-        public SqlServerLandmarksRepository(string connString, string imagesPath, string audiosPath)
+        private ISqlContext connection;
+        public SqlServerLandmarksRepository(ISqlContext context, string imagesPath, string audiosPath)
         {
-            connectionString = connString;
-            connection = new SqlServerConnectionManager(connectionString);
+            connection = context;
+            imagesDirectory = imagesPath;
+            audiosDirectory = audiosPath;
         }
 
         public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm)
@@ -36,12 +38,34 @@ namespace ObligatorioISP.DataAccess
 
         public ICollection<Landmark> GetTourLandmarks(int tourId)
         {
-            string command = $"SELECT L.* FROM Landmark L, LandmarkTour LT"
-                + $" WHERE LT.TOUR_ID = {tourId} AND LT.LANDMARK_ID = L.ID;";
+            string command = $"SELECT 1 FROM Tour WHERE ID = {tourId};";
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
+
+            if (!rows.Any()) {
+                throw new TourNotFoundException();
+            }
+
+            command = $"SELECT L.* FROM Landmark L, LandmarkTour LT"
+                + $" WHERE LT.TOUR_ID = {tourId} AND LT.LANDMARK_ID = L.ID;";
+
+            rows = connection.ExcecuteRead(command);
             ICollection<Landmark> result = rows.Select(r => BuildLandmark(r)).ToList();
             return result;
+        }
+
+        public Landmark GetById(int id)
+        {
+            string command = $"SELECT * "
+                + $"FROM Landmark "
+                + $"WHERE ID = {id};";
+            ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
+
+            if (!rows.Any()) {
+                throw new LandmarkNotFoundException();
+            }
+            Landmark selected = BuildLandmark(rows.First());
+            return selected;
         }
 
         private Landmark BuildLandmark(Dictionary<string,object> rawData)
@@ -55,8 +79,14 @@ namespace ObligatorioISP.DataAccess
             ICollection<string> images = GetMediaResources(id, IMAGES_TABLE);
             ICollection<string> audios = GetMediaResources(id, AUDIOS_TABLE);
 
-            Landmark landmark = new Landmark(id, title, lat, lng, description, images, audios);
-
+            Landmark landmark;
+            try
+            {
+                landmark = new Landmark(id, title, lat, lng, description, images, audios);
+            }
+            catch (InvalidLandmarkException) {
+                throw new CorruptedDataException();
+            }
             return landmark;
         }
 

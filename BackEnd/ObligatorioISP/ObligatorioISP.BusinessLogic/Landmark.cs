@@ -19,6 +19,7 @@ namespace ObligatorioISP.BusinessLogic
         public int Id { get { return id; }private set { SetId(value); } }
         public string Title { get { return title; } private set { SetTitle(value); } }
         public string Description { get { return description; } private set { SetDescription(value); } }
+        public string Icon { get { return Images.First(); } }
         public ICollection<string> Images { get { return imagesPaths; } private set { SetImages(value); } }
         public ICollection<string> Audios { get { return audiosPaths; } private set { SetAudios(value); } }
 
@@ -45,7 +46,7 @@ namespace ObligatorioISP.BusinessLogic
         }
         //Constructor with images and audios lists.
         public Landmark(int anId, string aTitle, double lat, double lng, string aDescription, ICollection<string> imagesPaths, ICollection<string> audiosPaths) {
-            SetCommonAttributes(id,aTitle, lat, lng, aDescription);
+            SetCommonAttributes(anId,aTitle, lat, lng, aDescription);
             Images = imagesPaths;
             Audios = audiosPaths;
         }

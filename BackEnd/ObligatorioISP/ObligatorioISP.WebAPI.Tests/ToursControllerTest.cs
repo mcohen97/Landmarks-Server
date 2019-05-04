@@ -2,9 +2,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using ObligatorioISP.DataAccess.Contracts;
+using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
+using ObligatorioISP.Services.Contracts.Exceptions;
 using ObligatorioISP.WebAPI.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -59,6 +62,41 @@ namespace ObligatorioISP.WebAPI.Tests
             Assert.AreEqual(200, ok.StatusCode);
             Assert.IsNotNull(tour);
             Assert.AreEqual(id, tour.Id);
+        }
+
+        [TestMethod]
+        public void ShouldReturn404IfTourNotFound() {
+            Exception internalEx = new TourNotFoundException();
+            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.ENTITY_NOT_FOUND);
+            fakeToursStorage.Setup(s => s.GetTourById(It.IsAny<int>())).Throws(toThrow);
+
+            IActionResult result = controller.Get(2);
+            ObjectResult notFound = result as ObjectResult;
+            ErrorDto error = notFound.Value as ErrorDto;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(notFound);
+            Assert.AreEqual(404, notFound.StatusCode);
+            Assert.IsNotNull(error);
+            Assert.AreEqual(toThrow.Message, error.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void ShouldReturn500IfCantAccessData()
+        {
+            Exception internalEx = new DataInaccessibleException();
+            Exception toThrow = new ServiceException(internalEx.Message, ErrorType.DATA_INACCESSIBLE);
+            fakeToursStorage.Setup(s => s.GetTourById(It.IsAny<int>())).Throws(toThrow);
+
+            IActionResult result = controller.Get(2);
+            ObjectResult notFound = result as ObjectResult;
+            ErrorDto error = notFound.Value as ErrorDto;
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(notFound);
+            Assert.AreEqual(500, notFound.StatusCode);
+            Assert.IsNotNull(error);
+            Assert.AreEqual(toThrow.Message, error.ErrorMessage);
         }
 
         private ICollection<TourDto> GetFakeTours()

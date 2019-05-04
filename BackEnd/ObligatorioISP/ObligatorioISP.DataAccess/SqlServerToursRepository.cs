@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
+using ObligatorioISP.BusinessLogic.Exceptions;
 using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.DataAccess.Contracts.Exceptions;
 
@@ -9,15 +10,13 @@ namespace ObligatorioISP.DataAccess
 {
     public class SqlServerToursRepository: IToursRepository
     {
-        private string connectionString;
         private ILandmarksRepository landmarks;
 
-        private SqlServerConnectionManager connection;
+        private ISqlContext connection;
 
-        public SqlServerToursRepository(string aConnectionString, ILandmarksRepository aRepository) {
-            connectionString = aConnectionString;
+        public SqlServerToursRepository(ISqlContext context, ILandmarksRepository aRepository) {
             landmarks = aRepository;
-            connection = new SqlServerConnectionManager(aConnectionString);
+            connection = context;
         }
 
         public Tour GetById(int id)
@@ -26,7 +25,7 @@ namespace ObligatorioISP.DataAccess
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
             if (!rows.Any()) {
-                throw new TourNotFoundException("Tour not found");
+                throw new TourNotFoundException();
             }
             ICollection<Tour> result = rows.Select(r => BuildTour(r)).ToList();
             return result.First();
@@ -50,7 +49,14 @@ namespace ObligatorioISP.DataAccess
             int tourId = Int32.Parse(rawData["ID"].ToString());
             string title = rawData["TITLE"].ToString();
             ICollection<Landmark> tourStops = landmarks.GetTourLandmarks(tourId);
-            Tour tour = new Tour(tourId, title, tourStops);
+            Tour tour;
+            try
+            {
+                tour = new Tour(tourId, title, tourStops);
+            }
+            catch (InvalidTourException) {
+                throw new CorruptedDataException();
+            }
             return tour;
         }
     }

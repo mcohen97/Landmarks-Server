@@ -81,6 +81,7 @@ namespace ObligatorioISP.DataAccess.Tests
                 }
             }
             CreateImageFiles(ConnectionString, ImagesPath);
+            CreateAudioFiles(ConnectionString, AudiosPath);
         }
 
         private void ResetDatabase(SqlConnection client)
@@ -121,6 +122,33 @@ namespace ObligatorioISP.DataAccess.Tests
                             string extension = reader["EXTENSION"].ToString();
                             string fullPath = $"{imagesPath}/{landmarkId}_{id}.{extension}";
                             if (!File.Exists(fullPath)) {
+                                File.Create(fullPath);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CreateAudioFiles(string connectionString, string audiosPath)
+        {
+            using (SqlConnection client = new SqlConnection(connectionString))
+            {
+                client.Open();
+                string getIdsScript = "SELECT * FROM LandmarkAudios;";
+                using (SqlCommand sqlCmd = new SqlCommand(getIdsScript, client))
+                {
+                    using (SqlDataReader reader = sqlCmd.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+                            string landmarkId = reader["LANDMARK_ID"].ToString();
+                            string id = reader["ID"].ToString();
+                            string extension = "mp3";
+                            string fullPath = $"{audiosPath}/{landmarkId}_{id}.{extension}";
+                            if (!File.Exists(fullPath))
+                            {
                                 File.Create(fullPath);
                             }
                         }

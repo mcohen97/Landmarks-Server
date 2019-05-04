@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using ObligatorioISP.DataAccess.Contracts.Exceptions;
+using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
 namespace ObligatorioISP.DataAccess
 {
-    public class SqlServerConnectionManager
+    public class SqlServerConnectionManager:ISqlContext
     {
         private string connectionString;
         public SqlServerConnectionManager(string aConnString) {
@@ -12,6 +14,17 @@ namespace ObligatorioISP.DataAccess
         }
 
         public void ExcecuteCommand(string command) {
+            try
+            {
+                TryExcecuteCommand(command);
+            }
+            catch (SqlException) {
+                throw new DataInaccessibleException();
+            }
+        }
+
+        private void TryExcecuteCommand(string command)
+        {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -23,6 +36,19 @@ namespace ObligatorioISP.DataAccess
         }
 
         public ICollection<Dictionary<string,object>> ExcecuteRead(string query) {
+            ICollection<Dictionary<string, object>> result;
+            try
+            {
+                result = TryExcecuteRead(query);
+            }
+            catch (SqlException) {
+                throw new DataInaccessibleException();
+            }
+            return result;
+        }
+
+        private ICollection<Dictionary<string, object>> TryExcecuteRead(string query)
+        {
             ICollection<Dictionary<string, object>> result;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

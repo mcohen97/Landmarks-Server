@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using System.Collections.Generic;
@@ -11,14 +12,16 @@ namespace ObligatorioISP.DataAccess.Tests
         private SqlServerLandmarksRepository landmarks;
         private SqlServerToursRepository tours;
         private TestDatabaseManager testData;
+        private ISqlContext context;
 
         [TestInitialize]
         public void SetUp() {
             testData = new TestDatabaseManager();
             testData.SetUpDatabase();
             testData.LoadTestData();
-            landmarks = new SqlServerLandmarksRepository(testData.ConnectionString, testData.ImagesPath, testData.AudiosPath);
-            tours = new SqlServerToursRepository(testData.ConnectionString,landmarks);
+            context = new SqlServerConnectionManager(testData.ConnectionString);
+            landmarks = new SqlServerLandmarksRepository(context, testData.ImagesPath, testData.AudiosPath);
+            tours = new SqlServerToursRepository(context,landmarks);
         }
 
         [TestMethod]
@@ -62,6 +65,19 @@ namespace ObligatorioISP.DataAccess.Tests
 
             ICollection<Tour> retrieved = tours.GetToursWithinKmRange(lat, lng, distance);
             Assert.AreEqual(0, retrieved.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CorruptedDataException))]
+        public void ShouldThrowExceptionIfToursDataIsInconsistent() {
+            Mock<ISqlContext> fakeContext = new Mock<ISqlContext>();
+            Dictionary<string, object> faultyToursData = new Dictionary<string, object>();
+            faultyToursData.Add("ID", 1);
+            faultyToursData.Add("TITLE", "");
+            ICollection<Dictionary<string, object>> fakeReturn = new List<Dictionary<string, object>>() { faultyToursData };
+            fakeContext.Setup(c => c.ExcecuteRead(It.IsAny<string>())).Returns(fakeReturn);
+            tours = new SqlServerToursRepository(fakeContext.Object, landmarks);
+            tours.GetById(1);
         }
     }
 }

@@ -4,14 +4,14 @@ using System.IO;
 
 namespace ObligatorioISP.DataAccess
 {
-    public class DiskImagesRepository : IImagesRepository
+    public class DiskAudiosRepository : IAudiosRepository
     {
-        public string GetImageInBase64(string imageName)
+        public string GetAudioInBase64(string audioPath)
         {
             byte[] data;
             try
             {
-                data = TryRead(imageName);
+                data = TryRead(audioPath);
             }
             catch (IOException)
             {
@@ -30,5 +30,6 @@ namespace ObligatorioISP.DataAccess
             }
             return bytes;
         }
+
     }
 }
