@@ -12,37 +12,24 @@ import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.adapters.LandmarkCardAdapter;
+import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.service.LandmarksService;
-import com.acr.landmarks.service.LocationService;
+import com.acr.landmarks.services.LocationService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -61,26 +48,42 @@ public class MainActivity extends AppCompatActivity {
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
+
     private static final String TAG = "Maps Activity";
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     public static Location mUserLocation;
-    public ArrayList<Landmark> mainLandmarks;
-    private ViewPager mViewPager;
     private static ArrayList<Landmark> mLandmarks = new ArrayList<>();
+    private BottomSheetBehavior sheetBehavior;
+    public List<Landmark> lastAvailable;
 
-    public static List<Landmark> getLandmarks() {
-        //return mLandmarks;
-        LandmarksService service = new LandmarksService();
-        return service.getAllLandmarks();
-    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-    //Bottom sheet
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-    static BottomSheetBehavior sheetBehavior;
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-    public static BottomSheetBehavior getSheetBehavior() {
-        return sheetBehavior;
+        /* Create the adapter that will return a fragment for each of the three primary sections of the activity.*/
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), sheetBehavior);
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+        downloadLandmarks();//Hacer service que descargue y haga loops
+
+        createBottomSheet();
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     @Override
@@ -96,10 +99,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private void startLocationService(){
         if(!isLocationServiceRunning()){
             Intent serviceIntent = new Intent(this, LocationService.class);
-            //this.startService(serviceIntent);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
 
@@ -246,71 +249,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-        downloadLandmarks();//Hacer service que descargue y haga loops
-
-        createBottomSheet();
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-    }
-
     private void createBottomSheet() {
         LinearLayout layoutBottomSheet= (LinearLayout) findViewById(R.id.bottom_sheet_layout) ;
-
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-         /**
-         * bottom sheet state change listener
-         * we are changing button text when sheet changed state
-         * */
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        break;
-
-                    case BottomSheetBehavior.STATE_EXPANDED:
-
-                    break;
-
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-                    break;
-
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -342,86 +284,5 @@ public class MainActivity extends AppCompatActivity {
         mLandmarks.add(lm1);
         mLandmarks.add(lm2);
         mLandmarks.add(lm3);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            switch(position){
-                case 0:
-                    ToursFragment toursFragment = new ToursFragment();
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    return toursFragment;
-                case 1:
-                    MapFragment mapFragment = new MapFragment();
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    return mapFragment;
-                case 2:
-
-                    LandmarkCardsFragment cardsFragment = new LandmarkCardsFragment();
-                    return cardsFragment;
-
-                     /*LandmarkListFragment landmarkListFragment = new LandmarkListFragment();
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    return landmarkListFragment;*/
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-
     }
 }
