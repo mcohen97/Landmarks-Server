@@ -1,6 +1,7 @@
 package com.acr.landmarks.ui;
 
 import android.Manifest;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -29,6 +31,7 @@ import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
 import com.acr.landmarks.util.ClusterManagerRenderer;
+import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -75,34 +78,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
     private ClusterManagerRenderer mClusterManagerRenderer;
     private static ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
-    private List<Landmark> mLandmarks = new ArrayList<>();
+    private List<Landmark> mLandmarks;
 
     //Directions
     private GeoApiContext mGeoApiContext;
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
+
+
+    private LandmarksViewModel  viewModel;
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 
-    //BottomSheet Info
-    private Landmark selectedLandmark;
-
-    public static GoogleMap getMap() {
-        return mMap;
-    }
-
-    public static ArrayList<LandmarkClusterMarker> getMarkers() {
-        return mClusterMarkers;
-    }
-
-    //Bottom sheet
-    BottomSheetBehavior sheetBehavior;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
-
 
     @Nullable
     @Override
@@ -115,15 +106,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
         mMapContainer = view.findViewById(R.id.map_container);
 
-        sheetBehavior = MainActivity.getSheetBehavior();
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        viewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
+        mLandmarks= new ArrayList<Landmark>();
+        viewModel.getLandmarks().observe(this, landmarks -> {
+            mLandmarks = landmarks;
+            addMapMarkers();
+        });
+
         return view;
     }
 
     private void initGoogleMap(Bundle savedInstanceState){
-        // *** IMPORTANT ***
-        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
-        // objects or sub-Bundles.
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -137,8 +130,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                     .apiKey(getString(R.string.google_map_api_key))
                     .build();
         }
-
-
     }
 
     private void setCameraView() {
@@ -194,13 +185,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         map.setMyLocationEnabled(true);
@@ -210,7 +194,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mMap.setOnMarkerClickListener(this);
         addMapMarkers();
     }
-
 
     @Override
     public void onPause() {
@@ -230,10 +213,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mMapView.onLowMemory();
     }
 
-
-
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -245,7 +224,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void addMapMarkers(){
-        updateLandmarks();//Hardcoded ver donde colocarlo para el flujo correcto
+        //viewModel.Reload();
         if(mMap != null){
             resetMap();
             if(mClusterManager == null){
@@ -263,22 +242,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             for(Landmark landmark: mLandmarks){
 
                 try{
-                    String snippet = "";
-
-                    snippet = "Determine route to " + landmark.getName() + "?";
-
-                    int avatar = R.drawable.test_image; // set the default avatar
-                    /* por ahora seteo la imagen poor defecto queda a implementar el cargar la imagen
-                    try{
-                        avatar = Integer.parseInt(landmark.getImg());
-                    }catch (NumberFormatException e){
-                        Log.d(TAG, "addMapMarkers: no avatar for " + landmark.getName() + ", setting default.");
-                    }*/
+                    String snippet = "Determine route to " + landmark.getName() + "?";
                     LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
                             new LatLng(landmark.getLat(), landmark.getLon()),
                             landmark.getName(),
                             snippet,
-                            avatar,
+                            landmark.getImg(),
                             landmark
                     );
                     mClusterManager.addItem(newClusterMarker);
@@ -293,10 +262,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
             setCameraView();
         }
-    }
-    //Hardcoded
-    private void updateLandmarks() {
-        mLandmarks = MainActivity.getLandmarks();
     }
 
     @Override
@@ -325,12 +290,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     @Override
     public boolean onMarkerClick(final Marker marker) {
         mSelectedMarker = marker;
-        selectedLandmark = mClusterManagerRenderer.getClusterItem(marker).getLandmark();
-        showBottomSheet();
+        //selectedLandmark = mClusterManagerRenderer.getClusterItem(marker).getLandmark();
+        //showBottomSheet();
         return true;
     }
 
-    private void showBottomSheet() {
+    /*private void showBottomSheet() {
         LinearLayout layoutBottomSheet= getActivity().findViewById(R.id.bottom_sheet_layout) ;
         ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
         TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
@@ -351,7 +316,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         sheetLandmarkDistance.setText(distance);
 
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
+    }*/
 
     private void calculateDirections(Marker marker){
 

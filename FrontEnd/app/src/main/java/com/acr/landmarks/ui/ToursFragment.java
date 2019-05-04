@@ -14,13 +14,13 @@ import com.acr.landmarks.R;
 public class ToursFragment extends Fragment {
 
 
-    private BottomSheetBehavior sheetBehavior;
+   // private BottomSheetBehavior sheetBehavior;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        sheetBehavior = MainActivity.getSheetBehavior();
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        //sheetBehavior = MainActivity.getSheetBehavior();
+        //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_tours, container, false);
     }

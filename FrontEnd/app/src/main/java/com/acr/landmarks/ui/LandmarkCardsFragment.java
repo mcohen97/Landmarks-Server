@@ -1,34 +1,19 @@
 package com.acr.landmarks.ui;
 
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.TabLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkCardAdapter;
-import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.models.LandmarkClusterMarker;
-import com.acr.landmarks.service.LandmarksService;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class LandmarkCardsFragment extends android.support.v4.app.Fragment implements LandmarkCardAdapter.LandmarkCardClickListener {
 
-    private BottomSheetBehavior sheetBehavior;
+   // private BottomSheetBehavior sheetBehavior;
     private LandmarkCardAdapter  adapter;
     private RecyclerView recyclerView;
 
@@ -40,8 +25,8 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
 
         initRecyclerView(inflater, view);
 
-        sheetBehavior = MainActivity.getSheetBehavior();
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        /*sheetBehavior = MainActivity.getSheetBehavior();
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);*/
 
         return view;
 
@@ -49,14 +34,14 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
 
     private void initRecyclerView(LayoutInflater inflater, View view) {
         recyclerView = view.findViewById(R.id.cards_recyclerview_id);
-        adapter = new LandmarkCardAdapter(inflater.getContext(), this, new LandmarksService());
+        adapter = new LandmarkCardAdapter(inflater.getContext(), this);
         recyclerView.setLayoutManager(new GridLayoutManager(inflater.getContext(),3));
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onLandmarkClicked(int position) {
-        List<Landmark> landmarks = adapter.getLandmarks();
+       /* List<Landmark> landmarks = adapter.getLandmarks();
         String selectedLandmarkId = landmarks.get(position).getName();
         GoogleMap mMap = MapFragment.getMap();
         ArrayList<LandmarkClusterMarker> mClusterMarkers = MapFragment.getMarkers();
@@ -75,10 +60,10 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
         }
 
         TabLayout tabhost = getActivity().findViewById(R.id.tabs);
-        tabhost.getTabAt(1).select();
+        tabhost.getTabAt(1).select();*/
     }
 
-    private void showBottomSheet(Landmark selectedLandmark) {
+   /* private void showBottomSheet(Landmark selectedLandmark) {
         LinearLayout layoutBottomSheet = getActivity().findViewById(R.id.bottom_sheet_layout) ;
         ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
         TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
@@ -99,5 +84,5 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
         sheetLandmarkDistance.setText(distance);
 
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
+    }*/
 }
