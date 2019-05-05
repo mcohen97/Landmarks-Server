@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -19,14 +21,20 @@ import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
+import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -40,7 +48,7 @@ import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LandmarkSelectedListener{
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -49,11 +57,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Maps Activity";
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
-    private BottomSheetBehavior sheetBehavior;
 
     private LocationCallback locationCallback;
+    private UserLocationViewModel locationViewModel;
 
-    private UserLocationViewModel viewModel;
+    private BottomSheetBehavior mBottomSheetBehaviour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         /* Create the adapter that will return a fragment for each of the three primary sections of the activity.*/
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), sheetBehavior);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -81,9 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
         createBottomSheet();
 
-        viewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
+        locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
 
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     private void createLocationCallback() {
@@ -93,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 if (locationResult == null) {
                     return;
                 }
-                viewModel.setLocation(locationResult.getLastLocation());
+                locationViewModel.setLocation(locationResult.getLastLocation());
             };
         };
     }
@@ -212,12 +219,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 
     private void createBottomSheet() {
-        LinearLayout layoutBottomSheet= (LinearLayout) findViewById(R.id.bottom_sheet_layout) ;
-        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
+        mBottomSheetBehaviour= BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     @Override
@@ -233,7 +240,30 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onLandmarkSelected(Landmark selectedLandmark) {
+        LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
+        ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
+        TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
+        TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
+        TextView sheetLandmarkDistance =  layoutBottomSheet.findViewById(R.id.landmarkDistance) ;
+
+
+        String image = selectedLandmark.getImg();
+        byte[] imageData = Base64.decode(image, Base64.DEFAULT);
+        Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
+        sheetLandmarkImage.setImageBitmap(landmark);
+        sheetLandmarkName.setText(selectedLandmark.getName());
+        sheetLandmarkDescription.setText(selectedLandmark.getDescription());
+
+        String distance = ""+selectedLandmark.getDistance();
+        distance += " Km";
+
+        sheetLandmarkDistance.setText(distance);
+
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 }
