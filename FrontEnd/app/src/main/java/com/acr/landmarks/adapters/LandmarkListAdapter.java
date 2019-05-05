@@ -10,17 +10,13 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.service.HaversineDistanceCalculatorService;
-import com.acr.landmarks.service.contracts.IDistanceCalculatorService;
+import com.acr.landmarks.services.HaversineDistanceCalculatorService;
+import com.acr.landmarks.services.contracts.IDistanceCalculatorService;
 import com.acr.landmarks.ui.MainActivity;
 
 import java.text.DecimalFormat;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 public class LandmarkListAdapter extends RecyclerView.Adapter<LandmarkListAdapter.ViewHolder>{
 
@@ -37,11 +33,10 @@ public class LandmarkListAdapter extends RecyclerView.Adapter<LandmarkListAdapte
     }
 
     private void updateDistances(List<Landmark> mLandmarks) {
-        Location mUserLocation = MainActivity.mUserLocation;
+        /*Location mUserLocation = MainActivity.mUserLocation;
         for(Landmark landmark:mLandmarks){
             double distance = listCalculatorService.calculateDistanceInKm(mUserLocation,landmark);
-            landmark.distance = distance;
-        }
+        }*/
     }
 
     @NonNull

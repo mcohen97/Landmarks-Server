@@ -38,7 +38,7 @@ public class LandmarkListFragment extends Fragment implements
     private List<Landmark> mLandmarks;
 
     //Bottom sheet
-    BottomSheetBehavior sheetBehavior;
+    //BottomSheetBehavior sheetBehavior;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,8 +47,8 @@ public class LandmarkListFragment extends Fragment implements
         updateLandmarks();
         mLandmarkListRecyclerView = view.findViewById(R.id.cards_recyclerview_id);
         initLandmarkListRecyclerView();
-        sheetBehavior = MainActivity.getSheetBehavior();
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        //sheetBehavior = MainActivity.getSheetBehavior();
+        //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         // Inflate the layout for this fragment
         return view;
     }
@@ -61,12 +61,12 @@ public class LandmarkListFragment extends Fragment implements
 
     //Hardcoded
     private void updateLandmarks() {
-        mLandmarks = MainActivity.getLandmarks();
+   //     mLandmarks = MainActivity.getLandmarks();
     }
 
     @Override
     public void onLandmarkClicked(int position) {
-        String selectedLandmarkId = mLandmarks.get(position).getName();
+        /*String selectedLandmarkId = mLandmarks.get(position).getName();
         GoogleMap mMap = MapFragment.getMap();
         ArrayList<LandmarkClusterMarker> mClusterMarkers = MapFragment.getMarkers();
 
@@ -78,17 +78,17 @@ public class LandmarkListFragment extends Fragment implements
                         600,
                         null
                 );
-                showBottomSheet(clusterMarker.getLandmark());
+                //showBottomSheet(clusterMarker.getLandmark());
                 break;
             }
         }
 
         TabLayout tabhost = (TabLayout) getActivity().findViewById(R.id.tabs);
-        tabhost.getTabAt(1).select();
+        tabhost.getTabAt(1).select();*/
 
     }
 
-    private void showBottomSheet(Landmark selectedLandmark) {
+    /*private void showBottomSheet(Landmark selectedLandmark) {
         LinearLayout layoutBottomSheet = getActivity().findViewById(R.id.bottom_sheet_layout) ;
         ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
         TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
@@ -109,5 +109,5 @@ public class LandmarkListFragment extends Fragment implements
         sheetLandmarkDistance.setText(distance);
 
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
+    }*/
 }

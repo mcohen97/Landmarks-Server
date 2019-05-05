@@ -1,4 +1,4 @@
-package com.acr.landmarks.service.contracts;
+package com.acr.landmarks.services.contracts;
 
 import android.location.Location;
 

@@ -1,70 +1,60 @@
 package com.acr.landmarks.models;
 
-import android.location.Location;
 import android.support.annotation.NonNull;
 
 public class Landmark implements Comparable<Landmark> {
-    public String name;
-    public String description;
-    public double lat;
-    public double lon;
-    public String img; // Dirección de memoria ,investigar como cargar imagenes, a que carpeta se descargan
-    public double distance;
+    private String title;
+    private double latitude;
+    private double longitude;
+    private String iconBase64; // Dirección de memoria ,investigar como cargar imagenes, a que carpeta se descargan
+    private double distance;
+    private String description;
 
-    public Landmark(String name, String description, double lat, double lon ) {
-        this.name = name;
-        this.description = description;
-        this.lat = lat;
-        this.lon = lon;
+    public Landmark(String name,String description ,double lat, double lon ) {
+        this.title = name;
+        this.latitude = lat;
+        this.longitude = lon;
+        this.description=description;
         this.distance = 9999;
     }
 
+    public Landmark(String name, double lat, double lon, String iconBase64) {
+        this.title = name;
+        this.latitude = lat;
+        this.longitude = lon;
+        this.iconBase64 = iconBase64;
+    }
+
     public Landmark(String name, String description, double lat, double lon, int imgResourceId ) {
-        this.name = name;
-        this.description = description;
-        this.lat = lat;
-        this.lon = lon;
-        this.img = imgResourceId + "";
+        this.title = name;
+        this.latitude = lat;
+        this.longitude = lon;
+        this.description=description;
+        this.iconBase64 = imgResourceId + "";
     }
 
     public String getName() {
-        return name;
+        return title;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.title = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription(){return description;}
 
     public double getLat() {
-        return lat;
+        return latitude;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
 
     public double getLon() {
-        return lon;
+        return longitude;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
 
     public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
+        return iconBase64;
     }
 
     public double getDistance() {

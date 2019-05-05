@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/blue5"
     android:orientation="vertical"
+    android:gravity="center_horizontal"
     app:behavior_hideable="true"
     app:behavior_peekHeight="?actionBarSize"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
