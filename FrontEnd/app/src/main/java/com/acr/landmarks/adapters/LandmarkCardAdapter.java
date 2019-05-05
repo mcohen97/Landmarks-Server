@@ -69,7 +69,7 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
         ImageView thumbnail;
         LandmarkCardClickListener clickListener;
@@ -85,12 +85,14 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
         }
         @Override
         public void onClick(View v) {
-            clickListener.onLandmarkClicked(getAdapterPosition());
+
+            int position =getAdapterPosition();
+            clickListener.onLandmarkClicked(lastAvailableData.get(position));
         }
     }
 
     public interface LandmarkCardClickListener {
-        void onLandmarkClicked(int position);
+        void onLandmarkClicked(Landmark clicked);
     }
 }
 
