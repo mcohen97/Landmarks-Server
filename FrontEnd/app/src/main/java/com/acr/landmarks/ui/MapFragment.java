@@ -32,6 +32,7 @@ import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
 import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.view_models.LandmarksViewModel;
+import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -85,7 +86,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
 
 
-    private LandmarksViewModel  viewModel;
+    private LandmarksViewModel  landmarksViewModel;
+    private UserLocationViewModel locationViewModel;
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 
@@ -105,13 +107,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
         mMapContainer = view.findViewById(R.id.map_container);
-
-        viewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
         mLandmarks= new ArrayList<Landmark>();
-        viewModel.getLandmarks().observe(this, landmarks -> {
-            mLandmarks = landmarks;
-            addMapMarkers();
-        });
+
+
+        landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
+        locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
 
         return view;
     }
@@ -133,7 +133,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void setCameraView() {
-        mUserLocation = MainActivity.mUserLocation;
         // Set a boundary to start
         double bottomBoundary = mUserLocation.getLatitude() - .01;
         double leftBoundary = mUserLocation.getLongitude() - .01;
@@ -193,6 +192,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mMap.setOnPolylineClickListener(this);
         mMap.setOnMarkerClickListener(this);
         addMapMarkers();
+
+        landmarksViewModel.getLandmarks().observe(this, landmarks -> {
+            mLandmarks = landmarks;
+            addMapMarkers();
+            setCameraView();
+        });
+
+        locationViewModel.getLocation().observe(this, location -> {
+            mUserLocation = location;
+            setCameraView();
+        });
     }
 
     @Override
@@ -224,9 +234,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void addMapMarkers(){
-        //viewModel.Reload();
-        if(mMap != null){
-            resetMap();
+        if(mMap == null){
+            return;
+        }
+        resetMap();
             if(mClusterManager == null){
                 mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
             }
@@ -260,8 +271,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             }
             mClusterManager.cluster();
 
-            setCameraView();
-        }
+
     }
 
     @Override
