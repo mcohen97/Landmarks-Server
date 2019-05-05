@@ -1,7 +1,9 @@
 package com.acr.landmarks.ui;
 
 import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -46,6 +48,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
@@ -59,16 +62,14 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener, GoogleMap.OnMarkerClickListener
-{
+         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker> {
 
-    private static final String TAG = "UserListFragment";
-
-    //widgets
+    private final String TAG = "Map Fragment ";
+    private LandmarkSelectedListener mListener;
 
     private MapView mMapView;
 
-    //location y camara update
+    //location y camera update
     private static GoogleMap mMap;
     private LatLngBounds mMapBoundary;
     public static Location mUserLocation;
@@ -95,6 +96,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        try{
+            mListener= (LandmarkSelectedListener) context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString()+" must implement "+ LandmarkSelectedListener.class);
+        }
     }
 
     @Nullable
@@ -188,15 +199,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
         map.setMyLocationEnabled(true);
         mMap = map;
-        mMap.setOnInfoWindowClickListener(this);
-        mMap.setOnPolylineClickListener(this);
-        mMap.setOnMarkerClickListener(this);
+        //mMap.setOnPolylineClickListener(this);
+        //mMap.setOnMarkerClickListener(this);
         addMapMarkers();
 
         landmarksViewModel.getLandmarks().observe(this, landmarks -> {
             mLandmarks = landmarks;
             addMapMarkers();
-            setCameraView();
+            //setCameraView();
         });
 
         locationViewModel.getLocation().observe(this, location -> {
@@ -240,6 +250,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         resetMap();
             if(mClusterManager == null){
                 mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
+                mMap.setOnMarkerClickListener(mClusterManager);
+                mMap.setOnInfoWindowClickListener(mClusterManager);
+                mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+                //mClusterManager.setOnClusterInfoWindowClickListener(this);
+                //mClusterManager.setOnClusterItemClickListener(this);
             }
             if(mClusterManagerRenderer == null){
                 mClusterManagerRenderer = new ClusterManagerRenderer(
@@ -274,59 +289,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     }
 
-    @Override
-    public void onInfoWindowClick(final Marker marker) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(marker.getSnippet())
-                .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        resetSelectedMarker();
-                        mSelectedMarker = marker;
-                        calculateDirections(marker);
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    @Override
+    //@Override
     public boolean onMarkerClick(final Marker marker) {
         mSelectedMarker = marker;
-        //selectedLandmark = mClusterManagerRenderer.getClusterItem(marker).getLandmark();
-        //showBottomSheet();
+        Landmark associated = (Landmark) marker.getTag();
+        mListener.onLandmarkSelected(associated);
         return true;
     }
-
-    /*private void showBottomSheet() {
-        LinearLayout layoutBottomSheet= getActivity().findViewById(R.id.bottom_sheet_layout) ;
-        ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
-        TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
-        TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
-        TextView sheetLandmarkDistance =  layoutBottomSheet.findViewById(R.id.landmarkDistance) ;
-
-        //IMAGEN POR DEFECTO, RESOLVER CARGA DE IMÁGENES DESDE BASE DE DATOS
-        int avatar = R.drawable.test_image;
-
-        sheetLandmarkImage.setImageResource(avatar);
-        sheetLandmarkName.setText(selectedLandmark.getName());
-        sheetLandmarkDescription.setText(selectedLandmark.getDescription());
-
-        DecimalFormat FORMATTER = new DecimalFormat("0.###");
-        String distance = FORMATTER.format(selectedLandmark.getDistance());
-        distance += " Km";
-
-        sheetLandmarkDistance.setText(distance);
-
-        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }*/
 
     private void calculateDirections(Marker marker){
 
@@ -493,5 +462,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
 
+    @Override
+    public void onClusterItemInfoWindowClick(LandmarkClusterMarker landmarkClusterMarker) {
+        mListener.onLandmarkSelected(landmarkClusterMarker.getLandmark());
+    }
 
 }
