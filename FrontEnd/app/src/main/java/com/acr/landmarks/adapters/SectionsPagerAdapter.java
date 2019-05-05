@@ -17,11 +17,9 @@ import com.acr.landmarks.ui.ToursFragment;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 
-    private  BottomSheetBehavior sheetBehavior;
 
-    public SectionsPagerAdapter(FragmentManager fm, BottomSheetBehavior behavior) {
+    public SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
-        sheetBehavior = behavior;
     }
 
     @Override
@@ -31,15 +29,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch(position){
             case 0:
                 ToursFragment toursFragment = new ToursFragment();
-                //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 return toursFragment;
             case 1:
                 MapFragment mapFragment = new MapFragment();
-                //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 return mapFragment;
             case 2:
                 LandmarkCardsFragment cardsFragment = new LandmarkCardsFragment();
-                //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 return cardsFragment;
             default:
                 return null;
@@ -48,9 +43,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
         return 3;
     }
-
-
 }
