@@ -1,6 +1,8 @@
 package com.acr.landmarks.ui;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -43,7 +45,17 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
     }
 
     @Override
+    public void onLandmarkClicked(Landmark clicked) {
+        mListener.onLandmarkSelected(clicked);
+    }
 
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        try{
+            mListener= (LandmarkSelectedListener) context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString()+" must implement "+ LandmarkSelectedListener.class);
         }
     }
 }
