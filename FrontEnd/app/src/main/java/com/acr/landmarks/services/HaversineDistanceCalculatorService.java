@@ -7,13 +7,13 @@ import com.acr.landmarks.services.contracts.IDistanceCalculatorService;
 
 public class HaversineDistanceCalculatorService implements IDistanceCalculatorService {
     @Override
-    public double calculateDistanceInKm(Location location, Landmark destiny) {
+    public double calculateDistanceInKm(Location location, Location destiny) {
         double EarthRadiusKm = 6378.1370D;
-        double latDiff = Math.toRadians(destiny.getLat() - location.getLatitude());
-        double lonDiff = Math.toRadians(destiny.getLon() - location.getLongitude());
+        double latDiff = Math.toRadians(destiny.getLatitude() - location.getLatitude());
+        double lonDiff = Math.toRadians(destiny.getLongitude() - location.getLongitude());
 
         double latOr = Math.toRadians(location.getLatitude());
-        double latDes = Math.toRadians(destiny.getLat());
+        double latDes = Math.toRadians(destiny.getLatitude());
 
         double linearDistance = Math.pow(Math.sin(latDiff/2),2D) +
                 Math.cos(latOr) * Math.cos(latDes) *
