@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ILandmarksService {
 
-    LiveData<List<Landmark>> getLandmarks( double latitude, double longitude, float distance);
+    LiveData<List<Landmark>> getLandmarks();
 
+    LiveData<Landmark> getLandmarkById(int id);
 }

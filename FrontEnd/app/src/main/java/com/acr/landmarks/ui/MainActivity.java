@@ -34,6 +34,8 @@ import android.widget.Toast;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.services.LocationService;
+import com.acr.landmarks.services.contracts.ILocationService;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.google.android.gms.common.ConnectionResult;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private FusedLocationProviderClient mFusedLocationClient;
 
     private LocationCallback locationCallback;
+    private ILocationService locationService;
     private UserLocationViewModel locationViewModel;
 
     private BottomSheetBehavior mBottomSheetBehaviour;
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
         createBottomSheet();
 
+        locationService = LocationService.getInstance();
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
 
     }
@@ -100,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 if (locationResult == null) {
                     return;
                 }
+                locationService.setLocation(locationResult.getLastLocation());
                 locationViewModel.setLocation(locationResult.getLastLocation());
             };
         };

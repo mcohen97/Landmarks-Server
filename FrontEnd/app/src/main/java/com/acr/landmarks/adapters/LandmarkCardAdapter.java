@@ -29,18 +29,12 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
 
     private Context mContext;
     private LandmarkCardClickListener clickListener;
-    private LandmarksViewModel viewModel;
     private List<Landmark> lastAvailableData;
 
-    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener){
+    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, List<Landmark> data){
         this.mContext = mContext;
         this.clickListener = clickListener;
-        viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(LandmarksViewModel.class);
-        lastAvailableData = new ArrayList<Landmark>();
-        viewModel.getLandmarks().observe((FragmentActivity) mContext, landmarks -> {
-            lastAvailableData = landmarks;
-            notifyDataSetChanged();
-        });
+        lastAvailableData = data;
     }
 
     @NonNull

@@ -1,10 +1,8 @@
 package com.acr.landmarks.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,26 +10,21 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.adapters.LandmarkListAdapter;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
+import com.acr.landmarks.services.LocationService;
+import com.acr.landmarks.services.contracts.ILocationService;
 import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
@@ -48,13 +41,12 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.Distance;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,15 +58,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     private final String TAG = "Map Fragment ";
     private LandmarkSelectedListener mListener;
+    private ILocationService locationService;
 
     private MapView mMapView;
 
     //location y camera update
     private static GoogleMap mMap;
-    private LatLngBounds mMapBoundary;
     public static Location mUserLocation;
     private RelativeLayout mMapContainer;
-
+    private static final int DEFAULT_ZOOM = 15;
 
     //Clustering
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
@@ -96,6 +88,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        locationService = LocationService.getInstance();
     }
 
     @Override
@@ -121,7 +114,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mLandmarks= new ArrayList<Landmark>();
 
 
-        landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
+        landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
         locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
 
         return view;
@@ -144,18 +137,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void setCameraView() {
-        // Set a boundary to start
-        double bottomBoundary = mUserLocation.getLatitude() - .01;
-        double leftBoundary = mUserLocation.getLongitude() - .01;
-        double topBoundary = mUserLocation.getLatitude() + .01;
-        double rightBoundary = mUserLocation.getLongitude() + .01;
+        float currentZoom = mMap.getCameraPosition().zoom;
+        setCameraViewWithZoom(currentZoom);
+    }
 
-        mMapBoundary = new LatLngBounds(
-                new LatLng(bottomBoundary, leftBoundary),
-                new LatLng(topBoundary, rightBoundary)
-        );
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+    private void setCameraViewWithZoom(float zoom){
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(mUserLocation.getLatitude(),
+                        mUserLocation.getLongitude()), zoom));
     }
 
     @Override
@@ -199,20 +188,50 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
         map.setMyLocationEnabled(true);
         mMap = map;
-        //mMap.setOnPolylineClickListener(this);
-        //mMap.setOnMarkerClickListener(this);
+
+
         addMapMarkers();
 
         landmarksViewModel.getLandmarks().observe(this, landmarks -> {
             mLandmarks = landmarks;
             addMapMarkers();
-            //setCameraView();
         });
 
         locationViewModel.getLocation().observe(this, location -> {
+            boolean firstLocation =mUserLocation == null;
+
             mUserLocation = location;
-            setCameraView();
+
+            float newRadius = getMapRangeRadius();
+            locationService.setRadius(newRadius);
+
+            if(firstLocation){
+                setCameraViewWithZoom(DEFAULT_ZOOM);
+            }else if(!isLocationWithinBounds(location)){
+                setCameraView();
+            }
         });
+    }
+
+    private boolean isLocationWithinBounds(Location location) {
+        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        return bounds.contains(new LatLng(location.getLatitude(),location.getLongitude()));
+    }
+
+    private float getMapRangeRadius() {
+        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        Location center = new Location(new String());
+        center.setLatitude(bounds.getCenter().latitude);
+        center.setLongitude(bounds.getCenter().longitude);
+
+        Location northEast = new Location(new String());
+        northEast.setLatitude(bounds.northeast.latitude);
+        northEast.setLongitude(bounds.northeast.longitude);
+
+        float radiusInMeters= center.distanceTo(northEast);
+        float radiusInKm = radiusInMeters/1000;
+
+        return  radiusInKm;
     }
 
     @Override
@@ -253,8 +272,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 mMap.setOnMarkerClickListener(mClusterManager);
                 mMap.setOnInfoWindowClickListener(mClusterManager);
                 mClusterManager.setOnClusterItemInfoWindowClickListener(this);
-                //mClusterManager.setOnClusterInfoWindowClickListener(this);
-                //mClusterManager.setOnClusterItemClickListener(this);
             }
             if(mClusterManagerRenderer == null){
                 mClusterManagerRenderer = new ClusterManagerRenderer(
@@ -287,14 +304,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             mClusterManager.cluster();
 
 
-    }
-
-    //@Override
-    public boolean onMarkerClick(final Marker marker) {
-        mSelectedMarker = marker;
-        Landmark associated = (Landmark) marker.getTag();
-        mListener.onLandmarkSelected(associated);
-        return true;
     }
 
     private void calculateDirections(Marker marker){
