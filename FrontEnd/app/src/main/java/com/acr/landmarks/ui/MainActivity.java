@@ -2,6 +2,7 @@ package com.acr.landmarks.ui;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
