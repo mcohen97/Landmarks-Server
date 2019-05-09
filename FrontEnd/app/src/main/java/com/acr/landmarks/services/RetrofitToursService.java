@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 
-import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.services.contracts.ILocationService;
 import com.acr.landmarks.services.contracts.ITourService;
