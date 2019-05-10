@@ -41,7 +41,7 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_landmark_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_tours, container, false);
         data= viewModel.getTours().getValue();
         initRecyclerView(inflater, view);
         viewModel.getTours().observe(this, tours -> {
@@ -55,7 +55,7 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
 
 
     private void initRecyclerView(LayoutInflater inflater, View view) {
-        recyclerView = view.findViewById(R.id.cards_recyclerview_id);
+        recyclerView = view.findViewById(R.id.tour_cards_recyclerview_id);
         adapter = new TourCardAdapter(getContext(), this,data);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),1));
         recyclerView.setAdapter(adapter);

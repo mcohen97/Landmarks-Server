@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.Tour;
 
 import java.util.List;
