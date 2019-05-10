@@ -20,10 +20,10 @@ import java.util.List;
 
 public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHolder> {
     private Context mContext;
-    private TourCardAdapter.TourClickListener clickListener;
+    private TourCardAdapter.TourClickedListener clickListener;
     private List<Tour> lastAvailableTourData;
 
-    public TourCardAdapter(Context mContext, TourCardAdapter.TourClickListener clickListener, List<Tour> data){
+    public TourCardAdapter(Context mContext, TourCardAdapter.TourClickedListener clickListener, List<Tour> data){
         this.mContext = mContext;
         this.clickListener = clickListener;
         lastAvailableTourData = data;
@@ -64,9 +64,9 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         TextView theme;
         ImageView thumbnail;
         TextView description;
-        TourCardAdapter.TourClickListener clickListener;
+        TourCardAdapter.TourClickedListener clickListener;
 
-        public ViewHolder(View itemView, TourCardAdapter.TourClickListener clickListener){
+        public ViewHolder(View itemView, TourCardAdapter.TourClickedListener clickListener){
             super(itemView);
 
             this.title = itemView.findViewById(R.id.tour_card_title);
@@ -85,7 +85,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         }
     }
 
-    public interface TourClickListener {
+    public interface TourClickedListener {
         void onTourClicked(Tour clicked);
     }
 }
