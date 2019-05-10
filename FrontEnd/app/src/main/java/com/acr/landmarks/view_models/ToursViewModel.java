@@ -20,7 +20,6 @@ public class ToursViewModel extends ViewModel {
     private LiveData<Tour> selectedTour;
 
     public ToursViewModel(){
-        //se utilizara Dagger mas adelante
         tourService = new RetrofitToursService();
         MutableLiveData<List<Tour>> defaultData= new MutableLiveData<List<Tour>>();
         defaultData.setValue(new ArrayList<Tour>());

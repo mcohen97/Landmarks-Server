@@ -10,18 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.adapters.TourCardAdapter;
 
-public class ToursFragment extends Fragment {
+public class ToursFragment extends android.support.v4.app.Fragment implements TourCardAdapter.TourClickListener  {
 
 
-   // private BottomSheetBehavior sheetBehavior;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //sheetBehavior = MainActivity.getSheetBehavior();
-        //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_tours, container, false);
     }
 }
