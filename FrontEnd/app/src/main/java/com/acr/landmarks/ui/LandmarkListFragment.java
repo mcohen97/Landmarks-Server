@@ -47,9 +47,6 @@ public class LandmarkListFragment extends Fragment implements
         updateLandmarks();
         mLandmarkListRecyclerView = view.findViewById(R.id.cards_recyclerview_id);
         initLandmarkListRecyclerView();
-        //sheetBehavior = MainActivity.getSheetBehavior();
-        //sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        // Inflate the layout for this fragment
         return view;
     }
 
