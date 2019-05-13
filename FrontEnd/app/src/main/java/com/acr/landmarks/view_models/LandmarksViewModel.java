@@ -24,9 +24,9 @@ public class LandmarksViewModel extends ViewModel {
     private Location lastCenterLocation;
     private LiveData<List<Landmark>> landmarksInRange;
     private MediatorLiveData liveDataMerger;
-    private final MutableLiveData<Location> rangeCenterLocation;
-    private final MutableLiveData<Double> currentRadius;
-    //private final MutableLiveData<Pair<Location,Double>> geoFence;
+    //private final MutableLiveData<Location> rangeCenterLocation;
+    //private final MutableLiveData<Double> currentRadius;
+    private final MutableLiveData<Pair<Location,Double>> geoFence;
 
 
     public LandmarksViewModel(){
@@ -35,9 +35,9 @@ public class LandmarksViewModel extends ViewModel {
 
         //locationService = LocationService.getInstance();
         liveDataMerger = new MediatorLiveData();
-        rangeCenterLocation = new MutableLiveData<>();
-        currentRadius = new MutableLiveData<>();
-        //geoFence = new MutableLiveData<Pair<Location,Double>>();
+        //rangeCenterLocation = new MutableLiveData<>();
+        //currentRadius = new MutableLiveData<>();
+        geoFence = new MutableLiveData<Pair<Location,Double>>();
 
         setDefaultData();
         //reload();
@@ -52,22 +52,32 @@ public class LandmarksViewModel extends ViewModel {
 
 
     private void setDefaultData(){
-        rangeCenterLocation.setValue(generateDefaultLocation());
-        currentRadius.setValue(new Double(2));
+        //rangeCenterLocation.setValue(generateDefaultLocation());
+        //currentRadius.setValue(new Double(2));
+        geoFence.setValue(new Pair<>(generateDefaultLocation(),new Double(2)));
         lastCenterLocation = null;
         lastRadius = null;
-        landmarksInRange = landmarksService.getLandmarks(rangeCenterLocation.getValue(),currentRadius.getValue());
+        //landmarksInRange = landmarksService.getLandmarks(rangeCenterLocation.getValue(),currentRadius.getValue());
+        landmarksInRange = landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
         liveDataMerger = new MediatorLiveData<>();
-        liveDataMerger.addSource(rangeCenterLocation,
+        /*liveDataMerger.addSource(rangeCenterLocation,
                 value -> updateLandmarksIfLocationChanges((Location)value));
         liveDataMerger.addSource(currentRadius,
-                value -> updateLandmarksIfRadiusChanges((Double)value));
-        //liveDataMerger.addSource(geoFence, centerRadius ->updateGeofence(centerRadius));
+                value -> updateLandmarksIfRadiusChanges((Double)value));*/
+        liveDataMerger.addSource(geoFence, centerRadius ->
+                updateGeofence((Pair<Location, Double>) centerRadius));
         liveDataMerger.addSource(landmarksInRange,
                 value -> liveDataMerger.setValue(value));
     }
 
-    //private void updateGeofence(Pair<Location,Double> ){}
+    private void updateGeofence(Pair<Location,Double> value){
+        if((lastCenterLocation == null) || (lastRadius == null)
+                || (!value.first.equals(lastCenterLocation)) || !value.second.equals(lastRadius)){
+           lastCenterLocation = value.first;
+           lastRadius = value.second;
+           reload();
+        }
+    }
 
     private void updateLandmarksIfLocationChanges(Location value) {
         if((lastCenterLocation == null) || (!value.equals(lastCenterLocation))) {
@@ -84,22 +94,27 @@ public class LandmarksViewModel extends ViewModel {
     }
 
     public void reload(){
-        landmarksService.getLandmarks(rangeCenterLocation.getValue(),currentRadius.getValue());
-//        landmarksInRange = landmarksService.getLandmarks();
+        //landmarksService.getLandmarks(rangeCenterLocation.getValue(),currentRadius.getValue());
+        landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
     }
 
     public void setGeofence(Location aLocation, Double aRadius){
-        rangeCenterLocation.setValue(aLocation);
-        currentRadius.setValue(aRadius);
+        geoFence.setValue(new Pair<>(aLocation,aRadius));
+        //rangeCenterLocation.setValue(aLocation);
+        //currentRadius.setValue(aRadius);
 
     }
 
     public void setRadius(Double aRadius){
-        currentRadius.setValue(aRadius);
+        Pair<Location,Double> newGeoFence = new Pair<>(geoFence.getValue().first,aRadius);
+        geoFence.setValue(newGeoFence);
+        //currentRadius.setValue(aRadius);
     }
 
     public void setCenter(Location location){
-        rangeCenterLocation.setValue(location);
+        Pair<Location,Double> newGeoFence = new Pair<>(location,geoFence.getValue().second);
+        geoFence.setValue(newGeoFence);
+        //rangeCenterLocation.setValue(location);
     }
 
     public LiveData<List<Landmark>> getLandmarks(){
