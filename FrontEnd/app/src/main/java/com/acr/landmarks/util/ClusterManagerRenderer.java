@@ -51,6 +51,8 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
      */
     @Override
     protected void onBeforeClusterItemRendered(LandmarkClusterMarker item, MarkerOptions markerOptions) {
+        Marker marker = getMarker(item);
+
         String image = item.getIconPicture();
         byte[] imageData = Base64.decode(image, Base64.DEFAULT);
         Bitmap landmark = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);

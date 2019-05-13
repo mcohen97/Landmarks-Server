@@ -186,36 +186,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
         map.setMyLocationEnabled(true);
         mMap = map;
-        //addMapMarkers();
-        //mMap.setOnCameraMoveListener(this);
-        mMap.setOnCameraIdleListener(this);
+
+        locationViewModel.getLocation().observe(this, location -> {
+            boolean firstLocation =mUserLocation == null;
+
+            mUserLocation = location;
+
+            if(firstLocation){
+                setCameraViewWithZoom(DEFAULT_ZOOM);
+                landmarksViewModel.setGeofence(location,new Double(getMapRangeRadius()));
+                mMap.setOnCameraIdleListener(this);
+            }
+
+        });
 
         landmarksViewModel.getLandmarks().observe(this, landmarks -> {
             mLandmarks = landmarks;
             addMapMarkers();
         });
-
-        locationViewModel.getLocation().observe(this, location -> {
-            boolean firstLocation =mUserLocation == null;
-            //boolean first =mUserLocation == null;
-
-            mUserLocation = location;
-
-            if(firstLocation){
-                landmarksViewModel.setCenter(location);
-                landmarksViewModel.setRadius(new Double(getMapRangeRadius()));
-                setCameraViewWithZoom(DEFAULT_ZOOM);
-            }
-            /*else if(!isLocationWithinBounds(location)){
-                setCameraView();
-            }*/
-        });
     }
 
-    private boolean isLocationWithinBounds(Location location) {
-        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-        return bounds.contains(new LatLng(location.getLatitude(),location.getLongitude()));
-    }
 
     private float getMapRangeRadius() {
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
@@ -278,7 +268,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
 
         mClusterManager.cluster();
-
     }
 
     private void setUpClusterManager(){
@@ -314,8 +303,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     private void addMarker(Landmark landmark) {
 
-        //boolean alreadyInMap = isMarkerInMap(landmark);
-       // if(!alreadyInMap) {
+        boolean alreadyInMap = isMarkerInMap(landmark);
+        if(!alreadyInMap) {
             String snippet = "Determine route to " + landmark.getName() + "?";
             LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
                     new LatLng(landmark.getLat(), landmark.getLon()),
@@ -326,7 +315,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             );
             mClusterManager.addItem(newClusterMarker);
             mClusterMarkers.add(newClusterMarker);
-        //}
+        }
     }
 
     private void removeUselessMarkers() {
@@ -491,7 +480,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     private void resetMap(){
         if(mMap != null) {
-            mMap.clear();
 
             /*if(mClusterManager != null){
                 mClusterManager.clearItems();
@@ -518,8 +506,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     public void onCameraIdle() {
         float newRadius = getMapRangeRadius();
         LatLng center = mMap.getCameraPosition().target;
-        landmarksViewModel.setRadius(new Double(newRadius));
-        landmarksViewModel.setCenter(latLngToLocation(center));
+        landmarksViewModel.setGeofence(latLngToLocation(center),new Double(newRadius));
     }
 
     private Location latLngToLocation(LatLng googleData){
