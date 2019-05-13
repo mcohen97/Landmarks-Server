@@ -1,0 +1,12 @@
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\bin\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.deps.json
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\bin\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.dll
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\bin\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.pdb
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\bin\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.dll
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\bin\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.pdb
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.csprojAssemblyReference.cache
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.csproj.CoreCompileInputs.cache
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.AssemblyInfoInputs.cache
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.AssemblyInfo.cs
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.csproj.CopyComplete
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.dll
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.DataAccess.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.DataAccess.Contracts.pdb

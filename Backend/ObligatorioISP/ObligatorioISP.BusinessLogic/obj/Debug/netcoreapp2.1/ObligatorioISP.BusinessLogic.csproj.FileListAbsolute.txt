@@ -1,0 +1,8 @@
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.BusinessLogic\bin\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.deps.json
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.BusinessLogic\bin\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.dll
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.BusinessLogic\bin\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.pdb
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.BusinessLogic\obj\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.csproj.CoreCompileInputs.cache
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.BusinessLogic\obj\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.AssemblyInfoInputs.cache
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.BusinessLogic\obj\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.AssemblyInfo.cs
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.BusinessLogic\obj\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.dll
+c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.BusinessLogic\obj\Debug\netcoreapp2.1\ObligatorioISP.BusinessLogic.pdb
