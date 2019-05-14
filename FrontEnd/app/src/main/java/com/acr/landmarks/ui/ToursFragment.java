@@ -9,9 +9,12 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toolbar;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkCardAdapter;
@@ -64,6 +67,20 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
     @Override
     public void onTourClicked(Tour clicked) {
         mListener.onTourSelected(clicked);
+        //Ranciovich
+        generateBackButton();
+    }
+
+    public void generateBackButton(){
+        Button b=new Button(getActivity());
+        b.setText("BACK");
+        Toolbar t= getActivity().findViewById(R.id.toolbar);
+
+        Toolbar.LayoutParams l3=new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
+        l3.gravity=Gravity.END;
+        b.setLayoutParams(l3);
+        t.addView(b);
+
     }
 
     @Override
