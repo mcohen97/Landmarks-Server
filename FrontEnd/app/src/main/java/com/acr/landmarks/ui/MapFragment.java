@@ -78,9 +78,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private GeoApiContext mGeoApiContext;
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
 
-
+    //ViewModels
     private LandmarksViewModel  landmarksViewModel;
     private UserLocationViewModel locationViewModel;
+
+
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 

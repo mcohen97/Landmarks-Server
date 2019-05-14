@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -63,6 +64,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         TextView theme;
         ImageView thumbnail;
         TextView description;
+        Button guidebtn;
         TourCardAdapter.TourClickedListener clickListener;
 
         public ViewHolder(View itemView, TourCardAdapter.TourClickedListener clickListener){
@@ -72,8 +74,9 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
             this.theme = itemView.findViewById(R.id.tour_card_theme);
             this.thumbnail = itemView.findViewById(R.id.tour_card_img_id);
             this.description = itemView.findViewById(R.id.tour_card_description);
+            this.guidebtn = itemView.findViewById(R.id.view_guide_btn);
             this.clickListener = clickListener;
-            itemView.setOnClickListener(this);
+            this.guidebtn.setOnClickListener(this);
         }
 
         @Override

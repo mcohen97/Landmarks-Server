@@ -3,6 +3,7 @@ package com.acr.landmarks.models;
 import android.support.annotation.NonNull;
 
 public class Landmark implements Comparable<Landmark> {
+    private int id;
     private String title;
     private double latitude;
     private double longitude;
@@ -31,6 +32,14 @@ public class Landmark implements Comparable<Landmark> {
         this.longitude = lon;
         this.description=description;
         this.iconBase64 = imgResourceId + "";
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
