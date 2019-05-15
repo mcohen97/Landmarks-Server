@@ -43,14 +43,20 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         Tour requestedTour = lastAvailableTourData.get(position);
         String tourName = requestedTour.getName();
         holder.title.setText(tourName);
+
+        //Seteo el ícono según temática a la izquierda del textView--->Resolver como serán las temáticas, conseguir íconos y Codificar
+        holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.ic_launcher_foreground,0,0,0);
+
         String tourTheme = requestedTour.getTematica();
         holder.theme.setText(tourTheme);
-        String tourDescription = requestedTour.getDescripcion();
-        holder.description.setText(tourDescription);
+
         String image = requestedTour.getIconBase64();
         byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
         Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
         holder.thumbnail.setImageBitmap(landmark);
+
+        String tourDescription = requestedTour.getDescripcion();
+        holder.description.setText(tourDescription);
     }
 
     @Override
@@ -75,8 +81,8 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
             this.thumbnail = itemView.findViewById(R.id.tour_card_img_id);
             this.description = itemView.findViewById(R.id.tour_card_description);
             this.guidebtn = itemView.findViewById(R.id.view_guide_btn);
-            this.clickListener = clickListener;
-            this.guidebtn.setOnClickListener(this);
+            this.clickListener = clickListener; //-> Las cards no serán clickeables solo el botón
+            this.guidebtn.setOnClickListener(this::onClick);
         }
 
         @Override

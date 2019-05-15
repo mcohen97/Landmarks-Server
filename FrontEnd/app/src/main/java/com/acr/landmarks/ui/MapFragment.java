@@ -4,6 +4,7 @@ import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,8 +24,10 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
+import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.services.LocationService;
 import com.acr.landmarks.services.contracts.ILocationService;
+import com.acr.landmarks.services.contracts.MapCommunicator;
 import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
@@ -54,9 +57,9 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker> {
+         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>, MapCommunicator {
 
-    private final String TAG = "Map Fragment ";
+    private final String TAG = "Map Fragment";
     private LandmarkSelectedListener mListener;
     private ILocationService locationService;
 
@@ -478,4 +481,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mListener.onLandmarkSelected(landmarkClusterMarker.getLandmark());
     }
 
+    //Tours
+    @Override
+    public void drawTour(Tour selected) {
+        Polyline line = mMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0),new LatLng())//For que cree las latlng y luego pasarlas acá
+                .width(5)
+                .color(Color.RED));
+    }
+
+    @Override
+    public void resetTheMap() {
+        if(mMap != null) {
+            mMap.clear();
+
+            if(mClusterManager != null){
+                mClusterManager.clearItems();
+            }
+
+            if (mClusterMarkers.size() > 0) {
+                mClusterMarkers.clear();
+                mClusterMarkers = new ArrayList<>();
+            }
+
+            if(mPolyLinesData.size() > 0){
+                mPolyLinesData.clear();
+                mPolyLinesData = new ArrayList<>();
+            }
+        }
+    }
 }

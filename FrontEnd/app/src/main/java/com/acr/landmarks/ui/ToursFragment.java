@@ -67,21 +67,10 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
     @Override
     public void onTourClicked(Tour clicked) {
         mListener.onTourSelected(clicked);
-        //Ranciovich
-        generateBackButton();
-    }
-
-    public void generateBackButton(){
-        Button b=new Button(getActivity());
-        b.setText("BACK");
-        Toolbar t= getActivity().findViewById(R.id.toolbar);
-
-        Toolbar.LayoutParams l3=new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT, Toolbar.LayoutParams.WRAP_CONTENT);
-        l3.gravity=Gravity.END;
-        b.setLayoutParams(l3);
-        t.addView(b);
 
     }
+
+
 
     @Override
     public void onAttach(Context context){

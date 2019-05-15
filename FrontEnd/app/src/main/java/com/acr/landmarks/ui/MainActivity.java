@@ -1,6 +1,7 @@
 package com.acr.landmarks.ui;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -23,18 +24,22 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.services.LocationService;
 import com.acr.landmarks.services.contracts.ILocationService;
 import com.acr.landmarks.view_models.LandmarksViewModel;
@@ -51,7 +56,7 @@ import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
-public class MainActivity extends AppCompatActivity implements LandmarkSelectedListener{
+public class MainActivity extends AppCompatActivity implements LandmarkSelectedListener , TourSelectedListener{
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -246,6 +251,14 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         if (id == R.id.action_settings) {
             return true;
         }
+        if( id == android.R.id.home){
+            TabHost tabHost = findViewById(R.id.tabs);
+            tabHost.setCurrentTab(0);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+            MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("Map Fragment");
+            mapFragment.resetTheMap();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -272,4 +285,20 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
+
+    @Override
+    public void onTourSelected(Tour selected) {
+        generateBackButton();
+        TabHost tabHost = findViewById(R.id.tabs);
+        tabHost.setCurrentTab(1);
+
+        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("Map Fragment");
+        mapFragment.drawTour(selected);
+    }
+
+    public void generateBackButton(){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
 }
