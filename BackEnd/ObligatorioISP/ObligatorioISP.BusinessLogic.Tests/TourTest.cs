@@ -26,41 +26,47 @@ namespace ObligatorioISP.BusinessLogic.Tests
         [TestMethod]
         [ExpectedException(typeof(InvalidTourException))]
         public void ShouldThrowExceptionWhenIdIsNegative() {
-            Tour testTour = new Tour(-1, "Tour 1", fakeLandmarks,testImage,TourCategory.CULTURAL);
+            Tour testTour = new Tour(-1, "Tour 1", "description 1", fakeLandmarks,testImage,TourCategory.CULTURAL);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidTourException))]
         public void ShouldThrowExceptionWhenTitleEmpty()
         {
-            Tour testTour = new Tour(1, " ", fakeLandmarks, testImage, TourCategory.CULTURAL);
+            Tour testTour = new Tour(1, " ", "description 1", fakeLandmarks, testImage, TourCategory.CULTURAL);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidTourException))]
+        public void ShouldThrowExceptionWhenDescriptionIsEmpty()
+        {
+            Tour testTour = new Tour(1, "Tour 1", "", fakeLandmarks, "unexistent.jpg", TourCategory.CULTURAL);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidTourException))]
         public void ShouldThrowExceptionWhenToursListIsNull()
         {
-            Tour testTour = new Tour(1, "Tour 1", null, testImage, TourCategory.CULTURAL);
+            Tour testTour = new Tour(1, "Tour 1", "description 1", null, testImage, TourCategory.CULTURAL);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidTourException))]
         public void ShouldThrowExceptionWhenToursListIsEmpty()
         {
-            Tour testTour = new Tour(1, "Tour 1", new List<Landmark>(), testImage, TourCategory.CULTURAL);
+            Tour testTour = new Tour(1, "Tour 1", "description 1", new List<Landmark>(), testImage, TourCategory.CULTURAL);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidTourException))]
         public void ShouldThrowExceptionWhenImageDoesntExist()
         {
-            Tour testTour = new Tour(1, "Tour 1", fakeLandmarks, "unexistent.jpg", TourCategory.CULTURAL);
+            Tour testTour = new Tour(1, "Tour 1", "description 1", fakeLandmarks, "unexistent.jpg", TourCategory.CULTURAL);
         }
-
 
         [TestMethod]
         public void ShouldHaveSameDataGivenInConstructor() {
-            Tour testTour = new Tour(1, "Tour 1", fakeLandmarks, testImage, TourCategory.CULTURAL);
+            Tour testTour = new Tour(1, "Tour 1", "description 1", fakeLandmarks, testImage, TourCategory.CULTURAL);
             Assert.AreEqual(1, testTour.Id);
             Assert.AreEqual("Tour 1", testTour.Title);
             Assert.AreEqual(3, fakeLandmarks.Count);

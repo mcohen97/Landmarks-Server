@@ -126,9 +126,9 @@ namespace ObligatorioISP.Services.Tests
 
             List<Landmark> testLandmarks = GetFakeLandmarks() as List<Landmark>;
             return new List<Tour>() {
-                new Tour(1,"Tour 1",testLandmarks, tourTestImagePath,TourCategory.ENTERTAINMENT),
-                new Tour(2,"Tour 2", new List<Landmark>(){testLandmarks[0],testLandmarks[3],testLandmarks[2] }, tourTestImagePath, TourCategory.SIGHT_SEEING),
-                new Tour(3,"Tour 3", new List<Landmark>(){testLandmarks[1],testLandmarks[3] }, tourTestImagePath, TourCategory.GREEN_SITES)
+                new Tour(1,"Tour 1","description 1",testLandmarks, tourTestImagePath,TourCategory.ENTERTAINMENT),
+                new Tour(2,"Tour 2","description 2", new List<Landmark>(){testLandmarks[0],testLandmarks[3],testLandmarks[2] }, tourTestImagePath, TourCategory.SIGHT_SEEING),
+                new Tour(3,"Tour 3","description 3", new List<Landmark>(){testLandmarks[1],testLandmarks[3] }, tourTestImagePath, TourCategory.GREEN_SITES)
             };
         }
 
