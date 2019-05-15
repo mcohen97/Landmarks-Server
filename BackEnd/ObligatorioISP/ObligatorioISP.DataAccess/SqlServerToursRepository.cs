@@ -50,6 +50,7 @@ namespace ObligatorioISP.DataAccess
         {
             int tourId = Int32.Parse(rawData["ID"].ToString());
             string title = rawData["TITLE"].ToString();
+            string description = rawData["DESCRIPTION"].ToString();
             Enum.TryParse(rawData["CATEGORY"].ToString(), out TourCategory category);
             string imagePath = $"{imagesDirectory}/{tourId}.{rawData["IMAGE_EXTENSION"]}";
             ICollection<Landmark> tourStops = landmarks.GetTourLandmarks(tourId);
@@ -58,7 +59,7 @@ namespace ObligatorioISP.DataAccess
 
             try
             {
-                tour = new Tour(tourId, title, tourStops, imagePath,category);
+                tour = new Tour(tourId, title,description, tourStops, imagePath,category);
             }
             catch (InvalidTourException) {
                 throw new CorruptedDataException();

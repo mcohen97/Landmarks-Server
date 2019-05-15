@@ -72,7 +72,7 @@ namespace ObligatorioISP.DataAccess.Tests
             faultyLandmarkData.Add("TITLE", "");
             faultyLandmarkData.Add("LATITUDE", -34.923844);
             faultyLandmarkData.Add("LONGITUDE", -56.170590);
-            faultyLandmarkData.Add("DESCRIPT", "");
+            faultyLandmarkData.Add("DESCRIPTION", "");
             faultyLandmarkData.Add("EXTENSION", "");
             ICollection<Dictionary<string, object>> fakeReturn = new List<Dictionary<string, object>>() { faultyLandmarkData };
             fakeContext.Setup(c => c.ExcecuteRead(It.IsAny<string>())).Returns(fakeReturn);

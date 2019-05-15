@@ -13,14 +13,16 @@ namespace ObligatorioISP.BusinessLogic
         private string title;
         private string imagePath;
         private ICollection<Landmark> landmarks;
+        private string description;
 
         public int Id { get { return id; } private set { SetId(value); } }
         public string Title { get { return title; } private set { SetTitle(value); } }
         public ICollection<Landmark> Landmarks { get { return landmarks; }private set { SetLandmarks(value); } }
         public string ImagePath { get { return imagePath; } private set { SetImage(value); } }
         public TourCategory Category { get; private set; }
+        public string Description { get { return description; } set { SetDescription(value); } }
 
-        public Tour(int anId, string aTitle, ICollection<Landmark> someLandmarks, string imagePath, TourCategory category) {
+        public Tour(int anId, string aTitle, string aDescription ,ICollection<Landmark> someLandmarks, string imagePath, TourCategory category) {
             Id = anId;
             Title = aTitle;
             Landmarks = someLandmarks;
@@ -42,6 +44,15 @@ namespace ObligatorioISP.BusinessLogic
                 throw new InvalidTourException("Title can't be empty");
             }
             title = value;
+        }
+
+        private void SetDescription(string value)
+        {
+            if (String.IsNullOrWhiteSpace(value))
+            {
+                throw new InvalidTourException("Description can't be empty");
+            }
+            description = value;
         }
 
         private void SetLandmarks(ICollection<Landmark> value)

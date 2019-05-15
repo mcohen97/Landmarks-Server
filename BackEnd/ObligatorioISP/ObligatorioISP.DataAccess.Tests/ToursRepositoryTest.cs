@@ -73,7 +73,8 @@ namespace ObligatorioISP.DataAccess.Tests
             Mock<ISqlContext> fakeContext = new Mock<ISqlContext>();
             Dictionary<string, object> faultyToursData = new Dictionary<string, object>();
             faultyToursData.Add("ID", 1);
-            faultyToursData.Add("TITLE", "");
+            faultyToursData.Add("TITLE", "");//incorrect.
+            faultyToursData.Add("DESCRIPTION", "description 1");
             faultyToursData.Add("CATEGORY", "CULTURAL");
             faultyToursData.Add("IMAGE_EXTENSION", ".jpg");
             ICollection<Dictionary<string, object>> fakeReturn = new List<Dictionary<string, object>>() { faultyToursData };
