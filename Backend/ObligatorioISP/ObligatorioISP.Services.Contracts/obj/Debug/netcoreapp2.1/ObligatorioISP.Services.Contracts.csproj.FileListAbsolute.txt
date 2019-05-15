@@ -1,9 +1,0 @@
-c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\bin\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.deps.json
-c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\bin\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.dll
-c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\bin\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.pdb
-c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.csproj.CoreCompileInputs.cache
-c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.AssemblyInfoInputs.cache
-c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.AssemblyInfo.cs
-c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.dll
-c:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.pdb
-C:\Users\Marcel\Desktop\Ing De Software En la Practica\ing-software-en-la-practica\BackEnd\ObligatorioISP\ObligatorioISP.Services.Contracts\obj\Debug\netcoreapp2.1\ObligatorioISP.Services.Contracts.csprojAssemblyReference.cache
