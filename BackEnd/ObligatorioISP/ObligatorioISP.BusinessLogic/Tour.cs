@@ -25,6 +25,7 @@ namespace ObligatorioISP.BusinessLogic
         public Tour(int anId, string aTitle, string aDescription ,ICollection<Landmark> someLandmarks, string imagePath, TourCategory category) {
             Id = anId;
             Title = aTitle;
+            Description = aDescription;
             Landmarks = someLandmarks;
             ImagePath = imagePath;
             Category = category;
