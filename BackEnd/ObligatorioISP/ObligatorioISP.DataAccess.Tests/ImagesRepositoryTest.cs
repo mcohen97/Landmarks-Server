@@ -36,6 +36,12 @@ namespace ObligatorioISP.DataAccess.Tests
             Assert.AreEqual(pixelImageBase64, image);
         }
 
+        [TestMethod]
+        public void ShouldReturnEmptyImageInCaseOfUnexistent() {
+            string image = images.GetImageInBase64("x");
+            Assert.AreEqual("", image);
+        }
+
         private void WriteTestImage() {
             byte[] bytes = Convert.FromBase64String(pixelImageBase64);
             using (var imageFile = new FileStream(imagePath, FileMode.Create))

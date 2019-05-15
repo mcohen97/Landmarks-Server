@@ -17,7 +17,10 @@ namespace ObligatorioISP.Services.Tests
     {
         private Mock<IToursRepository> fakeToursStorage;
         private Mock<ILandmarksRepository> fakeLandmarksStorage;
+        private Mock<IImagesRepository> fakeImagesStorage;
         private IToursService service;
+        private string testImageData;
+
 
         [TestInitialize]
         public void StartUp() {
@@ -26,7 +29,11 @@ namespace ObligatorioISP.Services.Tests
                 .Returns(GetFakeTours());
             fakeToursStorage.Setup(r => r.GetById(It.IsAny<int>())).Returns((int x) => GetFakeTours().First(t => t.Id == x));
             fakeLandmarksStorage = new Mock<ILandmarksRepository>();
-            service = new ToursService(fakeToursStorage.Object, fakeLandmarksStorage.Object);
+
+            testImageData = "imageData";
+            fakeImagesStorage = new Mock<IImagesRepository>();
+            fakeImagesStorage.Setup(i => i.GetImageInBase64(It.IsAny<string>())).Returns(testImageData);
+            service = new ToursService(fakeToursStorage.Object, fakeLandmarksStorage.Object, fakeImagesStorage.Object);
         }
 
         [TestMethod]
@@ -37,6 +44,7 @@ namespace ObligatorioISP.Services.Tests
             ICollection<TourDto> retrieved =service.GetToursWithinKmRange(lat, lng, distance);
 
             fakeToursStorage.Verify(r => r.GetToursWithinKmRange(lat, lng, distance), Times.Once);
+            fakeImagesStorage.Verify(r => r.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
             Assert.AreEqual(GetFakeTours().Count, retrieved.Count);
         }
 
@@ -47,6 +55,7 @@ namespace ObligatorioISP.Services.Tests
             TourDto retrieved = service.GetTourById(id);
 
             fakeToursStorage.Verify(r => r.GetById(id), Times.Once);
+            fakeImagesStorage.Verify(r => r.GetImageInBase64(It.IsAny<string>()), Times.Once);
             Assert.AreEqual(id,retrieved.Id);
         }
 
@@ -107,11 +116,19 @@ namespace ObligatorioISP.Services.Tests
 
         private ICollection<Tour> GetFakeTours()
         {
+            string tourTestImagePath = "tourTestImage.jpg";
+            if (!File.Exists(tourTestImagePath))
+            {
+                File.Create(tourTestImagePath);
+            }
+
+            bool exists = File.Exists(tourTestImagePath);
+
             List<Landmark> testLandmarks = GetFakeLandmarks() as List<Landmark>;
             return new List<Tour>() {
-                new Tour(1,"Tour 1",testLandmarks),
-                new Tour(2,"Tour 2", new List<Landmark>(){testLandmarks[0],testLandmarks[3],testLandmarks[2] }),
-                new Tour(3,"Tour 3", new List<Landmark>(){testLandmarks[1],testLandmarks[3] })
+                new Tour(1,"Tour 1",testLandmarks, tourTestImagePath,TourCategory.ENTERTAINMENT),
+                new Tour(2,"Tour 2", new List<Landmark>(){testLandmarks[0],testLandmarks[3],testLandmarks[2] }, tourTestImagePath, TourCategory.SIGHT_SEEING),
+                new Tour(3,"Tour 3", new List<Landmark>(){testLandmarks[1],testLandmarks[3] }, tourTestImagePath, TourCategory.GREEN_SITES)
             };
         }
 
