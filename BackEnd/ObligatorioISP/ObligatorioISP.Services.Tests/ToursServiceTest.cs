@@ -107,11 +107,19 @@ namespace ObligatorioISP.Services.Tests
 
         private ICollection<Tour> GetFakeTours()
         {
+            string tourTestImagePath = "tourTestImage.jpg";
+            if (!File.Exists(tourTestImagePath))
+            {
+                File.Create(tourTestImagePath);
+            }
+
+            bool exists = File.Exists(tourTestImagePath);
+
             List<Landmark> testLandmarks = GetFakeLandmarks() as List<Landmark>;
             return new List<Tour>() {
-                new Tour(1,"Tour 1",testLandmarks),
-                new Tour(2,"Tour 2", new List<Landmark>(){testLandmarks[0],testLandmarks[3],testLandmarks[2] }),
-                new Tour(3,"Tour 3", new List<Landmark>(){testLandmarks[1],testLandmarks[3] })
+                new Tour(1,"Tour 1",testLandmarks, tourTestImagePath,TourCategory.ENTERTAINMENT),
+                new Tour(2,"Tour 2", new List<Landmark>(){testLandmarks[0],testLandmarks[3],testLandmarks[2] }, tourTestImagePath, TourCategory.SIGHT_SEEING),
+                new Tour(3,"Tour 3", new List<Landmark>(){testLandmarks[1],testLandmarks[3] }, tourTestImagePath, TourCategory.GREEN_SITES)
             };
         }
 

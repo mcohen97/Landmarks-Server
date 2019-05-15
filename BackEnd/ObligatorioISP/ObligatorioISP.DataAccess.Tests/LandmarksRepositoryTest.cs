@@ -22,7 +22,7 @@ namespace ObligatorioISP.DataAccess.Tests
             testData.SetUpDatabase();
             testData.LoadTestData();
             context = new SqlServerConnectionManager(testData.ConnectionString);
-            landmarks = new SqlServerLandmarksRepository(context,testData.ImagesPath,testData.AudiosPath);
+            landmarks = new SqlServerLandmarksRepository(context,testData.LandmarksImagesPath,testData.AudiosPath);
         }
 
         [TestMethod]
@@ -76,7 +76,7 @@ namespace ObligatorioISP.DataAccess.Tests
             faultyLandmarkData.Add("EXTENSION", "");
             ICollection<Dictionary<string, object>> fakeReturn = new List<Dictionary<string, object>>() { faultyLandmarkData };
             fakeContext.Setup(c => c.ExcecuteRead(It.IsAny<string>())).Returns(fakeReturn);
-            landmarks = new SqlServerLandmarksRepository(fakeContext.Object, testData.ImagesPath, testData.AudiosPath);
+            landmarks = new SqlServerLandmarksRepository(fakeContext.Object, testData.LandmarksImagesPath, testData.AudiosPath);
             landmarks.GetById(2);
         }
     }

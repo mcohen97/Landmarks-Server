@@ -11,18 +11,34 @@ namespace ObligatorioISP.DataAccess.Tests
         private string serverString = $"Server=DESKTOP-JH1M2MF\\SQLSERVER_R14;";
         private string securityString = "Trusted_Connection=True;Integrated Security=True;";
         public string dbName = "LandmarksTestDB";
-        public string ImagesPath { get; private set; }
+        public string LandmarksImagesPath { get; private set; }
+        public string ToursImagesPaths { get; private set; }
         public string AudiosPath { get; private set; }
         public string ConnectionString { get; private set; }
 
         public TestDatabaseManager() {
             ConnectionString = serverString + $"Initial Catalog={dbName};" + securityString;
-            ImagesPath = "Images";
+            LandmarksImagesPath = "LandmarkImages";
+            ToursImagesPaths = "TourImages";
             AudiosPath = "Audios";
         }
 
         public void SetUpDatabase()
         {
+            if (!Directory.Exists(LandmarksImagesPath))
+            {
+                Directory.CreateDirectory(LandmarksImagesPath);
+            }
+            if (!Directory.Exists(ToursImagesPaths))
+            {
+                Directory.CreateDirectory(ToursImagesPaths);
+            }
+            if (!Directory.Exists(AudiosPath))
+            {
+                Directory.CreateDirectory(AudiosPath);
+            }
+
+
             string finalConnString = ConnectionString;
 
             if (!DbExists(dbName))
@@ -80,7 +96,8 @@ namespace ObligatorioISP.DataAccess.Tests
                     sqlCmd.ExecuteNonQuery();
                 }
             }
-            CreateImageFiles(ConnectionString, ImagesPath);
+            CreateLandmarkImageFiles(ConnectionString, LandmarksImagesPath);
+            CreateTourImageFiles(ConnectionString, ToursImagesPaths);
             CreateAudioFiles(ConnectionString, AudiosPath);
         }
 
@@ -104,7 +121,7 @@ namespace ObligatorioISP.DataAccess.Tests
             }
         }
 
-        private void CreateImageFiles(string connectionString, string imagesPath)
+        private void CreateLandmarkImageFiles(string connectionString, string imagesPath)
         {
             using (SqlConnection client = new SqlConnection(connectionString))
             {
@@ -123,6 +140,29 @@ namespace ObligatorioISP.DataAccess.Tests
                             string fullPath = $"{imagesPath}/{landmarkId}_{id}.{extension}";
                             if (!File.Exists(fullPath)) {
                                 File.Create(fullPath);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CreateTourImageFiles(string connectionString, string imagesPath) {
+            using (SqlConnection client = new SqlConnection(connectionString))
+            {
+                client.Open();
+                string getIdsScript = "SELECT * FROM Tour;";
+                using (SqlCommand sqlCmd = new SqlCommand(getIdsScript, client))
+                {
+                    using (SqlDataReader reader = sqlCmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string path = $"{ToursImagesPaths}/{reader["ID"].ToString()}.{reader["IMAGE_EXTENSION"].ToString()}";
+           
+                            if (!File.Exists(path))
+                            {
+                                File.Create(path);
                             }
                         }
                     }
