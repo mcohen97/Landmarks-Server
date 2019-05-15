@@ -1,21 +1,27 @@
 package com.acr.landmarks.view_models;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.location.Location;
 import android.util.Pair;
 
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.persistence.LandmarkMarkersStorage;
+import com.acr.landmarks.persistence.RoomMarkersStorage;
 import com.acr.landmarks.services.RetrofitLandmarksService;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class LandmarksViewModel extends ViewModel {
+public class LandmarksViewModel extends AndroidViewModel {
 
     private ILandmarksService landmarksService;
+    private LandmarkMarkersStorage markersStorage;
 
     private LiveData<Landmark> selectedLandmark;
 
@@ -26,8 +32,10 @@ public class LandmarksViewModel extends ViewModel {
     private final MutableLiveData<Pair<Location,Double>> geoFence;
 
 
-    public LandmarksViewModel(){
+    public LandmarksViewModel(Application a){
+        super(a);
         //se utilizara Dagger mas adelante
+        markersStorage = new RoomMarkersStorage(a);
         landmarksService = new RetrofitLandmarksService();
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
@@ -51,7 +59,14 @@ public class LandmarksViewModel extends ViewModel {
         liveDataMerger.addSource(geoFence, centerRadius ->
                 updateGeofence((Pair<Location, Double>) centerRadius));
         liveDataMerger.addSource(landmarksInRange,
-                value -> liveDataMerger.setValue(value));
+                value -> retrieveLandmarks(value));
+    }
+
+    private void retrieveLandmarks(Object value) {
+        liveDataMerger.setValue(value);
+        new Thread(() -> {
+            markersStorage.insertLandmarks((List<Landmark>) value);
+        }).start();
     }
 
     private void updateGeofence(Pair<Location,Double> value){
@@ -63,37 +78,32 @@ public class LandmarksViewModel extends ViewModel {
         }
     }
 
-    private void updateLandmarksIfLocationChanges(Location value) {
-        if((lastCenterLocation == null) || (!value.equals(lastCenterLocation))) {
-            lastCenterLocation = value;
-            reload();
-        }
-    }
-
-    private void updateLandmarksIfRadiusChanges(Double value) {
-        if((lastRadius == null) || !value.equals(lastRadius)) {
-            lastRadius = value;
-            reload();
-        }
-    }
 
     public void reload(){
-        landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
+        AtomicBoolean retrievedFromWeb = new AtomicBoolean(false);
+
+        final Thread fromWeb = new Thread(() -> {
+            landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
+            retrievedFromWeb.set(true);
+        });
+        fromWeb.start();
+        new Thread(() ->{
+            List<Landmark> cachedLandmarks=new ArrayList<>();
+            if(!retrievedFromWeb.get()) {
+                cachedLandmarks = markersStorage.getSavedLandmarks(geoFence.getValue().first, geoFence.getValue().second);
+            }
+            if(!retrievedFromWeb.get()) {
+                liveDataMerger.postValue(cachedLandmarks);
+            }
+        }).start();
+
+
     }
 
     public void setGeofence(Location aLocation, Double aRadius){
         geoFence.setValue(new Pair<>(aLocation,aRadius));
     }
 
-    public void setRadius(Double aRadius){
-        Pair<Location,Double> newGeoFence = new Pair<>(geoFence.getValue().first,aRadius);
-        geoFence.setValue(newGeoFence);
-    }
-
-    public void setCenter(Location location){
-        Pair<Location,Double> newGeoFence = new Pair<>(location,geoFence.getValue().second);
-        geoFence.setValue(newGeoFence);
-    }
 
     public LiveData<List<Landmark>> getLandmarks(){
         return liveDataMerger;

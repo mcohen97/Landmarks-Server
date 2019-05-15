@@ -80,10 +80,4 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
         return icon;
     }
 
-    public void RemoveItem(LandmarkClusterMarker item){
-        Marker marker = getMarker(item);
-        if(marker != null){
-            marker.remove();
-        }
-    }
 }
