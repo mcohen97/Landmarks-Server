@@ -17,7 +17,10 @@ namespace ObligatorioISP.Services.Tests
     {
         private Mock<IToursRepository> fakeToursStorage;
         private Mock<ILandmarksRepository> fakeLandmarksStorage;
+        private Mock<IImagesRepository> fakeImagesStorage;
         private IToursService service;
+        private string testImageData;
+
 
         [TestInitialize]
         public void StartUp() {
@@ -26,7 +29,11 @@ namespace ObligatorioISP.Services.Tests
                 .Returns(GetFakeTours());
             fakeToursStorage.Setup(r => r.GetById(It.IsAny<int>())).Returns((int x) => GetFakeTours().First(t => t.Id == x));
             fakeLandmarksStorage = new Mock<ILandmarksRepository>();
-            service = new ToursService(fakeToursStorage.Object, fakeLandmarksStorage.Object);
+
+            testImageData = "imageData";
+            fakeImagesStorage = new Mock<IImagesRepository>();
+            fakeImagesStorage.Setup(i => i.GetImageInBase64(It.IsAny<string>())).Returns(testImageData);
+            service = new ToursService(fakeToursStorage.Object, fakeLandmarksStorage.Object, fakeImagesStorage.Object);
         }
 
         [TestMethod]
@@ -37,6 +44,7 @@ namespace ObligatorioISP.Services.Tests
             ICollection<TourDto> retrieved =service.GetToursWithinKmRange(lat, lng, distance);
 
             fakeToursStorage.Verify(r => r.GetToursWithinKmRange(lat, lng, distance), Times.Once);
+            fakeImagesStorage.Verify(r => r.GetImageInBase64(It.IsAny<string>()), Times.Exactly(retrieved.Count));
             Assert.AreEqual(GetFakeTours().Count, retrieved.Count);
         }
 
@@ -47,6 +55,7 @@ namespace ObligatorioISP.Services.Tests
             TourDto retrieved = service.GetTourById(id);
 
             fakeToursStorage.Verify(r => r.GetById(id), Times.Once);
+            fakeImagesStorage.Verify(r => r.GetImageInBase64(It.IsAny<string>()), Times.Once);
             Assert.AreEqual(id,retrieved.Id);
         }
 

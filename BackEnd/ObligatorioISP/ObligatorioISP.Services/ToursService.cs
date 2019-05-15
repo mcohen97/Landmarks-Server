@@ -14,10 +14,13 @@ namespace ObligatorioISP.Services
     {
         private IToursRepository tours;
         private ILandmarksRepository landmarks;
+        private IImagesRepository images;
 
-        public ToursService(IToursRepository toursStorage, ILandmarksRepository landmarksStorage) {
+
+        public ToursService(IToursRepository toursStorage, ILandmarksRepository landmarksStorage, IImagesRepository imagesStorage) {
             tours = toursStorage;
             landmarks = landmarksStorage;
+            images = imagesStorage;
         }
 
         public TourDto GetTourById(int id)
@@ -73,7 +76,9 @@ namespace ObligatorioISP.Services
             {
                 Id = retrieved.Id,
                 Title = retrieved.Title,
-                LandmarksIds = retrieved.Landmarks.Select(t => t.Id)
+                LandmarksIds = retrieved.Landmarks.Select(t => t.Id),
+                Category = retrieved.Category.ToString(),
+                ImageBase64 = images.GetImageInBase64(retrieved.ImagePath)
             };
             return conversion;
         }
