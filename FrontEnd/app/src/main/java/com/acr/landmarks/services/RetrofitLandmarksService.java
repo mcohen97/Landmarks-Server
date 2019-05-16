@@ -9,6 +9,7 @@ import com.acr.landmarks.services.contracts.ILandmarksService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +28,7 @@ public class RetrofitLandmarksService implements  ILandmarksService{
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.0.110/api/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();
         webService= retrofit.create(RetrofitLandmarksAPI.class);
         landmarksData = new MutableLiveData<>();
@@ -40,7 +42,7 @@ public class RetrofitLandmarksService implements  ILandmarksService{
             @Override
             public void onResponse(Call<List<Landmark>> call, Response<List<Landmark>> response) {
                 if(response.isSuccessful()){
-                    landmarksData.setValue(response.body());
+                    landmarksData.postValue(response.body());
                 }
             }
 
