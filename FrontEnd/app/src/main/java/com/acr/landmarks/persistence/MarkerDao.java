@@ -17,10 +17,10 @@ public interface MarkerDao {
 
 
     @Query("SELECT * FROM markers")
-    public Cursor getStoredLandmarks();
+    Cursor getStoredLandmarks();
 
     @Query("DELETE FROM markers")
-    public  void clear();
+    void clear();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<LandmarkMarkerEntity> landmarks);

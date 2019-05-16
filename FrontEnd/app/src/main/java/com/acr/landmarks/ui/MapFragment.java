@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,11 +54,10 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
          GoogleMap.OnPolylineClickListener,
         ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
-        GoogleMap.OnCameraIdleListener{
+        GoogleMap.OnCameraIdleListener {
 
-    private final String TAG = "Map Fragment ";
+    private final String TAG = "MapFragment";
     private LandmarkSelectedListener mListener;
-    //private ILocationService locationService;
 
     private MapView mMapView;
 
@@ -83,10 +83,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //locationService = LocationService.getInstance();
     }
 
     @Override
@@ -196,6 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 setCameraViewWithZoom(DEFAULT_ZOOM);
                 landmarksViewModel.setGeofence(location,new Double(getMapRangeRadius()));
                 mMap.setOnCameraIdleListener(this);
+                //mMap.setOnCameraMoveStartedListener(this);
             }
 
         });
@@ -265,9 +266,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
 
         updateMapMarkers();
-
-
-        mClusterManager.cluster();
     }
 
     private void setUpClusterManager(){
@@ -287,17 +285,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void updateMapMarkers() {
-        mClusterManager.clearItems();
-        mClusterMarkers.clear();
+        //mClusterManager.clearItems();
+        //mClusterMarkers.clear();
 
         for(Landmark landmark: mLandmarks){
-
             try{
                 addMarker(landmark);
             }catch (NullPointerException e){
                 Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage() );
             }
         }
+        mClusterManager.cluster();
         //removeUselessMarkers();
     }
 
@@ -481,15 +479,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private void resetMap(){
         if(mMap != null) {
 
-            /*if(mClusterManager != null){
-                mClusterManager.clearItems();
-            }
-
-            if (mClusterMarkers.size() > 0) {
-                mClusterMarkers.clear();
-                mClusterMarkers = new ArrayList<>();
-            }*/
-
             if(mPolyLinesData.size() > 0){
                 mPolyLinesData.clear();
                 mPolyLinesData = new ArrayList<>();
@@ -515,4 +504,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         conversion.setLongitude(googleData.longitude);
         return conversion;
     }
+
 }
