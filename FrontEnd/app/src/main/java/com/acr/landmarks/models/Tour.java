@@ -1,9 +1,10 @@
 package com.acr.landmarks.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Tour {
-    private List<Integer> tourLandmarksIds;
+    private ArrayList<Integer> tourLandmarksIds;
     private String iconBase64;
     private int id;
     private String name;
@@ -15,7 +16,7 @@ public class Tour {
     }
 
 
-    public Tour(List<Integer> tourLandmarks, int id, String descripcion, String tematica, String zona) {
+    public Tour(ArrayList<Integer> tourLandmarks, int id, String descripcion, String tematica, String zona) {
         this.tourLandmarksIds = tourLandmarks;
         this.id = id;
         this.descripcion = descripcion;
@@ -39,7 +40,7 @@ public class Tour {
         this.name = name;
     }
 
-    public List<Integer> getTourLandmarks() {
+    public ArrayList<Integer> getTourLandmarks() {
         return tourLandmarksIds;
     }
 
@@ -47,7 +48,7 @@ public class Tour {
         return id;
     }
 
-    public void setTourLandmarks(List<Integer> tourLandmarks) {
+    public void setTourLandmarks(ArrayList<Integer> tourLandmarks) {
         this.tourLandmarksIds = tourLandmarks;
     }
 

@@ -35,10 +35,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApiRequest;
@@ -52,6 +54,7 @@ import com.google.maps.model.Distance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
@@ -484,10 +487,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     //Tours
     @Override
     public void drawTour(Tour selected) {
-        Polyline line = mMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0),new LatLng())//For que cree las latlng y luego pasarlas acá
-                .width(5)
-                .color(Color.RED));
+        addMapMarkers();
+
+        ArrayList<Integer> landmarksIds = selected.getTourLandmarks();
+        ArrayList<Landmark> landmarks =new ArrayList<Landmark>();
+
+        for(Integer id : landmarksIds){
+            for(Landmark landmark:mLandmarks){
+                if(landmark.getId()== id){
+                    landmarks.add(landmark);
+                }
+            }
+        }
+
+        PolylineOptions options = new PolylineOptions();
+
+        for(Landmark lm: landmarks){
+            options.add(new LatLng(lm.getLat(),lm.getLon()));
+        }
+        options.color(Color.RED);
+        options.width(5);
+
+        ArrayList<PatternItem> linePattern = new ArrayList<PatternItem>();
+        linePattern.add(new Gap(2));
+        options.pattern(linePattern);
+
+
     }
 
     @Override
@@ -510,4 +535,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             }
         }
     }
+
 }
