@@ -1,47 +1,45 @@
 package com.acr.landmarks.models;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tour {
-    private ArrayList<Integer> tourLandmarksIds;
-    private String iconBase64;
+    private ArrayList<Integer> landmarksIds;
+    private String imageBase64;
     private int id;
-    private String name;
-    private String descripcion;
-    private String tematica;
-    private String zona;
+    private String title;
+    private String description;
+    private String category;
+
 
     public Tour() {
     }
 
 
-    public Tour(ArrayList<Integer> tourLandmarks, int id, String descripcion, String tematica, String zona) {
-        this.tourLandmarksIds = tourLandmarks;
+    public Tour(ArrayList<Integer> tourLandmarks, int id, String descripcion, String category) {
+        this.landmarksIds = tourLandmarks;
         this.id = id;
-        this.descripcion = descripcion;
-        this.tematica = tematica;
-        this.zona = zona;
+        this.description = descripcion;
+        this.category = category;
     }
 
-    public String getIconBase64() {
-        return iconBase64;
+    public String getImageBase64() {
+        return imageBase64;
     }
 
-    public void setIconBase64(String iconBase64) {
-        this.iconBase64 = iconBase64;
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public ArrayList<Integer> getTourLandmarks() {
-        return tourLandmarksIds;
+        return landmarksIds;
     }
 
     public int getId() {
@@ -49,34 +47,27 @@ public class Tour {
     }
 
     public void setTourLandmarks(ArrayList<Integer> tourLandmarks) {
-        this.tourLandmarksIds = tourLandmarks;
+        this.landmarksIds = tourLandmarks;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getTematica() {
-        return tematica;
+    public String getCategory() {
+        return category;
     }
 
-    public void setTematica(String tematica) {
-        this.tematica = tematica;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getZona() {
-        return zona;
-    }
-
-    public void setZona(String zona) {
-        this.zona = zona;
-    }
 }

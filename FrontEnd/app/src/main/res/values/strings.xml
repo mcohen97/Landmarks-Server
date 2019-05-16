@@ -1,19 +1,19 @@
 <resources>
-    <string name="app_name">Landmarks</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="google_map_api_key">AIzaSyBwpUs0_sE60F6dGoUeRwjfcZBiKTst6AI</string>
-    <string name="title_activity_home_tab">HomeTabActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="title_activity_home_tabs">HomeTabsActivity</string>
-    <string name="tab_text_1">Tours</string>
-    <string name="tab_text_2">Map</string>
-    <string name="tab_text_3">Landmarks</string>
+    <string title="app_name">Landmarks</string>
+    <string title="title_activity_maps">Map</string>
+    <string title="google_map_api_key">AIzaSyBwpUs0_sE60F6dGoUeRwjfcZBiKTst6AI</string>
+    <string title="title_activity_home_tab">HomeTabActivity</string>
+    <string title="action_settings">Settings</string>
+    <string title="section_format">Hello World from section: %1$d</string>
+    <string title="title_activity_home_tabs">HomeTabsActivity</string>
+    <string title="tab_text_1">Tours</string>
+    <string title="tab_text_2">Map</string>
+    <string title="tab_text_3">Landmarks</string>
 
-    <string name="unitKm">Km</string>
+    <string title="unitKm">Km</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="view_guide_btntext">Ver Guía</string>
+    <string title="hello_blank_fragment">Hello blank fragment</string>
+    <string title="title_activity_main">MainActivity</string>
+    <string title="view_guide_btntext">Ver Guía</string>
 </resources>

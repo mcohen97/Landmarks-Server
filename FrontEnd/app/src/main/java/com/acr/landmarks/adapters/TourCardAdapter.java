@@ -41,21 +41,38 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull TourCardAdapter.ViewHolder holder, int position) {
         Tour requestedTour = lastAvailableTourData.get(position);
-        String tourName = requestedTour.getName();
+        String tourName = requestedTour.getTitle();
         holder.title.setText(tourName);
 
         //Seteo el ícono según temática a la izquierda del textView--->Resolver como serán las temáticas, conseguir íconos y Codificar
+        String tourTheme = requestedTour.getCategory();
+        switch (tourTheme){
+            case "CULTURAL":
+                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.cultural,0,0,0);
+                break;
+            case "ENTERTAINMENT":
+                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.entertainment,0,0,0);
+                break;
+            case "VIEWS":
+                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.views,0,0,0);
+                break;
+            case "GREENZONES":
+                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.greenzones,0,0,0);
+                break;
+            default:
+                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.entertainment,0,0,0);
+                break;
+        }
         holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.ic_launcher_foreground,0,0,0);
 
-        String tourTheme = requestedTour.getTematica();
         holder.theme.setText(tourTheme);
 
-        String image = requestedTour.getIconBase64();
+        String image = requestedTour.getImageBase64();
         byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
         Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
         holder.thumbnail.setImageBitmap(landmark);
 
-        String tourDescription = requestedTour.getDescripcion();
+        String tourDescription = requestedTour.getDescription();
         holder.description.setText(tourDescription);
     }
 

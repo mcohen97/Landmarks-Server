@@ -8,7 +8,7 @@
 
     You can also add your credentials to an existing key, using these values:
 
-    Package name:
+    Package title:
     EB:21:ED:5A:22:6C:94:54:71:91:9B:F9:7E:67:12:7C:E1:EE:29:E3
 
     SHA-1 certificate fingerprint:
@@ -20,5 +20,5 @@
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">@string/google_map_api_key</string>
+    <string title="google_maps_key" templateMergeStrategy="preserve" translatable="false">@string/google_map_api_key</string>
 </resources>
