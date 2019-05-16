@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,6 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
-import com.acr.landmarks.services.LocationService;
-import com.acr.landmarks.services.contracts.ILocationService;
 import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
@@ -45,7 +44,6 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.Distance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,18 +52,18 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker> {
+         GoogleMap.OnPolylineClickListener,
+        ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
+        GoogleMap.OnCameraIdleListener {
 
-    private final String TAG = "Map Fragment ";
+    private final String TAG = "MapFragment";
     private LandmarkSelectedListener mListener;
-    private ILocationService locationService;
 
     private MapView mMapView;
 
     //location y camera update
     private static GoogleMap mMap;
     public static Location mUserLocation;
-    private RelativeLayout mMapContainer;
     private static final int DEFAULT_ZOOM = 15;
 
     //Clustering
@@ -85,10 +83,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        locationService = LocationService.getInstance();
     }
 
     @Override
@@ -110,7 +108,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         initGoogleMap(savedInstanceState);
 
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
-        mMapContainer = view.findViewById(R.id.map_container);
+        RelativeLayout mMapContainer = view.findViewById(R.id.map_container);
         mLandmarks= new ArrayList<Landmark>();
 
 
@@ -189,34 +187,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         map.setMyLocationEnabled(true);
         mMap = map;
 
-
-        addMapMarkers();
-
-        landmarksViewModel.getLandmarks().observe(this, landmarks -> {
-            mLandmarks = landmarks;
-            addMapMarkers();
-        });
-
         locationViewModel.getLocation().observe(this, location -> {
             boolean firstLocation =mUserLocation == null;
 
             mUserLocation = location;
 
-            float newRadius = getMapRangeRadius();
-            locationService.setRadius(newRadius);
-
             if(firstLocation){
                 setCameraViewWithZoom(DEFAULT_ZOOM);
-            }else if(!isLocationWithinBounds(location)){
-                setCameraView();
+                landmarksViewModel.setGeofence(location,new Double(getMapRangeRadius()));
+                mMap.setOnCameraIdleListener(this);
+                //mMap.setOnCameraMoveStartedListener(this);
             }
+
+        });
+
+        landmarksViewModel.getLandmarks().observe(this, landmarks -> {
+            mLandmarks = landmarks;
+            addMapMarkers();
         });
     }
 
-    private boolean isLocationWithinBounds(Location location) {
-        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-        return bounds.contains(new LatLng(location.getLatitude(),location.getLongitude()));
-    }
 
     private float getMapRangeRadius() {
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
@@ -267,43 +257,87 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             return;
         }
         resetMap();
-            if(mClusterManager == null){
-                mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
-                mMap.setOnMarkerClickListener(mClusterManager);
-                mMap.setOnInfoWindowClickListener(mClusterManager);
-                mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+        boolean firstTime = mClusterManager == null;
+        if(firstTime){
+            setUpClusterManager();
+        }
+        if(mClusterManagerRenderer == null){
+            setUpClusterManagerRenderer();
+        }
+
+        updateMapMarkers();
+    }
+
+    private void setUpClusterManager(){
+        mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        mMap.setOnInfoWindowClickListener(mClusterManager);
+        mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+    }
+
+    private void setUpClusterManagerRenderer(){
+        mClusterManagerRenderer = new ClusterManagerRenderer(
+                getActivity(),
+                mMap,
+                mClusterManager
+        );
+        mClusterManager.setRenderer(mClusterManagerRenderer);
+    }
+
+    private void updateMapMarkers() {
+        //mClusterManager.clearItems();
+        //mClusterMarkers.clear();
+
+        for(Landmark landmark: mLandmarks){
+            try{
+                addMarker(landmark);
+            }catch (NullPointerException e){
+                Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage() );
             }
-            if(mClusterManagerRenderer == null){
-                mClusterManagerRenderer = new ClusterManagerRenderer(
-                        getActivity(),
-                        mMap,
-                        mClusterManager
-                );
-                mClusterManager.setRenderer(mClusterManagerRenderer);
+        }
+        mClusterManager.cluster();
+        //removeUselessMarkers();
+    }
+
+    private void addMarker(Landmark landmark) {
+
+        boolean alreadyInMap = isMarkerInMap(landmark);
+        if(!alreadyInMap) {
+            String snippet = "Determine route to " + landmark.getName() + "?";
+            LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
+                    new LatLng(landmark.getLat(), landmark.getLon()),
+                    landmark.getName(),
+                    snippet,
+                    landmark.getImg(),
+                    landmark
+            );
+            mClusterManager.addItem(newClusterMarker);
+            mClusterMarkers.add(newClusterMarker);
+        }
+    }
+
+    private void removeUselessMarkers() {
+        List<LandmarkClusterMarker> auxLandmarks= (List<LandmarkClusterMarker>) mClusterMarkers.clone();
+        for(LandmarkClusterMarker marker: auxLandmarks){
+            if(!markerContainsLandmarkInRange(marker)){
+                mClusterMarkers.remove(marker);
+                mClusterManager.removeItem(marker);
             }
+        }
 
-            for(Landmark landmark: mLandmarks){
+    }
 
-                try{
-                    String snippet = "Determine route to " + landmark.getName() + "?";
-                    LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
-                            new LatLng(landmark.getLat(), landmark.getLon()),
-                            landmark.getName(),
-                            snippet,
-                            landmark.getImg(),
-                            landmark
-                    );
-                    mClusterManager.addItem(newClusterMarker);
-                    mClusterMarkers.add(newClusterMarker);
+    private boolean markerContainsLandmarkInRange(LandmarkClusterMarker marker) {
+        return mLandmarks.contains(marker.getLandmark());
+    }
 
-                }catch (NullPointerException e){
-                    Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage() );
-                }
-
+    private boolean isMarkerInMap(Landmark landmark) {
+        for(LandmarkClusterMarker marker :mClusterMarkers){
+            if(marker.getLandmark().equals(landmark)){
+                return true;
             }
-            mClusterManager.cluster();
-
-
+        }
+        return false;
     }
 
     private void calculateDirections(Marker marker){
@@ -418,14 +452,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
     }
 
-    private void resetSelectedMarker(){
-        if(mSelectedMarker != null){
-            mSelectedMarker.setVisible(true);
-            mSelectedMarker = null;
-            removeTripMarkers();
-        }
-    }
-
     private void removeTripMarkers(){
         for(Marker marker: mTripMarkers){
             marker.remove();
@@ -452,16 +478,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     private void resetMap(){
         if(mMap != null) {
-            mMap.clear();
-
-            if(mClusterManager != null){
-                mClusterManager.clearItems();
-            }
-
-            if (mClusterMarkers.size() > 0) {
-                mClusterMarkers.clear();
-                mClusterMarkers = new ArrayList<>();
-            }
 
             if(mPolyLinesData.size() > 0){
                 mPolyLinesData.clear();
@@ -470,10 +486,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
     }
 
-
     @Override
     public void onClusterItemInfoWindowClick(LandmarkClusterMarker landmarkClusterMarker) {
         mListener.onLandmarkSelected(landmarkClusterMarker.getLandmark());
+    }
+
+    @Override
+    public void onCameraIdle() {
+        float newRadius = getMapRangeRadius();
+        LatLng center = mMap.getCameraPosition().target;
+        landmarksViewModel.setGeofence(latLngToLocation(center),new Double(newRadius));
+    }
+
+    private Location latLngToLocation(LatLng googleData){
+        Location conversion = new Location(new String());
+        conversion.setLatitude(googleData.latitude);
+        conversion.setLongitude(googleData.longitude);
+        return conversion;
     }
 
 }

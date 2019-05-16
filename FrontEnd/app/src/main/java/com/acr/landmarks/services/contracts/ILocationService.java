@@ -1,5 +1,6 @@
 package com.acr.landmarks.services.contracts;
 
+import android.arch.lifecycle.LiveData;
 import android.location.Location;
 
 public interface ILocationService {
@@ -8,13 +9,13 @@ public interface ILocationService {
 
     void setRadius(double radius);
 
-    Location getLocation();
+    LiveData<Location> getLocation();
 
-    double getRadius();
+    LiveData<Double> getRadius();
 
-    void addGeofenceChangeListener(OnGeofenceChangeListener newListener);
+    /*void addGeofenceChangeListener(OnGeofenceChangeListener newListener);
 
     public interface OnGeofenceChangeListener{
         void onGeofenceRadiusChange(Location newLocation, double newRadius);
-    }
+    }*/
 }

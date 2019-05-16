@@ -1,6 +1,5 @@
 package com.acr.landmarks.adapters;
 
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,9 +9,6 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.HaversineDistanceCalculatorService;
-import com.acr.landmarks.services.contracts.IDistanceCalculatorService;
-import com.acr.landmarks.ui.MainActivity;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -20,14 +16,12 @@ import java.util.List;
 
 public class LandmarkListAdapter extends RecyclerView.Adapter<LandmarkListAdapter.ViewHolder>{
 
-    private final IDistanceCalculatorService listCalculatorService;
     private List<Landmark> mLandmarks;
     private LandmarkListRecyclerClickListener mClickListener;
 
     public LandmarkListAdapter(List<Landmark> lms, LandmarkListRecyclerClickListener clickListener) {
         mLandmarks = lms;
         mClickListener = clickListener;
-        listCalculatorService = new HaversineDistanceCalculatorService();
         updateDistances(mLandmarks);
         Collections.sort(mLandmarks);
     }

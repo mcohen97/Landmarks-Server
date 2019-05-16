@@ -1,18 +1,16 @@
 package com.acr.landmarks.services;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 
 import com.acr.landmarks.services.contracts.ILocationService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class LocationService implements ILocationService {
 
-    private Location currentLocation;
-    private double currentRadius;
-    private List<OnGeofenceChangeListener> mListeners;
+    private final MutableLiveData<Location> currentLocation;
+    private final MutableLiveData<Double> currentRadius;
 
     private static final LocationService instance = new LocationService();
 
@@ -21,54 +19,33 @@ public class LocationService implements ILocationService {
     }
 
     private LocationService(){
-        mListeners = new ArrayList<>();
-        currentLocation = generateDefaultLocation();
-        currentRadius = 2;//harcoded,default location, take to config file
-    }
-
-    private Location  generateDefaultLocation(){
-        Location defaultLocation =new Location(new String());
-        defaultLocation.setLatitude(-34.923844);//harcoded,default location, take to config file
-        defaultLocation.setLongitude(-56.170590);
-        return defaultLocation;
-    }
-
-    @Override
-    public void addGeofenceChangeListener(OnGeofenceChangeListener newListener){
-        mListeners.add(newListener);
+        currentLocation = new MutableLiveData<>();
+        currentRadius = new MutableLiveData<>();
     }
 
     @Override
     public void setLocation(Location current) {
-        boolean hasChanged = currentLocation != current;
-        currentLocation = current;
+        boolean hasChanged = (currentLocation.getValue() == null) || (currentLocation.getValue().distanceTo(current) > 20);
         if(hasChanged) {
-            notifyChange();
+            currentLocation.setValue(current);
         }
     }
 
     @Override
     public void setRadius(double radius) {
-        boolean hasChanged = currentRadius != radius;
-        currentRadius = radius;
+        boolean hasChanged = (currentRadius.getValue() == null) == (!currentRadius.getValue().equals(radius));
         if(hasChanged) {
-            notifyChange();
-        }
-    }
-
-    private void notifyChange() {
-        for(OnGeofenceChangeListener l :mListeners){
-            l.onGeofenceRadiusChange(currentLocation,currentRadius);
+            currentRadius.setValue(radius);
         }
     }
 
     @Override
-    public Location getLocation() {
+    public LiveData<Location> getLocation() {
         return currentLocation;
     }
 
     @Override
-    public double getRadius() {
+    public LiveData<Double> getRadius() {
         return currentRadius;
     }
 }

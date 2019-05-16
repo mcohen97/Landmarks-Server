@@ -1,14 +1,9 @@
 package com.acr.landmarks.adapters;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -19,10 +14,6 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.contracts.ILandmarksService;
-import com.acr.landmarks.view_models.LandmarksViewModel;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapter.ViewHolder>{

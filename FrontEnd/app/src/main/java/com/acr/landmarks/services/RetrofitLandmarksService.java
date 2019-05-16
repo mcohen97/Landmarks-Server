@@ -6,9 +6,10 @@ import android.location.Location;
 
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.services.contracts.ILandmarksService;
-import com.acr.landmarks.services.contracts.ILocationService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,38 +17,32 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitLandmarksService implements  ILandmarksService, ILocationService.OnGeofenceChangeListener {
+public class RetrofitLandmarksService implements  ILandmarksService{
 
     private Retrofit retrofit;
     private RetrofitLandmarksAPI webService;
-    private ILocationService locationService;
-    private Location currentLocation;
-    private double currentRadius;
-    private final MutableLiveData<List<Landmark>> data;
+    private final MutableLiveData<List<Landmark>> landmarksData;
 
 
     public RetrofitLandmarksService(){
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.0.110/api/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();
         webService= retrofit.create(RetrofitLandmarksAPI.class);
-        locationService= LocationService.getInstance();
-        locationService.addGeofenceChangeListener(this);
-        currentLocation = locationService.getLocation();
-        currentRadius = locationService.getRadius();
-        data = new MutableLiveData<>();
+        landmarksData = new MutableLiveData<>();
+        landmarksData.setValue(new ArrayList<>());
     }
 
-
     @Override
-    public LiveData<List<Landmark>> getLandmarks() {
+    public LiveData<List<Landmark>> getLandmarks(Location currentLocation, double currentRadius) {
         Call<List<Landmark>> landmarks = webService.getLandmarksInRange(currentLocation.getLatitude(),currentLocation.getLongitude(),currentRadius);
         landmarks.enqueue(new Callback<List<Landmark>>() {
             @Override
             public void onResponse(Call<List<Landmark>> call, Response<List<Landmark>> response) {
                 if(response.isSuccessful()){
-                    data.setValue(response.body());
+                    landmarksData.postValue(response.body());
                 }
             }
 
@@ -56,7 +51,7 @@ public class RetrofitLandmarksService implements  ILandmarksService, ILocationSe
 
             }
         });
-        return data;
+        return landmarksData;
     }
 
 
@@ -78,12 +73,5 @@ public class RetrofitLandmarksService implements  ILandmarksService, ILocationSe
             }
         });
         return  data;
-    }
-
-    @Override
-    public void onGeofenceRadiusChange(Location newLocation, double newRadius) {
-        currentLocation=newLocation;
-        currentRadius= newRadius;
-        getLandmarks();
     }
 }
