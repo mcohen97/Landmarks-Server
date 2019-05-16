@@ -30,6 +30,7 @@ public class LandmarksViewModel extends AndroidViewModel {
     private LiveData<List<Landmark>> landmarksInRange;
     private MediatorLiveData liveDataMerger;
     private final MutableLiveData<Pair<Location,Double>> geoFence;
+    private final AtomicBoolean lastDataRetrieved;
 
 
     public LandmarksViewModel(Application a){
@@ -39,6 +40,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         landmarksService = new RetrofitLandmarksService();
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
+        lastDataRetrieved = new AtomicBoolean(false);
         setDefaultData();
     }
 
@@ -59,10 +61,11 @@ public class LandmarksViewModel extends AndroidViewModel {
         liveDataMerger.addSource(geoFence, centerRadius ->
                 updateGeofence((Pair<Location, Double>) centerRadius));
         liveDataMerger.addSource(landmarksInRange,
-                value -> retrieveLandmarks(value));
+                value -> updateLandmarks(value));
     }
 
-    private void retrieveLandmarks(Object value) {
+    private void updateLandmarks(Object value) {
+        lastDataRetrieved.set(true);
         liveDataMerger.setValue(value);
         new Thread(() -> {
             markersStorage.insertLandmarks((List<Landmark>) value);
@@ -80,19 +83,15 @@ public class LandmarksViewModel extends AndroidViewModel {
 
 
     public void reload(){
-        AtomicBoolean retrievedFromWeb = new AtomicBoolean(false);
+        lastDataRetrieved.set(false);
+        landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
 
-        final Thread fromWeb = new Thread(() -> {
-            landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
-            retrievedFromWeb.set(true);
-        });
-        fromWeb.start();
         new Thread(() ->{
             List<Landmark> cachedLandmarks=new ArrayList<>();
-            if(!retrievedFromWeb.get()) {
+            if(!lastDataRetrieved.get()) {
                 cachedLandmarks = markersStorage.getSavedLandmarks(geoFence.getValue().first, geoFence.getValue().second);
             }
-            if(!retrievedFromWeb.get()) {
+            if(!lastDataRetrieved.get()) {
                 liveDataMerger.postValue(cachedLandmarks);
             }
         }).start();
