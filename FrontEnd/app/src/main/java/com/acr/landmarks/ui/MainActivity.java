@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -33,9 +34,8 @@ import android.widget.Toast;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
-import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.LocationService;
-import com.acr.landmarks.services.contracts.ILocationService;
+import com.acr.landmarks.models.LandmarkFullInfo;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.google.android.gms.common.ConnectionResult;
@@ -62,8 +62,10 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     private LocationCallback locationCallback;
     private UserLocationViewModel locationViewModel;
+    private LandmarksViewModel landmarksViewModel;
 
     private BottomSheetBehavior mBottomSheetBehaviour;
+    private Location mCurrentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +96,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
         //locationService = LocationService.getInstance();
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
-
+        landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
+        landmarksViewModel.getSelectedLandmark().observe(this,selected ->
+                addFullLandmarkInfo(selected));
     }
 
     private void createLocationCallback() {
@@ -104,7 +108,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 if (locationResult == null) {
                     return;
                 }
-                locationViewModel.setLocation(locationResult.getLastLocation());
+                mCurrentLocation = locationResult.getLastLocation();
+                locationViewModel.setLocation(mCurrentLocation);
             };
         };
     }
@@ -248,26 +253,51 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     }
 
     @Override
-    public void onLandmarkSelected(Landmark selectedLandmark) {
+    public void onLandmarkSelected(LandmarkMarkerInfo selectedLandmark) {
+        addBasicInfo( selectedLandmark.title,selectedLandmark.latitude,selectedLandmark.longitude);
+        addSingleImage(selectedLandmark.iconBase64);
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private void addFullLandmarkInfo(LandmarkFullInfo landmark){
+        addBasicInfo(landmark.title, landmark.latitude,landmark.longitude);
+        LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
+        TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
+        sheetLandmarkDescription.setText(landmark.description);
+    }
+
+
+    //The main usage of this method is to fill the drawer with info while waiting for the full landmark information.
+    private void addBasicInfo(String title, double latitude, double longitude){
         LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
         ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
         TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
-        TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
         TextView sheetLandmarkDistance =  layoutBottomSheet.findViewById(R.id.landmarkDistance) ;
 
 
-        String image = selectedLandmark.getImg();
-        byte[] imageData = Base64.decode(image, Base64.DEFAULT);
-        Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
-        sheetLandmarkImage.setImageBitmap(landmark);
-        sheetLandmarkName.setText(selectedLandmark.getName());
-        sheetLandmarkDescription.setText(selectedLandmark.getDescription());
 
-        String distance = ""+selectedLandmark.getDistance();
+        sheetLandmarkName.setText(title);
+        //sheetLandmarkDescription.setText(selectedLandmark.getDescription());
+
+        String distance = ""+ (mCurrentLocation.distanceTo(createLocation(latitude,longitude))/1000);
         distance += " Km";
 
         sheetLandmarkDistance.setText(distance);
+    }
 
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
+    private void addSingleImage(String image){
+        LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
+        ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
+
+        byte[] imageData = Base64.decode(image, Base64.DEFAULT);
+        Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
+        sheetLandmarkImage.setImageBitmap(landmark);
+    }
+
+    private Location createLocation( double lat, double lng){
+        Location conversion = new Location(new String());
+        conversion.setLatitude(lat);
+        conversion.setLongitude(lng);
+        return conversion;
     }
 }

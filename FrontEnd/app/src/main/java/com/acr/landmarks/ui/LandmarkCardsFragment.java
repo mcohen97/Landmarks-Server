@@ -4,8 +4,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,11 +12,8 @@ import android.view.ViewGroup;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkCardAdapter;
-import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.models.LandmarkClusterMarker;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 import com.acr.landmarks.view_models.LandmarksViewModel;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +24,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
     private LandmarkCardAdapter  adapter;
     private RecyclerView recyclerView;
     private LandmarksViewModel viewModel;
-    private List<Landmark> data;
+    private List<LandmarkMarkerInfo> data;
 
     private LandmarkSelectedListener mListener;
 
@@ -45,7 +40,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
 
         View view = inflater.inflate(R.layout.fragment_landmark_list, container, false);
         //data= viewModel.getLandmarks().getValue();
-        data= new ArrayList<Landmark>();
+        data= new ArrayList<LandmarkMarkerInfo>();
         initRecyclerView(inflater, view);
         viewModel.getLandmarks().observe(this, landmarks -> {
             //Fragment and adapter share the same reference to data
@@ -64,7 +59,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
     }
 
     @Override
-    public void onLandmarkClicked(Landmark clicked) {
+    public void onLandmarkClicked(LandmarkMarkerInfo clicked) {
         mListener.onLandmarkSelected(clicked);
     }
 

@@ -13,16 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
+
 import java.util.List;
 
 public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapter.ViewHolder>{
 
     private Context mContext;
     private LandmarkCardClickListener clickListener;
-    private List<Landmark> lastAvailableData;
+    private List<LandmarkMarkerInfo> lastAvailableData;
 
-    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, List<Landmark> data){
+    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, List<LandmarkMarkerInfo> data){
         this.mContext = mContext;
         this.clickListener = clickListener;
         lastAvailableData = data;
@@ -39,10 +40,10 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Landmark requestedLandmark = lastAvailableData.get(position);
-        String landmarkName = requestedLandmark.getName();
+        LandmarkMarkerInfo requestedLandmark = lastAvailableData.get(position);
+        String landmarkName = requestedLandmark.title;
         holder.title.setText(landmarkName);
-        String image = requestedLandmark.getImg();
+        String image = requestedLandmark.iconBase64;
         byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
         Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
         holder.thumbnail.setImageBitmap(landmark);
@@ -77,7 +78,7 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
     }
 
     public interface LandmarkCardClickListener {
-        void onLandmarkClicked(Landmark clicked);
+        void onLandmarkClicked(LandmarkMarkerInfo clicked);
     }
 }
 
