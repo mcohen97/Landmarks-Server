@@ -41,7 +41,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull TourCardAdapter.ViewHolder holder, int position) {
         Tour requestedTour = lastAvailableTourData.get(position);
-        String tourName = requestedTour.getTitle();
+        String tourName = requestedTour.getName();
         holder.title.setText(tourName);
 
         //Seteo el ícono según temática a la izquierda del textView--->Resolver como serán las temáticas, conseguir íconos y Codificar
@@ -63,7 +63,6 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
                 holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.entertainment,0,0,0);
                 break;
         }
-        holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.ic_launcher_foreground,0,0,0);
 
         holder.theme.setText(tourTheme);
 

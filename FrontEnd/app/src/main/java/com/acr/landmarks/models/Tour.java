@@ -6,7 +6,7 @@ public class Tour {
     private ArrayList<Integer> landmarksIds;
     private String imageBase64;
     private int id;
-    private String title;
+    private String name;
     private String description;
     private String category;
 
@@ -30,12 +30,12 @@ public class Tour {
         this.imageBase64 = imageBase64;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public ArrayList<Integer> getTourLandmarks() {

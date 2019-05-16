@@ -66,12 +66,12 @@ public class LandmarkListFragment extends Fragment implements
 
     @Override
     public void onLandmarkClicked(int position) {
-        /*String selectedLandmarkId = mLandmarks.get(position).getTitle();
+        /*String selectedLandmarkId = mLandmarks.get(position).getName();
         GoogleMap mMap = MapFragment.getMap();
         ArrayList<LandmarkClusterMarker> mClusterMarkers = MapFragment.getMarkers();
 
         for(LandmarkClusterMarker clusterMarker: mClusterMarkers){
-            if(selectedLandmarkId.equals(clusterMarker.getLandmark().getTitle())){
+            if(selectedLandmarkId.equals(clusterMarker.getLandmark().getName())){
                 mMap.animateCamera(
                         CameraUpdateFactory.newLatLng(
                                 new LatLng(clusterMarker.getPosition().latitude, clusterMarker.getPosition().longitude)),
@@ -99,7 +99,7 @@ public class LandmarkListFragment extends Fragment implements
         int avatar = R.drawable.test_image;
 
         sheetLandmarkImage.setImageResource(avatar);
-        sheetLandmarkName.setText(selectedLandmark.getTitle());
+        sheetLandmarkName.setText(selectedLandmark.getName());
         sheetLandmarkDescription.setText(selectedLandmark.getDescription());
 
         DecimalFormat FORMATTER = new DecimalFormat("0.###");
