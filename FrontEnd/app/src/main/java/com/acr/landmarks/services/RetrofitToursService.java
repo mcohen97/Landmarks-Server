@@ -29,7 +29,7 @@ public class RetrofitToursService implements ITourService, ILocationService.OnGe
 
     public RetrofitToursService(){
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.100/api/")
+                .baseUrl("http://192.168.1.101:5002/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webService= retrofit.create(RetrofitToursAPI.class);
