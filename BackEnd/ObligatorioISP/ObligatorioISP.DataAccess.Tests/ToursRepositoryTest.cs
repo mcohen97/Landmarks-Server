@@ -20,8 +20,8 @@ namespace ObligatorioISP.DataAccess.Tests
             testData.SetUpDatabase();
             testData.LoadTestData();
             context = new SqlServerConnectionManager(testData.ConnectionString);
-            landmarks = new SqlServerLandmarksRepository(context, testData.ImagesPath, testData.AudiosPath);
-            tours = new SqlServerToursRepository(context,landmarks);
+            landmarks = new SqlServerLandmarksRepository(context, testData.LandmarksImagesPath, testData.AudiosPath);
+            tours = new SqlServerToursRepository(context,landmarks,testData.ToursImagesPaths);
         }
 
         [TestMethod]
@@ -73,10 +73,13 @@ namespace ObligatorioISP.DataAccess.Tests
             Mock<ISqlContext> fakeContext = new Mock<ISqlContext>();
             Dictionary<string, object> faultyToursData = new Dictionary<string, object>();
             faultyToursData.Add("ID", 1);
-            faultyToursData.Add("TITLE", "");
+            faultyToursData.Add("TITLE", "");//incorrect.
+            faultyToursData.Add("DESCRIPTION", "description 1");
+            faultyToursData.Add("CATEGORY", "CULTURAL");
+            faultyToursData.Add("IMAGE_EXTENSION", ".jpg");
             ICollection<Dictionary<string, object>> fakeReturn = new List<Dictionary<string, object>>() { faultyToursData };
             fakeContext.Setup(c => c.ExcecuteRead(It.IsAny<string>())).Returns(fakeReturn);
-            tours = new SqlServerToursRepository(fakeContext.Object, landmarks);
+            tours = new SqlServerToursRepository(fakeContext.Object, landmarks, testData.ToursImagesPaths);
             tours.GetById(1);
         }
     }

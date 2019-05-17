@@ -6,29 +6,15 @@ namespace ObligatorioISP.DataAccess
 {
     public class DiskImagesRepository : IImagesRepository
     {
-        public string GetImageInBase64(string imageName)
-        {
-            byte[] data;
-            try
-            {
-                data = TryRead(imageName);
-            }
-            catch (IOException)
-            {
-                data = new byte[0];
-            }
-            return Convert.ToBase64String(data);
+        private StreamReader reader;
+
+        public DiskImagesRepository() {
+            reader = new StreamReader();
         }
 
-        private byte[] TryRead(string path)
+        public string GetImageInBase64(string imageName)
         {
-            byte[] bytes = new byte[0];
-            using (Stream source = File.OpenRead(path))
-            {
-                bytes = new byte[source.Length];
-                source.Read(bytes, 0, bytes.Length);
-            }
-            return bytes;
+            return reader.GetResource(imageName);
         }
     }
 }

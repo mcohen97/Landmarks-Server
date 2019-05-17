@@ -73,7 +73,7 @@ namespace ObligatorioISP.DataAccess
 
             int id = Int32.Parse(rawData["ID"].ToString());
             string title = rawData["TITLE"].ToString();
-            string description = rawData["DESCRIPT"].ToString();
+            string description = rawData["DESCRIPTION"].ToString();
             double lat = double.Parse(rawData["LATITUDE"].ToString());
             double lng = double.Parse(rawData["LONGITUDE"].ToString());
             ICollection<string> images = GetMediaResources(id, IMAGES_TABLE);

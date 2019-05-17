@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private FusedLocationProviderClient mFusedLocationClient;
 
     private LocationCallback locationCallback;
-    private ILocationService locationService;
     private UserLocationViewModel locationViewModel;
 
     private BottomSheetBehavior mBottomSheetBehaviour;
@@ -93,12 +92,13 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        mViewPager.setCurrentItem(1);
 
         createLocationCallback();
 
         createBottomSheet();
 
-        locationService = LocationService.getInstance();
+        //locationService = LocationService.getInstance();
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
 
     }
@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 if (locationResult == null) {
                     return;
                 }
-                locationService.setLocation(locationResult.getLastLocation());
                 locationViewModel.setLocation(locationResult.getLastLocation());
             };
         };
@@ -134,8 +133,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             return;
         }
         LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(3000);
+        mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         mFusedLocationClient.requestLocationUpdates(mLocationRequest,locationCallback,null);
     }
