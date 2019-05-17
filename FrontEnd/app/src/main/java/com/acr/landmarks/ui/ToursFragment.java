@@ -46,9 +46,8 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_tours, container, false);
-        updateTours();
-        data= viewModel.getTours().getValue();
         data = new ArrayList<>();
+        //data= viewModel.getTours().getValue();
         initRecyclerView(inflater, view);
         viewModel.getTours().observe(this, tours -> {
             //Fragment and adapter share the same reference to data
@@ -57,9 +56,6 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
             adapter.notifyDataSetChanged();
         });
         return view;
-    }
-
-    private void updateTours() {
     }
 
 

@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             tabHost.setCurrentTab(0);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-            MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("Map Fragment");
+            MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
             mapFragment.resetTheMap();
         }
         return super.onOptionsItemSelected(item);
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         TabHost tabHost = findViewById(R.id.tabs);
         tabHost.setCurrentTab(1);
 
-        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("Map Fragment");
+        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
         mapFragment.drawTour(selected);
     }
 

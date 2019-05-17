@@ -31,6 +31,7 @@ import com.acr.landmarks.services.contracts.ILocationService;
 import com.acr.landmarks.services.contracts.MapCommunicator;
 import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.view_models.LandmarksViewModel;
+import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,9 +61,7 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>, MapCommunicator {
-         GoogleMap.OnPolylineClickListener,
-        ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
+         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>, MapCommunicator,
         GoogleMap.OnCameraIdleListener {
 
     private final String TAG = "MapFragment";
@@ -80,6 +79,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private ClusterManagerRenderer mClusterManagerRenderer;
     private static ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
     private List<Landmark> mLandmarks;
+    private List<Tour> mTours;
 
     //Directions
     private GeoApiContext mGeoApiContext;
@@ -88,7 +88,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     //ViewModels
     private LandmarksViewModel  landmarksViewModel;
     private UserLocationViewModel locationViewModel;
-
+    private ToursViewModel toursViewModel;
 
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
@@ -124,6 +124,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
 
         landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
+        toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
         locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
 
         return view;
@@ -206,6 +207,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             if(firstLocation){
                 setCameraViewWithZoom(DEFAULT_ZOOM);
                 landmarksViewModel.setGeofence(location,new Double(getMapRangeRadius()));
+                toursViewModel.setGeofence(location,new Double(getMapRangeRadius()));
                 mMap.setOnCameraIdleListener(this);
                 //mMap.setOnCameraMoveStartedListener(this);
             }
@@ -214,6 +216,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
         landmarksViewModel.getLandmarks().observe(this, landmarks -> {
             mLandmarks = landmarks;
+            addMapMarkers();
+        });
+
+        toursViewModel.getTours().observe(this, tours -> {
+            mTours = tours;
             addMapMarkers();
         });
     }
