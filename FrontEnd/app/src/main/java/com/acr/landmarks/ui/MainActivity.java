@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -83,6 +84,21 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         /* Create the adapter that will return a fragment for each of the three primary sections of the activity.*/
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+        setViewPager();
+        createLocationCallback();
+        createBottomSheet();
+        setSlider();
+        setViewModels();
+    }
+
+    private void setViewModels() {
+        locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
+        landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
+        landmarksViewModel.getSelectedLandmark().observe(this,selected ->
+                addFullLandmarkInfo(selected));
+    }
+
+    private void setViewPager(){
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -92,21 +108,13 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setCurrentItem(1);
+    }
 
+    private void setSlider(){
         LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
         mSliderLayout = layoutBottomSheet.findViewById(R.id.imageSlider);
         mSliderLayout.setAutoScrolling(false);
         mSliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);
-
-
-        createLocationCallback();
-
-        createBottomSheet();
-
-        locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
-        landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
-        landmarksViewModel.getSelectedLandmark().observe(this,selected ->
-                addFullLandmarkInfo(selected));
     }
 
     private void createLocationCallback() {
@@ -242,7 +250,28 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private void createBottomSheet() {
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         mBottomSheetBehaviour= BottomSheetBehavior.from(bottomSheet);
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+        mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            boolean expanded =false;
+
+            @Override
+            public void onStateChanged(View bottomSheet, int newState) {
+                if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                    expanded =true;
+                }
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+
+            @Override
+            public void onSlide(View bottomSheet, float slideOffset) {
+                if(expanded){
+                    expanded =false;
+                    mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+        });
     }
 
     @Override
@@ -265,7 +294,14 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     public void onLandmarkSelected(LandmarkMarkerInfo selectedLandmark) {
         addBasicInfo( selectedLandmark.title,selectedLandmark.latitude,selectedLandmark.longitude);
         addImages(new String[] {selectedLandmark.iconBase64});
+        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        int z = toolbar.getBottom();
+        int x =mViewPager.getHeight();
+        bottomSheet.getLayoutParams().height = mViewPager.getHeight();
+        bottomSheet.requestLayout();
+        int y = bottomSheet.getLayoutParams().height;
     }
 
     private void addFullLandmarkInfo(LandmarkFullInfo landmark){
