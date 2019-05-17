@@ -28,7 +28,7 @@ public class RetrofitLandmarksService implements  ILandmarksService, ILocationSe
 
     public RetrofitLandmarksService(){
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.110/api/")
+                .baseUrl("http://192.168.1.100/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webService= retrofit.create(RetrofitLandmarksAPI.class);

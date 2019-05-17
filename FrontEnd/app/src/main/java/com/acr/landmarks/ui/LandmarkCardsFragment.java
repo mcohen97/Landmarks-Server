@@ -45,6 +45,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
 
         View view = inflater.inflate(R.layout.fragment_landmark_list, container, false);
         data= viewModel.getLandmarks().getValue();
+        data = new ArrayList<>();
         initRecyclerView(inflater, view);
         viewModel.getLandmarks().observe(this, landmarks -> {
             //Fragment and adapter share the same reference to data

@@ -8,6 +8,7 @@ import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.services.contracts.ILocationService;
 import com.acr.landmarks.services.contracts.ITourService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,7 +29,7 @@ public class RetrofitToursService implements ITourService, ILocationService.OnGe
 
     public RetrofitToursService(){
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.110/api/")
+                .baseUrl("http://192.168.1.100/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         webService= retrofit.create(RetrofitToursAPI.class);
@@ -36,7 +37,7 @@ public class RetrofitToursService implements ITourService, ILocationService.OnGe
         locationService.addGeofenceChangeListener(this);
         currentLocation = locationService.getLocation();
         currentRadius = locationService.getRadius();
-        data = new MutableLiveData<>();
+        data = new MutableLiveData<List<Tour>>();
     }
 
 
