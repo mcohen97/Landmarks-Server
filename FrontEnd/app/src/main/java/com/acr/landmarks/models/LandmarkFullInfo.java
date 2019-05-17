@@ -8,7 +8,7 @@ public class LandmarkFullInfo {
     public String description;
     public double latitude;
     public double longitude;
-    public List<String> imagesBase64;
+    public String[] imagesBase64;
     public List<String> audiosBase64;
 
     @Override
