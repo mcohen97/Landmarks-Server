@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
@@ -45,6 +43,10 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.smarteist.autoimageslider.DefaultSliderView;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderLayout;
+import com.smarteist.autoimageslider.SliderView;
 
 import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     private BottomSheetBehavior mBottomSheetBehaviour;
     private Location mCurrentLocation;
+    private SliderLayout mSliderLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +93,16 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setCurrentItem(1);
 
+        LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
+        mSliderLayout = layoutBottomSheet.findViewById(R.id.imageSlider);
+        mSliderLayout.setAutoScrolling(false);
+        mSliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);
+
+
         createLocationCallback();
 
         createBottomSheet();
 
-        //locationService = LocationService.getInstance();
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
         landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
         landmarksViewModel.getSelectedLandmark().observe(this,selected ->
@@ -124,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 getLocationPermission();
             }
         }
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     private void startTrackingLocation() {
@@ -255,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     @Override
     public void onLandmarkSelected(LandmarkMarkerInfo selectedLandmark) {
         addBasicInfo( selectedLandmark.title,selectedLandmark.latitude,selectedLandmark.longitude);
-        addSingleImage(selectedLandmark.iconBase64);
+        addImages(new String[] {selectedLandmark.iconBase64});
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
@@ -264,20 +273,17 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
         TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
         sheetLandmarkDescription.setText(landmark.description);
+        addImages(landmark.imagesBase64);
     }
 
 
     //The main usage of this method is to fill the drawer with info while waiting for the full landmark information.
     private void addBasicInfo(String title, double latitude, double longitude){
         LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
-        ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
         TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
         TextView sheetLandmarkDistance =  layoutBottomSheet.findViewById(R.id.landmarkDistance) ;
 
-
-
         sheetLandmarkName.setText(title);
-        //sheetLandmarkDescription.setText(selectedLandmark.getDescription());
 
         String distance = ""+ (mCurrentLocation.distanceTo(createLocation(latitude,longitude))/1000);
         distance += " Km";
@@ -285,13 +291,16 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         sheetLandmarkDistance.setText(distance);
     }
 
-    private void addSingleImage(String image){
-        LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
-        ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
+    private void addImages(String[] images){
+        mSliderLayout.clearSliderViews();
+        for(String image:images){
+            SliderView sliderView = new DefaultSliderView(this);
+            byte[] imageData = Base64.decode(image, Base64.DEFAULT);
+            sliderView.setImageByte(imageData);
+            sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        byte[] imageData = Base64.decode(image, Base64.DEFAULT);
-        Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
-        sheetLandmarkImage.setImageBitmap(landmark);
+            mSliderLayout.addSliderView(sliderView);
+        }
     }
 
     private Location createLocation( double lat, double lng){
