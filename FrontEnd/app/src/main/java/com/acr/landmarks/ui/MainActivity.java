@@ -295,13 +295,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         addBasicInfo( selectedLandmark.title,selectedLandmark.latitude,selectedLandmark.longitude);
         addImages(new String[] {selectedLandmark.iconBase64});
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        int z = toolbar.getBottom();
-        int x =mViewPager.getHeight();
         bottomSheet.getLayoutParams().height = mViewPager.getHeight();
         bottomSheet.requestLayout();
-        int y = bottomSheet.getLayoutParams().height;
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void addFullLandmarkInfo(LandmarkFullInfo landmark){

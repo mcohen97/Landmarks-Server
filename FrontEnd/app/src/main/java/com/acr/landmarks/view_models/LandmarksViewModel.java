@@ -105,7 +105,6 @@ public class LandmarksViewModel extends AndroidViewModel {
         geoFence.setValue(new Pair<>(aLocation,aRadius));
     }
 
-
     public LiveData<List<LandmarkMarkerInfo>> getLandmarks(){
         return liveDataMerger;
     }
