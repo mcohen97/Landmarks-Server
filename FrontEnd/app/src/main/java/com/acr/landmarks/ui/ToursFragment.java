@@ -2,26 +2,17 @@ package com.acr.landmarks.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toolbar;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.adapters.LandmarkCardAdapter;
 import com.acr.landmarks.adapters.TourCardAdapter;
-import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 
 import java.util.ArrayList;

@@ -5,14 +5,11 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.location.Location;
 import android.util.Pair;
 
-import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.persistence.RoomMarkersStorage;
-import com.acr.landmarks.services.RetrofitLandmarksService;
 import com.acr.landmarks.services.RetrofitToursService;
 import com.acr.landmarks.services.contracts.ITourService;
 
@@ -85,7 +82,7 @@ public class ToursViewModel extends AndroidViewModel {
         tourService.getTours(geoFence.getValue().first,geoFence.getValue().second);
 
         new Thread(() ->{
-            List<Landmark> cachedLandmarks=new ArrayList<>();
+            List<LandmarkMarkerInfo> cachedLandmarks=new ArrayList<>();
             if(!lastDataRetrieved.get()) {
                 //cachedLandmarks = toursStorage.getSavedLandmarks(geoFence.getValue().first, geoFence.getValue().second);
             }
