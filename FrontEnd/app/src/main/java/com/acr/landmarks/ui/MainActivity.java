@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         /* Create the adapter that will return a fragment for each of the three primary sections of the activity.*/
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+        createBottomSheet();
         setViewPager();
         createLocationCallback();
-        createBottomSheet();
         setSlider();
         setViewModels();
     }
@@ -105,9 +105,23 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(mBottomSheetBehaviour.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) { }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
+        });
+
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setCurrentItem(1);
+
     }
 
     private void setSlider(){
