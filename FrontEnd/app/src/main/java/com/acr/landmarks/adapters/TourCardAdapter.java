@@ -87,7 +87,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         ImageView thumbnail;
         TextView description;
         Button guidebtn;
-        //TourCardAdapter.TourClickedListener clickListener;
+        TourCardAdapter.TourClickedListener clickListener;
 
         public ViewHolder(View itemView, TourCardAdapter.TourClickedListener clickListener){
             super(itemView);
@@ -97,8 +97,9 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
             this.thumbnail = itemView.findViewById(R.id.tour_card_img_id);
             this.description = itemView.findViewById(R.id.tour_card_description);
             this.guidebtn = itemView.findViewById(R.id.view_guide_btn);
-            //this.clickListener = clickListener; //-> Las cards no serán clickeables solo el botón
-            this.guidebtn.setOnClickListener(this::onClick);
+            this.clickListener = clickListener; //-> Las cards no serán clickeables solo el botón
+            this.guidebtn.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override

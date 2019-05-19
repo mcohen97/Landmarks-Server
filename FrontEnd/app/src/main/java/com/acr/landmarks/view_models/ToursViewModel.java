@@ -84,7 +84,7 @@ public class ToursViewModel extends AndroidViewModel {
         lastDataRetrieved.set(false);
         tourService.getTours(geoFence.getValue().first,geoFence.getValue().second);
 
-        new Thread(() ->{
+        /*new Thread(() ->{
             List<Landmark> cachedLandmarks=new ArrayList<>();
             if(!lastDataRetrieved.get()) {
                 //cachedLandmarks = toursStorage.getSavedLandmarks(geoFence.getValue().first, geoFence.getValue().second);
@@ -92,7 +92,7 @@ public class ToursViewModel extends AndroidViewModel {
             if(!lastDataRetrieved.get()) {
                 liveDataMerger.postValue(cachedLandmarks);
             }
-        }).start();
+        }).start();*/
 
 
     }

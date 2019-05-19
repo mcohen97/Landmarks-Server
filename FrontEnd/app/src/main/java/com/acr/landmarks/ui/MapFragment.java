@@ -74,7 +74,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private ClusterManagerRenderer mClusterManagerRenderer;
     private static ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
     private List<Landmark> mLandmarks;
-    private List<Tour> mTours;
+    //private List<Tour> mTours;
 
     //Directions
     private GeoApiContext mGeoApiContext;
@@ -83,7 +83,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     //ViewModels
     private LandmarksViewModel  landmarksViewModel;
     private UserLocationViewModel locationViewModel;
-    private ToursViewModel toursViewModel;
+    //private ToursViewModel toursViewModel;
 
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
@@ -116,10 +116,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
         RelativeLayout mMapContainer = view.findViewById(R.id.map_container);
         mLandmarks= new ArrayList<Landmark>();
-        mTours = new ArrayList<Tour>();
+        //mTours = new ArrayList<Tour>();
 
         landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
-        toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
+        //toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
         locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
 
         return view;
@@ -198,11 +198,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             boolean firstLocation =mUserLocation == null;
 
             mUserLocation = location;
-
+            Log.d(TAG, "user location lat: "+ mUserLocation.getLatitude() + "lon: " + mUserLocation.getLongitude() );
             if(firstLocation){
                 setCameraViewWithZoom(DEFAULT_ZOOM);
                 landmarksViewModel.setGeofence(location,new Double(getMapRangeRadius()));
-                toursViewModel.setGeofence(location,new Double(getMapRangeRadius()));
+                //toursViewModel.setGeofence(location,new Double(getMapRangeRadius()));
                 mMap.setOnCameraIdleListener(this);
                 //mMap.setOnCameraMoveStartedListener(this);
             }
@@ -215,10 +215,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         });
 
         //Inútil
-        toursViewModel.getTours().observe(this, tours -> {
+        /*toursViewModel.getTours().observe(this, tours -> {
             mTours = tours;
-            addMapMarkers();
-        });
+        });*/
     }
 
 
@@ -267,6 +266,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void addMapMarkers(){
+        Log.d(TAG, "addMapMarkers: begin ");
         if(mMap == null){
             return;
         }
@@ -304,6 +304,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
         for(Landmark landmark: mLandmarks){
             try{
+                Log.d(TAG, "udatemarkers: begin HAY MARKERS ");
                 addMarker(landmark);
             }catch (NullPointerException e){
                 Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage() );
