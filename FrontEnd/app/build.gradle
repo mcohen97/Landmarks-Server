@@ -71,8 +71,7 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
 
     //image slider
-    implementation 'com.github.smarteist:autoimageslider:1.2.0'
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    implementation project(':autoimageslider')
 }
 
 
