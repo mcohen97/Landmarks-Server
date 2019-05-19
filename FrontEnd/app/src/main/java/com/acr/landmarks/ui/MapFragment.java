@@ -552,6 +552,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         linePattern.add(new Gap(2));
         options.pattern(linePattern);
 
+        mMap.addPolyline(options);
 
     }
 
