@@ -41,11 +41,11 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull TourCardAdapter.ViewHolder holder, int position) {
         Tour requestedTour = lastAvailableTourData.get(position);
-        String tourName = requestedTour.getTitle();
+        String tourName = requestedTour.title;
         holder.title.setText(tourName);
 
         //Seteo el ícono según temática a la izquierda del textView--->Resolver como serán las temáticas, conseguir íconos y Codificar
-        String tourTheme = requestedTour.getCategory();
+        String tourTheme = requestedTour.category;
         switch (tourTheme){
             case "CULTURAL":
                 holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.cultural,0,0,0);
@@ -66,12 +66,12 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
 
         holder.theme.setText(tourTheme);
 
-        String image = requestedTour.getImageBase64();
+        String image = requestedTour.imageBase64;
         byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
         holder.categoryThumbnail.setImageBitmap(bitmap);
 
-        String tourDescription = requestedTour.getDescription();
+        String tourDescription = requestedTour.description;
         holder.description.setText(tourDescription);
     }
 

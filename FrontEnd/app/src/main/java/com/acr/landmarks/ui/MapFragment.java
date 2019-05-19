@@ -528,7 +528,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     public void drawTour(Tour selected) {
         addMapMarkers();
 
-        ArrayList<Integer> landmarksIds = selected.getTourLandmarks();
+        ArrayList<Integer> landmarksIds = selected.landmarksIds;
         ArrayList<LandmarkMarkerInfo> landmarks =new ArrayList<LandmarkMarkerInfo>();
 
         for(Integer id : landmarksIds){
