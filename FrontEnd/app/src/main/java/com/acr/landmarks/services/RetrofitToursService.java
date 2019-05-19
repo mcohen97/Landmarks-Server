@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 
-import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.services.contracts.ITourService;
 
@@ -27,7 +26,7 @@ public class RetrofitToursService implements ITourService {
 
     public RetrofitToursService(){
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.101:5002/api/")
+                .baseUrl("http://192.168.1.107/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();

@@ -1,6 +1,5 @@
 package com.acr.landmarks.services;
 
-import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.Tour;
 
 import java.util.List;

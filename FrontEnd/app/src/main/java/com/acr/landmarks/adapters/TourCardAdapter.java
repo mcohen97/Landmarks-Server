@@ -68,8 +68,8 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
 
         String image = requestedTour.getImageBase64();
         byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
-        Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
-        holder.thumbnail.setImageBitmap(landmark);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
+        holder.categoryThumbnail.setImageBitmap(bitmap);
 
         String tourDescription = requestedTour.getDescription();
         holder.description.setText(tourDescription);
@@ -84,7 +84,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
         TextView theme;
-        ImageView thumbnail;
+        ImageView categoryThumbnail;
         TextView description;
         Button guidebtn;
         TourCardAdapter.TourClickedListener clickListener;
@@ -94,7 +94,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
 
             this.title = itemView.findViewById(R.id.tour_card_title);
             this.theme = itemView.findViewById(R.id.tour_card_theme);
-            this.thumbnail = itemView.findViewById(R.id.tour_card_img_id);
+            this.categoryThumbnail = itemView.findViewById(R.id.tour_image);
             this.description = itemView.findViewById(R.id.tour_card_description);
             this.guidebtn = itemView.findViewById(R.id.view_guide_btn);
             this.clickListener = clickListener; //-> Las cards no serán clickeables solo el botón
@@ -104,7 +104,6 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
 
         @Override
         public void onClick(View v) {
-
             int position =getAdapterPosition();
             clickListener.onTourClicked(lastAvailableTourData.get(position));
         }
