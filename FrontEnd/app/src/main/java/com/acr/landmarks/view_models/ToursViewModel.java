@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ToursViewModel extends AndroidViewModel {
     private ITourService tourService;
 
-    private LiveData<Tour> selectedTour;
+    private MutableLiveData<Tour> selectedTour;
 
     private Double lastRadius;
     private Location lastCenterLocation;
@@ -36,13 +36,14 @@ public class ToursViewModel extends AndroidViewModel {
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
         lastDataRetrieved = new AtomicBoolean(false);
+        selectedTour = new MutableLiveData<>();
         setDefaultData();
     }
 
     private Location  generateDefaultLocation(){
         Location defaultLocation =new Location(new String());
-        defaultLocation.setLatitude(-34.858757);//harcoded,default location, take to config file
-        defaultLocation.setLongitude( -56.032397);
+        defaultLocation.setLatitude(-34.909429);//harcoded,default location, take to config file
+        defaultLocation.setLongitude( -56.166652);
         return defaultLocation;
     }
 
@@ -104,7 +105,13 @@ public class ToursViewModel extends AndroidViewModel {
     }
 
     public void setSelectedTour(int id){
-        selectedTour = tourService.getTourById(id);
+        //auxiliary tour to find original, taking advantage of Tour equals method, by id
+        Tour findHelper = new Tour();
+        findHelper.id=id;
+        int index = toursInRange.getValue().indexOf(findHelper);
+        if(index >=0) {
+            selectedTour.setValue(toursInRange.getValue().get(index));
+        }
     }
 
     public LiveData<Tour> getSelectedTour(){return selectedTour;}

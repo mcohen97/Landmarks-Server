@@ -216,10 +216,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             addMapMarkers();
         });
 
-        //Inútil
-        toursViewModel.getTours().observe(this, tours -> {
-            mTours = tours;
-            addMapMarkers();
+        toursViewModel.getSelectedTour().observe(this, tour -> {
+            if(tour != null){
+                drawTour(tour);
+            }
+
         });
     }
 
