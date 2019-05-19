@@ -7,7 +7,7 @@ import android.location.Location;
 
 
 
-import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ public class RoomMarkersStorage implements LandmarkMarkersStorage {
                 AppDatabase.class, "landmarks").build();
     }
     @Override
-    public List<Landmark> getSavedLandmarks(Location location, double radius) {
-        ArrayList<Landmark> markers = new ArrayList<>();
+    public List<LandmarkMarkerInfo> getSavedLandmarks(Location location, double radius) {
+        ArrayList<LandmarkMarkerInfo> markers = new ArrayList<>();
         Cursor rawData = db.landmarksDao().getStoredLandmarks();
         while(rawData.moveToNext()){
 
@@ -33,20 +33,20 @@ public class RoomMarkersStorage implements LandmarkMarkersStorage {
             double distance = location.distanceTo(actual)/1000;
 
             if(distance<= radius){
-                Landmark built = buildMarker(rawData,lat,lng);
+                LandmarkMarkerInfo built = buildMarker(rawData,lat,lng);
                 markers.add(built);
             }
         }
         return markers;
     }
 
-    private Landmark buildMarker(Cursor cursor, double lat, double lng) {
+    private LandmarkMarkerInfo buildMarker(Cursor cursor, double lat, double lng) {
         int id = getInt(cursor,"id");
         String title = getString(cursor,"title");
         byte [] image = getBlob(cursor, "image");
         String iconBase64 = new String(image);
 
-        return new Landmark(id,title,lat,lng,iconBase64);
+        return new LandmarkMarkerInfo(id,title,lat,lng,iconBase64);
     }
 
     private double getDouble(Cursor cursor ,String name){
@@ -75,20 +75,20 @@ public class RoomMarkersStorage implements LandmarkMarkersStorage {
     }
 
     @Override
-    public void insertLandmarks(List<Landmark> landmarks) {
+    public void insertLandmarks(List<LandmarkMarkerInfo> landmarks) {
         List<LandmarkMarkerEntity> converted = convertLandmarks(landmarks);
         db.landmarksDao().insertAll(converted);
     }
 
-    private List<LandmarkMarkerEntity> convertLandmarks(List<Landmark> landmarks) {
+    private List<LandmarkMarkerEntity> convertLandmarks(List<LandmarkMarkerInfo> landmarks) {
         List<LandmarkMarkerEntity> converted = new ArrayList<>();
-        for(Landmark l: landmarks) {
+        for(LandmarkMarkerInfo l: landmarks) {
             LandmarkMarkerEntity entity = new LandmarkMarkerEntity();
-            entity.id = l.getId();
-            entity.latitude = l.getLat();
-            entity.longitude = l.getLon();
-            entity.title = l.getName();
-            entity.image = l.getImg().getBytes();
+            entity.id = l.id;
+            entity.latitude = l.latitude;
+            entity.longitude = l.longitude;
+            entity.title = l.title;
+            entity.image = l.iconBase64.getBytes();
             converted.add(entity);
         }
         return converted;

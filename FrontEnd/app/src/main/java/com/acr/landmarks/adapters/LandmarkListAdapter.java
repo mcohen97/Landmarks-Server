@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -16,19 +16,19 @@ import java.util.List;
 
 public class LandmarkListAdapter extends RecyclerView.Adapter<LandmarkListAdapter.ViewHolder>{
 
-    private List<Landmark> mLandmarks;
+    private List<LandmarkMarkerInfo> mLandmarks;
     private LandmarkListRecyclerClickListener mClickListener;
 
-    public LandmarkListAdapter(List<Landmark> lms, LandmarkListRecyclerClickListener clickListener) {
+    public LandmarkListAdapter(List<LandmarkMarkerInfo> lms, LandmarkListRecyclerClickListener clickListener) {
         mLandmarks = lms;
         mClickListener = clickListener;
         updateDistances(mLandmarks);
-        Collections.sort(mLandmarks);
+        //Collections.sort(mLandmarks);
     }
 
-    private void updateDistances(List<Landmark> mLandmarks) {
+    private void updateDistances(List<LandmarkMarkerInfo> mLandmarks) {
         /*Location mUserLocation = MainActivity.mUserLocation;
-        for(Landmark landmark:mLandmarks){
+        for(LandmarkMarkerInfo landmark:mLandmarks){
             double distance = listCalculatorService.calculateDistanceInKm(mUserLocation,landmark);
         }*/
     }
@@ -45,13 +45,13 @@ public class LandmarkListAdapter extends RecyclerView.Adapter<LandmarkListAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        DecimalFormat FORMATTER = new DecimalFormat("0.###");
+       /* DecimalFormat FORMATTER = new DecimalFormat("0.###");
         String distance = FORMATTER.format(mLandmarks.get(position).getDistance());
         distance += " Km";
 
         ((ViewHolder)holder).name.setText(mLandmarks.get(position).getName());
         ((ViewHolder)holder).description.setText(mLandmarks.get(position).getDescription());
-        ((ViewHolder)holder).distance.setText( distance );
+        ((ViewHolder)holder).distance.setText( distance );*/
     }
 
     @Override

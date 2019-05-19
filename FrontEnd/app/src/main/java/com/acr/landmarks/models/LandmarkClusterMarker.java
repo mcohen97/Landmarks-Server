@@ -9,10 +9,10 @@ public class LandmarkClusterMarker implements ClusterItem {
     private String title; // required field
     private String snippet; // required field
     private String iconPicture; //dirección de memoria, investigar como cargar imagenes, a que carpeta se descargan
-    private Landmark landmark;
+    private LandmarkMarkerInfo landmark;
     private Marker marker;
 
-    public LandmarkClusterMarker(LatLng position, String title, String snippet, String iconPicture , Landmark lm) {
+    public LandmarkClusterMarker(LatLng position, String title, String snippet, String iconPicture , LandmarkMarkerInfo lm) {
         this.position = position;
         this.title = title;
         this.snippet = snippet;
@@ -58,11 +58,11 @@ public class LandmarkClusterMarker implements ClusterItem {
         this.iconPicture = iconPicture;
     }
 
-    public Landmark getLandmark() {
+    public LandmarkMarkerInfo getLandmark() {
         return landmark;
     }
 
-    public void setLandmark(Landmark landmark) {
+    public void setLandmark(LandmarkMarkerInfo landmark) {
         this.landmark = landmark;
     }
 }

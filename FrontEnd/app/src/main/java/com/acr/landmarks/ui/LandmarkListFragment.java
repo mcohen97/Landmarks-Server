@@ -1,33 +1,19 @@
 package com.acr.landmarks.ui;
 
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TabHost;
-import android.widget.TextView;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.acr.landmarks.adapters.LandmarkListAdapter;
-import com.acr.landmarks.models.LandmarkClusterMarker;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 
 public class LandmarkListFragment extends Fragment implements
@@ -35,7 +21,7 @@ public class LandmarkListFragment extends Fragment implements
 
     private RecyclerView mLandmarkListRecyclerView;
     private LandmarkListAdapter mLandmarkListRecyclerAdapter;
-    private List<Landmark> mLandmarks;
+    private List<LandmarkMarkerInfo> mLandmarks;
 
     //Bottom sheet
     //BottomSheetBehavior sheetBehavior;
@@ -85,7 +71,7 @@ public class LandmarkListFragment extends Fragment implements
 
     }
 
-    /*private void showBottomSheet(Landmark selectedLandmark) {
+    /*private void showBottomSheet(LandmarkMarkerInfo selectedLandmark) {
         LinearLayout layoutBottomSheet = getActivity().findViewById(R.id.bottom_sheet_layout) ;
         ImageView sheetLandmarkImage =  layoutBottomSheet.findViewById(R.id.landmarkImage) ;
         TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;

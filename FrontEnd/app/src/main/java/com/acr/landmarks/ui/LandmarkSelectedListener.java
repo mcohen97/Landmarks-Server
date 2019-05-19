@@ -1,7 +1,7 @@
 package com.acr.landmarks.ui;
 
-import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 
 public interface LandmarkSelectedListener {
-    void onLandmarkSelected(Landmark selected);
+    void onLandmarkSelected(LandmarkMarkerInfo selected);
 }

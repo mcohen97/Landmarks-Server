@@ -3,14 +3,17 @@ package com.acr.landmarks.services.contracts;
 import android.arch.lifecycle.LiveData;
 import android.location.Location;
 
-import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkFullInfo;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 
 import java.util.List;
 
 public interface ILandmarksService {
 
-    //LiveData<List<Landmark>> getLandmarks();
-    LiveData<List<Landmark>> getLandmarks(Location location, double radius);
+    //LiveData<List<LandmarkMarkerInfo>> getLandmarks();
+    LiveData<List<LandmarkMarkerInfo>> getLandmarks(Location location, double radius);
 
-    LiveData<Landmark> getLandmarkById(int id);
+    LiveData<LandmarkFullInfo> getLandmarkById(int id);
+
+    LiveData<LandmarkFullInfo> getSelectedLandmark();
 }
