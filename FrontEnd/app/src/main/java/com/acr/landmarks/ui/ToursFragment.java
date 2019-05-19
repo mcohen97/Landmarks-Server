@@ -58,6 +58,7 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
 
     @Override
     public void onTourClicked(Tour clicked) {
+        viewModel.setSelectedTour(clicked.id);
         mListener.onTourSelected(clicked);
 
     }

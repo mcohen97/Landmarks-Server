@@ -3,12 +3,12 @@ package com.acr.landmarks.models;
 import java.util.ArrayList;
 
 public class Tour {
-    private ArrayList<Integer> landmarksIds;
-    private String imageBase64;
-    private int id;
-    private String title;
-    private String description;
-    private String category;
+    public ArrayList<Integer> landmarksIds;
+    public String imageBase64;
+    public int id;
+    public String title;
+    public String description;
+    public String category;
 
 
     public Tour() {
@@ -22,52 +22,8 @@ public class Tour {
         this.category = category;
     }
 
-    public String getImageBase64() {
-        return imageBase64;
-    }
-
-    public void setImageBase64(String imageBase64) {
-        this.imageBase64 = imageBase64;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public ArrayList<Integer> getTourLandmarks() {
-        return landmarksIds;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setTourLandmarks(ArrayList<Integer> tourLandmarks) {
-        this.landmarksIds = tourLandmarks;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
+     @Override
+    public boolean equals(Object o){
+        return ((Tour)o).id == id;
+     }
 }

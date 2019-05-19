@@ -304,9 +304,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             return true;
         }
         if( id == android.R.id.home){
-            TabLayout tabHost =(TabLayout) findViewById(R.id.tabs);
-            tabHost.getTabAt(0).select();
-
+            TabHost tabHost = findViewById(R.id.tabs);
+            tabHost.setCurrentTab(0);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
             MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
@@ -370,12 +369,12 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     @Override
     public void onTourSelected(Tour selected) {
         generateBackButton();
-
-        TabLayout tabHost =(TabLayout) findViewById(R.id.tabs);
-        tabHost.getTabAt(1).select();
-
-        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
-        mapFragment.drawTour(selected);
+        TabLayout tabs = findViewById(R.id.tabs);
+        TabLayout.Tab tab = tabs.getTabAt(1);
+        tab.select();
+        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
+        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.)
+        //mapFragment.drawTour(selected);
     }
 
     public void generateBackButton(){
