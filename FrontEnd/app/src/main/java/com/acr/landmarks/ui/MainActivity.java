@@ -369,11 +369,12 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     @Override
     public void onTourSelected(Tour selected) {
         generateBackButton();
-        TabHost tabHost = findViewById(R.id.tabs);
-        tabHost.setCurrentTab(1);
-
-        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
-        mapFragment.drawTour(selected);
+        TabLayout tabs = findViewById(R.id.tabs);
+        TabLayout.Tab tab = tabs.getTabAt(1);
+        tab.select();
+        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
+        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.)
+        //mapFragment.drawTour(selected);
     }
 
     public void generateBackButton(){
