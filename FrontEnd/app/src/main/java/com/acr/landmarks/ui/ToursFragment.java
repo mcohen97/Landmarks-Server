@@ -51,13 +51,12 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
         initRecyclerView(inflater, view);
         viewModel.getTours().observe(this, tours -> {
             //Fragment and adapter share the same reference to data
-            data.clear();;
+            data.clear();
             data.addAll(tours);
             adapter.notifyDataSetChanged();
         });
         return view;
     }
-
 
     private void initRecyclerView(LayoutInflater inflater, View view) {
         recyclerView = view.findViewById(R.id.tour_cards_recyclerview_id);
@@ -71,8 +70,6 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
         mListener.onTourSelected(clicked);
 
     }
-
-
 
     @Override
     public void onAttach(Context context){
