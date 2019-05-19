@@ -552,7 +552,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         linePattern.add(new Gap(2));
         options.pattern(linePattern);
 
-        mMap.addPolyline(options);
+
+        Polyline polyline = mMap.addPolyline(options);
+        polyline.setColor(ContextCompat.getColor(getActivity(), R.color.red1));
+        polyline.setPattern(linePattern);
+        //polyline.setClickable(true);
+        //mPolyLinesData.add(new PolylineData(polyline)); no hay ruta en este caso
 
     }
 
