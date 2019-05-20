@@ -111,6 +111,8 @@ public class ToursViewModel extends AndroidViewModel {
         int index = toursInRange.getValue().indexOf(findHelper);
         if(index >=0) {
             selectedTour.setValue(toursInRange.getValue().get(index));
+        }else{
+            selectedTour.setValue(null);
         }
     }
 
