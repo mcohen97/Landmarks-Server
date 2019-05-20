@@ -342,6 +342,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         sheetLandmarkName.setText(title);
 
         String distance = ""+ (mCurrentLocation.distanceTo(createLocation(latitude,longitude))/1000);
+        distance = distance.substring(0,4);
         distance += " Km";
 
         sheetLandmarkDistance.setText(distance);

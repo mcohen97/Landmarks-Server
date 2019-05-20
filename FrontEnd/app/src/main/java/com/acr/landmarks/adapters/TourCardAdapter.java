@@ -48,23 +48,20 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         String tourTheme = requestedTour.category;
         switch (tourTheme){
             case "CULTURAL":
-                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.cultural,0,0,0);
+                holder.theme.setImageResource(R.drawable.cultural);
                 break;
             case "ENTERTAINMENT":
-                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.entertainment,0,0,0);
+                holder.theme.setImageResource(R.drawable.entertainment);
                 break;
             case "VIEWS":
-                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.views,0,0,0);
+                holder.theme.setImageResource(R.drawable.views);
                 break;
             case "GREENZONES":
-                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.greenzones,0,0,0);
+                holder.theme.setImageResource(R.drawable.greenzones);
                 break;
             default:
-                holder.title.setCompoundDrawablesWithIntrinsicBounds (R.drawable.entertainment,0,0,0);
                 break;
         }
-
-        holder.theme.setText(tourTheme);
 
         String image = requestedTour.imageBase64;
         byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
@@ -83,7 +80,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
-        TextView theme;
+        ImageView theme;
         ImageView categoryThumbnail;
         TextView description;
         Button guidebtn;
