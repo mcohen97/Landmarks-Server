@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,14 +28,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
+import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.LandmarkFullInfo;
 import com.acr.landmarks.models.LandmarkMarkerInfo;
 import com.acr.landmarks.view_models.LandmarksViewModel;
+import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -49,11 +52,12 @@ import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderLayout;
 import com.smarteist.autoimageslider.SliderView;
 
+
 import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
-public class MainActivity extends AppCompatActivity implements LandmarkSelectedListener{
+public class MainActivity extends AppCompatActivity implements LandmarkSelectedListener , TourSelectedListener{
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private LocationCallback locationCallback;
     private UserLocationViewModel locationViewModel;
     private LandmarksViewModel landmarksViewModel;
+    private ToursViewModel toursViewModel;
 
     private BottomSheetBehavior mBottomSheetBehaviour;
     private Location mCurrentLocation;
@@ -94,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private void setViewModels() {
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
         landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
+        toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
         landmarksViewModel.getSelectedLandmark().observe(this,selected ->
                 addFullLandmarkInfo(selected));
     }
@@ -113,7 +119,11 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 }
             }
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) { }
+            public void onTabUnselected(TabLayout.Tab tab) {
+                if(toursViewModel != null && tab.getPosition()==1) {
+                    toursViewModel.setSelectedTour(-1);
+                }
+            }
             @Override
             public void onTabReselected(TabLayout.Tab tab) { }
         });
@@ -265,6 +275,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         mBottomSheetBehaviour= BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+        TextView description = findViewById(R.id.landmarkDescription);
+        description.setMovementMethod(new ScrollingMovementMethod());
         mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             boolean expanded =false;
 
@@ -301,6 +313,13 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         if (id == R.id.action_settings) {
             return true;
         }
+        if( id == android.R.id.home){
+            TabLayout tabs = findViewById(R.id.tabs);
+            TabLayout.Tab tab = tabs.getTabAt(0);
+            tab.select();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            toursViewModel.setSelectedTour(-1);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -315,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     }
 
     private void addFullLandmarkInfo(LandmarkFullInfo landmark){
-        addBasicInfo(landmark.title, landmark.latitude,landmark.longitude);
+        //addBasicInfo(landmark.title, landmark.latitude,landmark.longitude);
         LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
         TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
         sheetLandmarkDescription.setText(landmark.description);
@@ -332,6 +351,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         sheetLandmarkName.setText(title);
 
         String distance = ""+ (mCurrentLocation.distanceTo(createLocation(latitude,longitude))/1000);
+        distance = distance.substring(0,4);
         distance += " Km";
 
         sheetLandmarkDistance.setText(distance);
@@ -355,4 +375,18 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         conversion.setLongitude(lng);
         return conversion;
     }
+
+    @Override
+    public void onTourSelected(Tour selected) {
+        generateBackButton();
+        TabLayout tabs = findViewById(R.id.tabs);
+        TabLayout.Tab tab = tabs.getTabAt(1);
+        tab.select();
+    }
+
+    public void generateBackButton(){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
 }

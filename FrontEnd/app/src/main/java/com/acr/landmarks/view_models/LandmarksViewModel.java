@@ -47,8 +47,8 @@ public class LandmarksViewModel extends AndroidViewModel {
 
     private Location  generateDefaultLocation(){
         Location defaultLocation =new Location(new String());
-        defaultLocation.setLatitude(-34.923844);//harcoded,default location, take to config file
-        defaultLocation.setLongitude(-56.170590);
+        defaultLocation.setLatitude(-34.858757);//harcoded,default location, take to config file
+        defaultLocation.setLongitude( -56.032397);
         return defaultLocation;
     }
 

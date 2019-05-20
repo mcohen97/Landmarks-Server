@@ -39,8 +39,8 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_landmark_list, container, false);
-        //data= viewModel.getLandmarks().getValue();
         data= new ArrayList<LandmarkMarkerInfo>();
+
         initRecyclerView(inflater, view);
         viewModel.getLandmarks().observe(this, landmarks -> {
             //Fragment and adapter share the same reference to data
@@ -60,6 +60,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
 
     @Override
     public void onLandmarkClicked(LandmarkMarkerInfo clicked) {
+        viewModel.setSelectedLandmark(clicked.id);
         mListener.onLandmarkSelected(clicked);
     }
 
