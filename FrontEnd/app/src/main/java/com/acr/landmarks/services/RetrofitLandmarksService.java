@@ -18,22 +18,21 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitLandmarksService implements  ILandmarksService{
+public class RetrofitLandmarksService implements ILandmarksService {
 
     private Retrofit retrofit;
     private RetrofitLandmarksAPI webService;
     private final MutableLiveData<List<LandmarkMarkerInfo>> landmarksData;
-    private  final MutableLiveData<LandmarkFullInfo> selectedLandmark;
+    private final MutableLiveData<LandmarkFullInfo> selectedLandmark;
 
 
-
-    public RetrofitLandmarksService(){
+    public RetrofitLandmarksService() {
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://172.29.2.126/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();
-        webService= retrofit.create(RetrofitLandmarksAPI.class);
+        webService = retrofit.create(RetrofitLandmarksAPI.class);
         landmarksData = new MutableLiveData<>();
         selectedLandmark = new MutableLiveData<>();
         landmarksData.setValue(new ArrayList<>());
@@ -41,11 +40,11 @@ public class RetrofitLandmarksService implements  ILandmarksService{
 
     @Override
     public LiveData<List<LandmarkMarkerInfo>> getLandmarks(Location currentLocation, double currentRadius) {
-        Call<List<LandmarkMarkerInfo>> landmarks = webService.getLandmarksInRange(currentLocation.getLatitude(),currentLocation.getLongitude(),currentRadius);
+        Call<List<LandmarkMarkerInfo>> landmarks = webService.getLandmarksInRange(currentLocation.getLatitude(), currentLocation.getLongitude(), currentRadius);
         landmarks.enqueue(new Callback<List<LandmarkMarkerInfo>>() {
             @Override
             public void onResponse(Call<List<LandmarkMarkerInfo>> call, Response<List<LandmarkMarkerInfo>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     landmarksData.postValue(response.body());
                 }
             }
@@ -59,7 +58,7 @@ public class RetrofitLandmarksService implements  ILandmarksService{
     }
 
 
-    public  LiveData<LandmarkFullInfo> getSelectedLandmark(){
+    public LiveData<LandmarkFullInfo> getSelectedLandmark() {
         return selectedLandmark;
     }
 
@@ -69,7 +68,7 @@ public class RetrofitLandmarksService implements  ILandmarksService{
         landmark.enqueue(new Callback<LandmarkFullInfo>() {
             @Override
             public void onResponse(Call<LandmarkFullInfo> call, Response<LandmarkFullInfo> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     selectedLandmark.postValue(response.body());
                 }
             }

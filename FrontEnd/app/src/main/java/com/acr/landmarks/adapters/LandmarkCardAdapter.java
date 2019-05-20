@@ -17,13 +17,13 @@ import com.acr.landmarks.models.LandmarkMarkerInfo;
 
 import java.util.List;
 
-public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapter.ViewHolder>{
+public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapter.ViewHolder> {
 
     private Context mContext;
     private LandmarkCardClickListener clickListener;
     private List<LandmarkMarkerInfo> lastAvailableData;
 
-    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, List<LandmarkMarkerInfo> data){
+    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, List<LandmarkMarkerInfo> data) {
         this.mContext = mContext;
         this.clickListener = clickListener;
         lastAvailableData = data;
@@ -34,7 +34,7 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        view = mInflater.inflate(R.layout.cardview_item,parent,false);
+        view = mInflater.inflate(R.layout.cardview_item, parent, false);
         return new ViewHolder(view, clickListener);
     }
 
@@ -45,7 +45,7 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
         holder.title.setText(landmarkName);
         String image = requestedLandmark.iconBase64;
         byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
-        Bitmap landmark = BitmapFactory.decodeByteArray(imageData,0,imageData.length);
+        Bitmap landmark = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
         holder.thumbnail.setImageBitmap(landmark);
     }
 
@@ -60,7 +60,7 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
         ImageView thumbnail;
         LandmarkCardClickListener clickListener;
 
-        public ViewHolder(View itemView,  LandmarkCardClickListener clickListener){
+        public ViewHolder(View itemView, LandmarkCardClickListener clickListener) {
             super(itemView);
 
             this.title = itemView.findViewById(R.id.landmark_card_title);
@@ -69,10 +69,11 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
             itemView.setOnClickListener(this);
 
         }
+
         @Override
         public void onClick(View v) {
 
-            int position =getAdapterPosition();
+            int position = getAdapterPosition();
             clickListener.onLandmarkClicked(lastAvailableData.get(position));
         }
     }

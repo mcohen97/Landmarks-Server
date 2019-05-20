@@ -19,7 +19,6 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 
-import java.util.ArrayList;
 
 public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClusterMarker> {
     private final IconGenerator iconGenerator;
@@ -28,7 +27,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
     private final int markerHeight;
 
     public ClusterManagerRenderer(Context context, GoogleMap googleMap,
-                                    ClusterManager<LandmarkClusterMarker> clusterManager) {
+                                  ClusterManager<LandmarkClusterMarker> clusterManager) {
 
         super(context, googleMap, clusterManager);
 
@@ -46,6 +45,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
 
     /**
      * Rendering of the individual ClusterItems
+     *
      * @param item
      * @param markerOptions
      */
@@ -61,7 +61,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
         bubbleIcon = Bitmap.createScaledBitmap(bubbleIcon, markerWidth + 30, markerHeight + 60, false);
         Bitmap icon = drawIcon(bubbleIcon, landmark);
 
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle()).snippet("");
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle()).snippet("");
     }
 
 
@@ -70,12 +70,12 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
         return false;
     }
 
-    private Bitmap drawIcon(Bitmap bubble,Bitmap landmarkImage){
-        Bitmap icon = Bitmap.createBitmap(bubble.getWidth(),bubble.getHeight(), Bitmap.Config.ARGB_8888);
+    private Bitmap drawIcon(Bitmap bubble, Bitmap landmarkImage) {
+        Bitmap icon = Bitmap.createBitmap(bubble.getWidth(), bubble.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(icon);
-        canvas.drawBitmap(bubble,0,0,null);
-        int centreX = (canvas.getWidth()  - landmarkImage.getWidth()) /2;
-        int centreY = (canvas.getWidth()  - landmarkImage.getWidth()) /2;
+        canvas.drawBitmap(bubble, 0, 0, null);
+        int centreX = (canvas.getWidth() - landmarkImage.getWidth()) / 2;
+        int centreY = (canvas.getWidth() - landmarkImage.getWidth()) / 2;
         canvas.drawBitmap(landmarkImage, centreX, centreY, null);
         return icon;
     }

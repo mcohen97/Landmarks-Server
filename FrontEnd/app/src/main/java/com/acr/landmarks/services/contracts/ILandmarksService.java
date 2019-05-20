@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface ILandmarksService {
 
-    //LiveData<List<LandmarkMarkerInfo>> getLandmarks();
     LiveData<List<LandmarkMarkerInfo>> getLandmarks(Location location, double radius);
 
     LiveData<LandmarkFullInfo> getLandmarkById(int id);

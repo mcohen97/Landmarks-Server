@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.location.Location;
 
 
-
 import com.acr.landmarks.models.LandmarkMarkerInfo;
 
 import java.util.ArrayList;
@@ -15,25 +14,27 @@ import java.util.List;
 public class RoomMarkersStorage implements LandmarkMarkersStorage {
 
     AppDatabase db;
-    public  RoomMarkersStorage(Context c) {
-    db = Room.databaseBuilder(c,
+
+    public RoomMarkersStorage(Context c) {
+        db = Room.databaseBuilder(c,
                 AppDatabase.class, "landmarks").build();
     }
+
     @Override
     public List<LandmarkMarkerInfo> getSavedLandmarks(Location location, double radius) {
         ArrayList<LandmarkMarkerInfo> markers = new ArrayList<>();
         Cursor rawData = db.landmarksDao().getStoredLandmarks();
-        while(rawData.moveToNext()){
+        while (rawData.moveToNext()) {
 
-            double lat = getDouble(rawData,"latitude");
+            double lat = getDouble(rawData, "latitude");
             double lng = getDouble(rawData, "longitude");
             Location actual = new Location(new String());
             actual.setLatitude(lat);
             actual.setLongitude(lng);
-            double distance = location.distanceTo(actual)/1000;
+            double distance = location.distanceTo(actual) / 1000;
 
-            if(distance<= radius){
-                LandmarkMarkerInfo built = buildMarker(rawData,lat,lng);
+            if (distance <= radius) {
+                LandmarkMarkerInfo built = buildMarker(rawData, lat, lng);
                 markers.add(built);
             }
         }
@@ -41,30 +42,30 @@ public class RoomMarkersStorage implements LandmarkMarkersStorage {
     }
 
     private LandmarkMarkerInfo buildMarker(Cursor cursor, double lat, double lng) {
-        int id = getInt(cursor,"id");
-        String title = getString(cursor,"title");
-        byte [] image = getBlob(cursor, "image");
+        int id = getInt(cursor, "id");
+        String title = getString(cursor, "title");
+        byte[] image = getBlob(cursor, "image");
         String iconBase64 = new String(image);
 
-        return new LandmarkMarkerInfo(id,title,lat,lng,iconBase64);
+        return new LandmarkMarkerInfo(id, title, lat, lng, iconBase64);
     }
 
-    private double getDouble(Cursor cursor ,String name){
+    private double getDouble(Cursor cursor, String name) {
         int index = cursor.getColumnIndexOrThrow(name);
         return cursor.getDouble(index);
     }
 
-    private int getInt(Cursor cursor ,String name){
+    private int getInt(Cursor cursor, String name) {
         int index = cursor.getColumnIndexOrThrow(name);
         return cursor.getInt(index);
     }
 
-    private String getString(Cursor cursor, String name){
+    private String getString(Cursor cursor, String name) {
         int index = cursor.getColumnIndexOrThrow(name);
         return cursor.getString(index);
     }
 
-    private byte[] getBlob(Cursor cursor, String name){
+    private byte[] getBlob(Cursor cursor, String name) {
         int index = cursor.getColumnIndexOrThrow(name);
         return cursor.getBlob(index);
     }
@@ -82,7 +83,7 @@ public class RoomMarkersStorage implements LandmarkMarkersStorage {
 
     private List<LandmarkMarkerEntity> convertLandmarks(List<LandmarkMarkerInfo> landmarks) {
         List<LandmarkMarkerEntity> converted = new ArrayList<>();
-        for(LandmarkMarkerInfo l: landmarks) {
+        for (LandmarkMarkerInfo l : landmarks) {
             LandmarkMarkerEntity entity = new LandmarkMarkerEntity();
             entity.id = l.id;
             entity.latitude = l.latitude;

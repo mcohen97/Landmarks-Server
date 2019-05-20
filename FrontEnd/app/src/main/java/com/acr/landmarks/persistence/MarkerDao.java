@@ -8,8 +8,6 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.database.Cursor;
 
 
-
-
 import java.util.List;
 
 @Dao
