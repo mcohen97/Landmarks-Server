@@ -28,7 +28,7 @@ public class RetrofitLandmarksService implements ILandmarksService {
 
     public RetrofitLandmarksService() {
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://172.29.2.126/api/")
+                .baseUrl("http://<SERVER_IP>/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();
