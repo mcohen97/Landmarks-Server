@@ -49,7 +49,7 @@ public class ToursViewModel extends AndroidViewModel {
 
 
     private void setDefaultData(){
-        geoFence.setValue(new Pair<>(generateDefaultLocation(),new Double(2)));
+        geoFence.setValue(new Pair<>(generateDefaultLocation(),new Double(4)));
         lastCenterLocation = null;
         lastRadius = null;
         toursInRange = tourService.getTours(geoFence.getValue().first,geoFence.getValue().second);

@@ -204,7 +204,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
             if(firstLocation){
                 setCameraViewWithZoom(DEFAULT_ZOOM);
                 landmarksViewModel.setGeofence(location,new Double(getMapRangeRadius()));
-                toursViewModel.setGeofence(location,new Double(getMapRangeRadius()));
+                //toursViewModel.setGeofence(location,new Double(getMapRangeRadius()));
                 mMap.setOnCameraIdleListener(this);
                 //mMap.setOnCameraMoveStartedListener(this);
             }
