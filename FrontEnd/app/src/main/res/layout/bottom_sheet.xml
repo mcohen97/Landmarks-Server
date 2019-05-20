@@ -33,7 +33,7 @@
             android:text="Distance"
             android:background="@color/transparentPrimaryDark"
             android:textColor="@color/Grey"
-            android:padding="2dp"
+            android:padding="4dp"
             android:id="@+id/landmarkDistance"
             />
 
@@ -42,8 +42,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0px"
-        android:layout_weight="5"
+        android:layout_weight="10"
         android:orientation="horizontal"
+        android:paddingLeft="10dp"
+
         android:weightSum="10"
         android:layout_marginTop="10dp"
         >
@@ -52,10 +54,10 @@
             android:src="@drawable/placeholder"
             android:background="@color/transparent"
             android:gravity="left"
-            android:padding="2dp"
             android:layout_weight="1"
             android:layout_width="0px"
-            android:layout_height="match_parent" />
+            android:layout_gravity="center_vertical"
+            android:layout_height="25dp" />
         <TextView
             android:layout_width="0px"
             android:layout_weight="9"
@@ -74,12 +76,11 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:text="description"
-        android:layout_weight="35"
+        android:layout_weight="30"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-
+        android:scrollbars = "vertical"
 
         android:id="@+id/landmarkDescription"/>
 
