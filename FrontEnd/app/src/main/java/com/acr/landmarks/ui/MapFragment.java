@@ -219,6 +219,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         toursViewModel.getSelectedTour().observe(this, tour -> {
             if(tour != null){
                 drawTour(tour);
+            }else{
+                resetTheMap();
+                addMapMarkers();
             }
 
         });
@@ -302,8 +305,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void updateMapMarkers() {
-        //mClusterManager.clearItems();
-        //mClusterMarkers.clear();
 
         for(LandmarkMarkerInfo landmark: mLandmarks){
             try{
@@ -509,8 +510,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mListener.onLandmarkSelected(landmarkClusterMarker.getLandmark());
     }
 
-
-
     @Override
     public void onCameraIdle() {
         float newRadius = getMapRangeRadius();
@@ -541,19 +540,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
 
         PolylineOptions options = new PolylineOptions();
+        options.color(Color.RED);
 
         for(LandmarkMarkerInfo lm: landmarks){
             options.add(new LatLng(lm.latitude,lm.longitude));
         }
-        options.color(Color.RED);
-        options.width(5);
+
 
         ArrayList<PatternItem> linePattern = new ArrayList<PatternItem>();
-        linePattern.add(new Gap(2));
-        options.pattern(linePattern);
+        //linePattern.add(new Gap(2));
+        //options.pattern(linePattern);
 
-        mMap.addPolyline(options);
 
+        Polyline polyline = mMap.addPolyline(options);
+        //polyline.setColor(ContextCompat.getColor(getActivity(), R.color.red1));
+        //polyline.setPattern(linePattern);
+        polyline.setClickable(true);
+        //mPolyLinesData.add(new PolylineData(polyline)); no hay ruta en este caso
     }
 
     public void resetTheMap() {
