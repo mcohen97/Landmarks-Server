@@ -22,6 +22,8 @@ public class RetrofitToursService implements ITourService {
     private Retrofit retrofit;
     private RetrofitToursAPI webService;
     private final MutableLiveData<List<Tour>> toursData;
+    private final MutableLiveData<Tour> data = new MutableLiveData<>();
+
 
 
     public RetrofitToursService(){
@@ -57,7 +59,6 @@ public class RetrofitToursService implements ITourService {
 
     @Override
     public LiveData<Tour> getTourById(int id) {
-        final MutableLiveData<Tour> data = new MutableLiveData<>();
         Call<Tour> tour = webService.getTour(id);
         tour.enqueue(new Callback<Tour>() {
             @Override
