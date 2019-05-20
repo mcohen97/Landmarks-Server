@@ -37,6 +37,7 @@ import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.LandmarkFullInfo;
 import com.acr.landmarks.models.LandmarkMarkerInfo;
 import com.acr.landmarks.view_models.LandmarksViewModel;
+import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private LocationCallback locationCallback;
     private UserLocationViewModel locationViewModel;
     private LandmarksViewModel landmarksViewModel;
+    private ToursViewModel toursViewModel;
 
     private BottomSheetBehavior mBottomSheetBehaviour;
     private Location mCurrentLocation;
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private void setViewModels() {
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
         landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
+        toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
         landmarksViewModel.getSelectedLandmark().observe(this,selected ->
                 addFullLandmarkInfo(selected));
     }
@@ -115,7 +118,11 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 }
             }
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) { }
+            public void onTabUnselected(TabLayout.Tab tab) {
+                if(toursViewModel != null && tab.getPosition()==1) {
+                    toursViewModel.setSelectedTour(-1);
+                }
+            }
             @Override
             public void onTabReselected(TabLayout.Tab tab) { }
         });
@@ -304,12 +311,11 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             return true;
         }
         if( id == android.R.id.home){
-            TabHost tabHost = findViewById(R.id.tabs);
-            tabHost.setCurrentTab(0);
+            TabLayout tabs = findViewById(R.id.tabs);
+            TabLayout.Tab tab = tabs.getTabAt(0);
+            tab.select();
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-            MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
-            mapFragment.resetTheMap();
+            toursViewModel.setSelectedTour(-1);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -325,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     }
 
     private void addFullLandmarkInfo(LandmarkFullInfo landmark){
-        addBasicInfo(landmark.title, landmark.latitude,landmark.longitude);
+        //addBasicInfo(landmark.title, landmark.latitude,landmark.longitude);
         LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
         TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
         sheetLandmarkDescription.setText(landmark.description);
@@ -373,9 +379,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         TabLayout tabs = findViewById(R.id.tabs);
         TabLayout.Tab tab = tabs.getTabAt(1);
         tab.select();
-        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
-        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.)
-        //mapFragment.drawTour(selected);
     }
 
     public void generateBackButton(){

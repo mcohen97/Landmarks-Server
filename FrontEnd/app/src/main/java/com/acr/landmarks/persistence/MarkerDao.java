@@ -16,7 +16,7 @@ import java.util.List;
 public interface MarkerDao {
 
 
-    @Query("SELECT * FROM markers")
+    @Query("SELECT * FROM markers LIMIT 10")
     Cursor getStoredLandmarks();
 
     @Query("DELETE FROM markers")

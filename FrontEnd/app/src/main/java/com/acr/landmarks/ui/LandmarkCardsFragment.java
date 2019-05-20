@@ -60,6 +60,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
 
     @Override
     public void onLandmarkClicked(LandmarkMarkerInfo clicked) {
+        viewModel.setSelectedLandmark(clicked.id);
         mListener.onLandmarkSelected(clicked);
     }
 
