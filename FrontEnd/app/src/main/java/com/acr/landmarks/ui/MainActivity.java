@@ -115,11 +115,14 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             public void onTabSelected(TabLayout.Tab tab) {
                 if(mBottomSheetBehaviour.getState() == BottomSheetBehavior.STATE_EXPANDED) {
                     mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    toursViewModel.setSelectedTour(-1);
                 }
             }
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) { }
+            public void onTabUnselected(TabLayout.Tab tab) {
+                if(toursViewModel != null && tab.getPosition()==1) {
+                    toursViewModel.setSelectedTour(-1);
+                }
+            }
             @Override
             public void onTabReselected(TabLayout.Tab tab) { }
         });
@@ -313,8 +316,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             tab.select();
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             toursViewModel.setSelectedTour(-1);
-            //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
-            //mapFragment.resetTheMap();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -377,9 +378,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         TabLayout tabs = findViewById(R.id.tabs);
         TabLayout.Tab tab = tabs.getTabAt(1);
         tab.select();
-        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag("MapFragment");
-        //MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.)
-        //mapFragment.drawTour(selected);
     }
 
     public void generateBackButton(){
