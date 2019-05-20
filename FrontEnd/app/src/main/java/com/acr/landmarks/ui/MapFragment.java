@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.os.Handler;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.LandmarkMarkerInfo;
@@ -37,10 +39,16 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.internal.PolylineEncoding;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +87,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     private UserLocationViewModel locationViewModel;
     private ToursViewModel toursViewModel;
 
+    private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 
 
