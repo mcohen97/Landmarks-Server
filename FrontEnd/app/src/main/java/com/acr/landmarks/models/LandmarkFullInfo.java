@@ -12,10 +12,10 @@ public class LandmarkFullInfo {
     public List<String> audiosBase64;
 
     @Override
-    public boolean equals(Object o){
-        if(o == null){
+    public boolean equals(Object o) {
+        if (o == null) {
             return false;
         }
-        return ((LandmarkMarkerInfo)o).id == this.id;
+        return ((LandmarkMarkerInfo) o).id == this.id;
     }
 }

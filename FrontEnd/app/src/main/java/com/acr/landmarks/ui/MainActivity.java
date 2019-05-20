@@ -28,7 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +56,7 @@ import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
-public class MainActivity extends AppCompatActivity implements LandmarkSelectedListener , TourSelectedListener{
+public class MainActivity extends AppCompatActivity implements LandmarkSelectedListener, TourSelectedListener {
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -100,11 +99,11 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
         landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
         toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
-        landmarksViewModel.getSelectedLandmark().observe(this,selected ->
+        landmarksViewModel.getSelectedLandmark().observe(this, selected ->
                 addFullLandmarkInfo(selected));
     }
 
-    private void setViewPager(){
+    private void setViewPager() {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -114,18 +113,21 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(mBottomSheetBehaviour.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                if (mBottomSheetBehaviour.getState() == BottomSheetBehavior.STATE_EXPANDED) {
                     mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
             }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if(toursViewModel != null && tab.getPosition()==1) {
+                if (toursViewModel != null && tab.getPosition() == 1) {
                     toursViewModel.setSelectedTour(-1);
                 }
             }
+
             @Override
-            public void onTabReselected(TabLayout.Tab tab) { }
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -134,8 +136,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     }
 
-    private void setSlider(){
-        LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
+    private void setSlider() {
+        LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
         mSliderLayout = layoutBottomSheet.findViewById(R.id.imageSlider);
         mSliderLayout.setAutoScrolling(false);
         mSliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);
@@ -150,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 }
                 mCurrentLocation = locationResult.getLastLocation();
                 locationViewModel.setLocation(mCurrentLocation);
-            };
+            }
+
+            ;
         };
     }
 
@@ -176,32 +180,31 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mLocationRequest.setInterval(3000);
         mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest,locationCallback,null);
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, locationCallback, null);
     }
 
-    private boolean mapServicesAvailable(){
+    private boolean mapServicesAvailable() {
         return isPlayServicesOK() && isMapsEnabled();
     }
 
-    public boolean isPlayServicesOK(){
+    public boolean isPlayServicesOK() {
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
 
-        if(available == ConnectionResult.SUCCESS){
+        if (available == ConnectionResult.SUCCESS) {
             return true;
-        }
-        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
-        }else{
+        } else {
             Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
 
-    public boolean isMapsEnabled(){
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+    public boolean isMapsEnabled() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
             return false;
         }
@@ -233,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         }
     }
 
-    private boolean hasPermission(String aPermission){
+    private boolean hasPermission(String aPermission) {
         return ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 aPermission)
                 == PackageManager.PERMISSION_GRANTED;
@@ -261,10 +264,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ENABLE_GPS: {
-                if(mLocationPermissionGranted){
+                if (mLocationPermissionGranted) {
                     startTrackingLocation();
-                }
-                else{
+                } else {
                     getLocationPermission();
                 }
             }
@@ -273,17 +275,17 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     private void createBottomSheet() {
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
-        mBottomSheetBehaviour= BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehaviour = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
         TextView description = findViewById(R.id.landmarkDescription);
         description.setMovementMethod(new ScrollingMovementMethod());
         mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            boolean expanded =false;
+            boolean expanded = false;
 
             @Override
             public void onStateChanged(View bottomSheet, int newState) {
-                if(newState == BottomSheetBehavior.STATE_EXPANDED){
-                    expanded =true;
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    expanded = true;
                 }
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -292,8 +294,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
             @Override
             public void onSlide(View bottomSheet, float slideOffset) {
-                if(expanded){
-                    expanded =false;
+                if (expanded) {
+                    expanded = false;
                     mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
             }
@@ -313,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         if (id == R.id.action_settings) {
             return true;
         }
-        if( id == android.R.id.home){
+        if (id == android.R.id.home) {
             TabLayout tabs = findViewById(R.id.tabs);
             TabLayout.Tab tab = tabs.getTabAt(0);
             tab.select();
@@ -325,41 +327,40 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     @Override
     public void onLandmarkSelected(LandmarkMarkerInfo selectedLandmark) {
-        addBasicInfo( selectedLandmark.title,selectedLandmark.latitude,selectedLandmark.longitude);
-        addImages(new String[] {selectedLandmark.iconBase64});
+        addBasicInfo(selectedLandmark.title, selectedLandmark.latitude, selectedLandmark.longitude);
+        addImages(new String[]{selectedLandmark.iconBase64});
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         bottomSheet.getLayoutParams().height = mViewPager.getHeight();
         bottomSheet.requestLayout();
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
-    private void addFullLandmarkInfo(LandmarkFullInfo landmark){
-        //addBasicInfo(landmark.title, landmark.latitude,landmark.longitude);
-        LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
-        TextView sheetLandmarkDescription =  layoutBottomSheet.findViewById(R.id.landmarkDescription) ;
+    private void addFullLandmarkInfo(LandmarkFullInfo landmark) {
+        LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
+        TextView sheetLandmarkDescription = layoutBottomSheet.findViewById(R.id.landmarkDescription);
         sheetLandmarkDescription.setText(landmark.description);
         addImages(landmark.imagesBase64);
     }
 
 
     //The main usage of this method is to fill the drawer with info while waiting for the full landmark information.
-    private void addBasicInfo(String title, double latitude, double longitude){
-        LinearLayout layoutBottomSheet= findViewById(R.id.bottom_sheet_layout) ;
-        TextView sheetLandmarkName =  layoutBottomSheet.findViewById(R.id.landmarkName) ;
-        TextView sheetLandmarkDistance =  layoutBottomSheet.findViewById(R.id.landmarkDistance) ;
+    private void addBasicInfo(String title, double latitude, double longitude) {
+        LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
+        TextView sheetLandmarkName = layoutBottomSheet.findViewById(R.id.landmarkName);
+        TextView sheetLandmarkDistance = layoutBottomSheet.findViewById(R.id.landmarkDistance);
 
         sheetLandmarkName.setText(title);
 
-        String distance = ""+ (mCurrentLocation.distanceTo(createLocation(latitude,longitude))/1000);
-        distance = distance.substring(0,4);
+        String distance = "" + (mCurrentLocation.distanceTo(createLocation(latitude, longitude)) / 1000);
+        distance = distance.substring(0, 4);
         distance += " Km";
 
         sheetLandmarkDistance.setText(distance);
     }
 
-    private void addImages(String[] images){
+    private void addImages(String[] images) {
         mSliderLayout.clearSliderViews();
-        for(String image:images){
+        for (String image : images) {
             SliderView sliderView = new DefaultSliderView(this);
             byte[] imageData = Base64.decode(image, Base64.DEFAULT);
             sliderView.setImageByte(imageData);
@@ -369,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         }
     }
 
-    private Location createLocation( double lat, double lng){
+    private Location createLocation(double lat, double lng) {
         Location conversion = new Location(new String());
         conversion.setLatitude(lat);
         conversion.setLongitude(lng);
@@ -384,9 +385,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         tab.select();
     }
 
-    public void generateBackButton(){
+    public void generateBackButton() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-
 }

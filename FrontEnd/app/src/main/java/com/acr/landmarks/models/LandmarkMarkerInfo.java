@@ -9,7 +9,7 @@ public class LandmarkMarkerInfo {
     public String iconBase64;
 
     public LandmarkMarkerInfo(int id, String title, double latitude, double longitude, String iconBase64) {
-        this.id=id;
+        this.id = id;
         this.title = title;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -17,10 +17,10 @@ public class LandmarkMarkerInfo {
     }
 
     @Override
-    public boolean equals(Object o){
-        if(o == null){
+    public boolean equals(Object o) {
+        if (o == null) {
             return false;
         }
-        return ((LandmarkMarkerInfo)o).id == this.id;
+        return ((LandmarkMarkerInfo) o).id == this.id;
     }
 }

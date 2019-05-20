@@ -8,8 +8,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -34,22 +32,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
-import com.google.maps.PendingResult;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.internal.PolylineEncoding;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.DirectionsRoute;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +48,8 @@ import java.util.List;
 import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
+public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,
+        GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
         GoogleMap.OnCameraIdleListener {
 
     private final String TAG = "MapFragment";
@@ -84,13 +75,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
 
     //ViewModels
-    private LandmarksViewModel  landmarksViewModel;
+    private LandmarksViewModel landmarksViewModel;
     private UserLocationViewModel locationViewModel;
     private ToursViewModel toursViewModel;
 
-    private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
-
 
 
     @Override
@@ -99,12 +88,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
-        try{
-            mListener= (LandmarkSelectedListener) context;
-        }catch (ClassCastException e){
-            throw new ClassCastException(context.toString()+" must implement "+ LandmarkSelectedListener.class);
+        try {
+            mListener = (LandmarkSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement " + LandmarkSelectedListener.class);
         }
     }
 
@@ -119,7 +108,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
         RelativeLayout mMapContainer = view.findViewById(R.id.map_container);
 
-        mLandmarks= new ArrayList<LandmarkMarkerInfo>();
+        mLandmarks = new ArrayList<LandmarkMarkerInfo>();
         mTours = new ArrayList<Tour>();
 
         landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
@@ -129,7 +118,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         return view;
     }
 
-    private void initGoogleMap(Bundle savedInstanceState){
+    private void initGoogleMap(Bundle savedInstanceState) {
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -138,7 +127,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
-        if(mGeoApiContext == null){
+        if (mGeoApiContext == null) {
             mGeoApiContext = new GeoApiContext.Builder()
                     .apiKey(getString(R.string.google_map_api_key))
                     .build();
@@ -150,7 +139,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         setCameraViewWithZoom(currentZoom);
     }
 
-    private void setCameraViewWithZoom(float zoom){
+    private void setCameraViewWithZoom(float zoom) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(mUserLocation.getLatitude(),
                         mUserLocation.getLongitude()), zoom));
@@ -233,9 +222,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         });
 
         toursViewModel.getSelectedTour().observe(this, tour -> {
-            if(tour != null){
+            if (tour != null) {
                 drawTour(tour);
-            }else{
+            } else {
                 resetTheMap();
                 addMapMarkers();
             }
@@ -243,7 +232,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         });
 
     }
-
 
     private float getMapRangeRadius() {
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
@@ -255,10 +243,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         northEast.setLatitude(bounds.northeast.latitude);
         northEast.setLongitude(bounds.northeast.longitude);
 
-        float radiusInMeters= center.distanceTo(northEast);
-        float radiusInKm = radiusInMeters/1000;
+        float radiusInMeters = center.distanceTo(northEast);
+        float radiusInKm = radiusInMeters / 1000;
 
-        return  radiusInKm;
+        return radiusInKm;
     }
 
     @Override
@@ -281,38 +269,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_reset_map:{
+        switch (v.getId()) {
+            case R.id.btn_reset_map: {
                 addMapMarkers();
                 break;
             }
         }
     }
 
-    private void addMapMarkers(){
-        if(mMap == null){
+    private void addMapMarkers() {
+        if (mMap == null) {
             return;
         }
         resetMap();
         boolean firstTime = mClusterManager == null;
-        if(firstTime){
+        if (firstTime) {
             setUpClusterManager();
         }
-        if(mClusterManagerRenderer == null){
+        if (mClusterManagerRenderer == null) {
             setUpClusterManagerRenderer();
         }
 
         updateMapMarkers();
     }
 
-    private void setUpClusterManager(){
+    private void setUpClusterManager() {
         mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
         mMap.setOnMarkerClickListener(mClusterManager);
         mMap.setOnInfoWindowClickListener(mClusterManager);
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
     }
 
-    private void setUpClusterManagerRenderer(){
+    private void setUpClusterManagerRenderer() {
         mClusterManagerRenderer = new ClusterManagerRenderer(
                 getActivity(),
                 mMap,
@@ -323,21 +311,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     private void updateMapMarkers() {
 
-        for(LandmarkMarkerInfo landmark: mLandmarks){
-            try{
+        for (LandmarkMarkerInfo landmark : mLandmarks) {
+            try {
                 addMarker(landmark);
-            }catch (NullPointerException e){
-                Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage() );
+            } catch (NullPointerException e) {
+                Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage());
             }
         }
         mClusterManager.cluster();
-        //removeUselessMarkers();
     }
 
     private void addMarker(LandmarkMarkerInfo landmark) {
 
         boolean alreadyInMap = isMarkerInMap(landmark);
-        if(!alreadyInMap) {
+        if (!alreadyInMap) {
             String snippet = "Determine route to " + landmark.title + "?";
             LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
                     new LatLng(landmark.latitude, landmark.longitude),
@@ -531,10 +518,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     public void onCameraIdle() {
         float newRadius = getMapRangeRadius();
         LatLng center = mMap.getCameraPosition().target;
-        landmarksViewModel.setGeofence(latLngToLocation(center),new Double(newRadius));
+        landmarksViewModel.setGeofence(latLngToLocation(center), new Double(newRadius));
     }
 
-    private Location latLngToLocation(LatLng googleData){
+    private Location latLngToLocation(LatLng googleData) {
         Location conversion = new Location(new String());
         conversion.setLatitude(googleData.latitude);
         conversion.setLongitude(googleData.longitude);
@@ -546,11 +533,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         addMapMarkers();
 
         ArrayList<Integer> landmarksIds = selected.landmarksIds;
-        ArrayList<LandmarkMarkerInfo> landmarks =new ArrayList<LandmarkMarkerInfo>();
+        ArrayList<LandmarkMarkerInfo> landmarks = new ArrayList<LandmarkMarkerInfo>();
 
-        for(Integer id : landmarksIds){
-            for(LandmarkMarkerInfo landmark:mLandmarks){
-                if(landmark.id== id){
+        for (Integer id : landmarksIds) {
+            for (LandmarkMarkerInfo landmark : mLandmarks) {
+                if (landmark.id == id) {
                     landmarks.add(landmark);
                 }
             }
@@ -589,7 +576,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 mClusterMarkers = new ArrayList<>();
             }
 
-            if(mPolyLinesData.size() > 0){
+            if (mPolyLinesData.size() > 0) {
                 mPolyLinesData.clear();
                 mPolyLinesData = new ArrayList<>();
             }
