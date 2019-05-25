@@ -1,9 +1,11 @@
 package com.acr.landmarks.adapters;
 
 import android.content.Context;
-import android.media.Image;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,21 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.service.LandmarksService;
-
-import org.w3c.dom.Text;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 
 import java.util.List;
 
 public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapter.ViewHolder> {
 
     private Context mContext;
-    private LandmarksService landmarksProvider;
+    private LandmarkCardClickListener clickListener;
+    private List<LandmarkMarkerInfo> lastAvailableData;
 
-    public LandmarkCardAdapter(Context mContext, LandmarksService landmarksService){
+    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, List<LandmarkMarkerInfo> data) {
         this.mContext = mContext;
-        this.landmarksProvider = landmarksService;
+        this.clickListener = clickListener;
+        lastAvailableData = data;
     }
 
     @NonNull
@@ -33,34 +34,53 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        view = mInflater.inflate(R.layout.cardview_item,parent,false);
-        return new ViewHolder(view);
+        view = mInflater.inflate(R.layout.cardview_item, parent, false);
+        return new ViewHolder(view, clickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        List<Landmark> lastAvailableData = landmarksProvider.getAllLandmarks();
-        Landmark requestedLandmark = lastAvailableData.get(position);
-        String landmarkName = requestedLandmark.getName();
+        LandmarkMarkerInfo requestedLandmark = lastAvailableData.get(position);
+        String landmarkName = requestedLandmark.title;
         holder.title.setText(landmarkName);
-        int imgId = Integer.parseInt(requestedLandmark.getImg());
-        holder.thumbnail.setImageResource(imgId);
+        String image = requestedLandmark.iconBase64;
+        byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
+        Bitmap landmark = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        holder.thumbnail.setImageBitmap(landmark);
     }
 
     @Override
     public int getItemCount() {
-        return landmarksProvider.getLandmarksCount();
+        return lastAvailableData.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
         ImageView thumbnail;
+        LandmarkCardClickListener clickListener;
 
-        public ViewHolder(View itemView){
+        public ViewHolder(View itemView, LandmarkCardClickListener clickListener) {
             super(itemView);
 
-            title = itemView.findViewById(R.id.landmark_card_title);
-            thumbnail = itemView.findViewById(R.id.landmark_card_img_id);
+            this.title = itemView.findViewById(R.id.landmark_card_title);
+            this.thumbnail = itemView.findViewById(R.id.landmark_card_img_id);
+            this.clickListener = clickListener;
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            int position = getAdapterPosition();
+            clickListener.onLandmarkClicked(lastAvailableData.get(position));
         }
     }
+
+    public interface LandmarkCardClickListener {
+        void onLandmarkClicked(LandmarkMarkerInfo clicked);
+    }
 }
+
+

@@ -13,10 +13,12 @@ namespace ObligatorioISP.DataAccess
         private ILandmarksRepository landmarks;
 
         private ISqlContext connection;
+        private string imagesDirectory;
 
-        public SqlServerToursRepository(ISqlContext context, ILandmarksRepository aRepository) {
+        public SqlServerToursRepository(ISqlContext context, ILandmarksRepository aRepository, string images) {
             landmarks = aRepository;
             connection = context;
+            imagesDirectory = images;
         }
 
         public Tour GetById(int id)
@@ -48,11 +50,16 @@ namespace ObligatorioISP.DataAccess
         {
             int tourId = Int32.Parse(rawData["ID"].ToString());
             string title = rawData["TITLE"].ToString();
+            string description = rawData["DESCRIPTION"].ToString();
+            Enum.TryParse(rawData["CATEGORY"].ToString(), out TourCategory category);
+            string imagePath = $"{imagesDirectory}/{tourId}.{rawData["IMAGE_EXTENSION"]}";
             ICollection<Landmark> tourStops = landmarks.GetTourLandmarks(tourId);
+
             Tour tour;
+
             try
             {
-                tour = new Tour(tourId, title, tourStops);
+                tour = new Tour(tourId, title,description, tourStops, imagePath,category);
             }
             catch (InvalidTourException) {
                 throw new CorruptedDataException();

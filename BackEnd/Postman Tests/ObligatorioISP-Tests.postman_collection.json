@@ -180,6 +180,8 @@
 							"  pm.expect(jsonData).to.have.property('id');",
 							"  pm.expect(jsonData).to.have.property('title');",
 							"  pm.expect(jsonData).to.have.property('landmarksIds');",
+							"  pm.expect(jsonData).to.have.property('category');",
+							"  pm.expect(jsonData).to.have.property('imageBase64');",
 							"});"
 						],
 						"type": "text/javascript"
@@ -229,6 +231,8 @@
 							"    pm.expect(jsonData[0]).to.have.property('id');",
 							"    pm.expect(jsonData[0]).to.have.property('title');",
 							"    pm.expect(jsonData[0]).to.have.property('landmarksIds');",
+							"    pm.expect(jsonData[0]).to.have.property('category');",
+							"    pm.expect(jsonData[0]).to.have.property('imageBase64');",
 							"});"
 						],
 						"type": "text/javascript"
@@ -433,7 +437,7 @@
 	],
 	"variable": [
 		{
-			"id": "73781e55-08e6-4bd2-88c6-2aa12b5113af",
+			"id": "90b9cc5f-5ef4-442d-9098-c379ee031544",
 			"key": "Domain",
 			"value": "https://localhost:44310",
 			"type": "string"

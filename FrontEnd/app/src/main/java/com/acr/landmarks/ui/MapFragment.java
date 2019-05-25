@@ -1,38 +1,45 @@
 package com.acr.landmarks.ui;
 
 import android.Manifest;
-import android.content.DialogInterface;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.os.Handler;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.adapters.LandmarkListAdapter;
-import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkMarkerInfo;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
+import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.util.ClusterManagerRenderer;
+import com.acr.landmarks.view_models.LandmarksViewModel;
+import com.acr.landmarks.view_models.ToursViewModel;
+import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApiRequest;
@@ -49,55 +56,55 @@ import java.util.List;
 import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback , View.OnClickListener ,
-        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnPolylineClickListener
-{
+public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,
+        GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
+        GoogleMap.OnCameraIdleListener {
 
-    private static final String TAG = "UserListFragment";
-
-    //widgets
+    private final String TAG = "MapFragment";
+    private LandmarkSelectedListener mListener;
 
     private MapView mMapView;
 
-    //location y camara update
+    //location y camera update
     private static GoogleMap mMap;
-    private LatLngBounds mMapBoundary;
     public static Location mUserLocation;
-    private RelativeLayout mMapContainer;
-
-    //Click variables
-
-    private static final int MAP_LAYOUT_STATE_CONTRACTED = 0;
-    private static final int MAP_LAYOUT_STATE_EXPANDED = 1;
-    private int mMapLayoutState = 0;
+    private static final int DEFAULT_ZOOM = 15;
 
     //Clustering
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
     private ClusterManagerRenderer mClusterManagerRenderer;
     private static ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
-    private List<Landmark> mLandmarks = new ArrayList<>();
+
+    private List<LandmarkMarkerInfo> mLandmarks;
+    private List<Tour> mTours;
 
     //Directions
     private GeoApiContext mGeoApiContext;
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
+
+    //ViewModels
+    private LandmarksViewModel landmarksViewModel;
+    private UserLocationViewModel locationViewModel;
+    private ToursViewModel toursViewModel;
+
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
-
-    public static GoogleMap getMap() {
-        return mMap;
-    }
-
-    public static ArrayList<LandmarkClusterMarker> getMarkers() {
-        return mClusterMarkers;
-    }
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (LandmarkSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement " + LandmarkSelectedListener.class);
+        }
+    }
 
     @Nullable
     @Override
@@ -108,14 +115,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         initGoogleMap(savedInstanceState);
 
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
-        mMapContainer = view.findViewById(R.id.map_container);
+        RelativeLayout mMapContainer = view.findViewById(R.id.map_container);
+
+        mLandmarks = new ArrayList<LandmarkMarkerInfo>();
+        mTours = new ArrayList<Tour>();
+
+        landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
+        toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
+        locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
+
         return view;
     }
 
-    private void initGoogleMap(Bundle savedInstanceState){
-        // *** IMPORTANT ***
-        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
-        // objects or sub-Bundles.
+    private void initGoogleMap(Bundle savedInstanceState) {
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -124,7 +136,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
-        if(mGeoApiContext == null){
+        if (mGeoApiContext == null) {
             mGeoApiContext = new GeoApiContext.Builder()
                     .apiKey(getString(R.string.google_map_api_key))
                     .build();
@@ -132,19 +144,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
     }
 
     private void setCameraView() {
-        mUserLocation = MainActivity.mUserLocation;
-        // Set a boundary to start
-        double bottomBoundary = mUserLocation.getLatitude() - .01;
-        double leftBoundary = mUserLocation.getLongitude() - .01;
-        double topBoundary = mUserLocation.getLatitude() + .01;
-        double rightBoundary = mUserLocation.getLongitude() + .01;
+        float currentZoom = mMap.getCameraPosition().zoom;
+        setCameraViewWithZoom(currentZoom);
+    }
 
-        mMapBoundary = new LatLngBounds(
-                new LatLng(bottomBoundary, leftBoundary),
-                new LatLng(topBoundary, rightBoundary)
-        );
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0));
+    private void setCameraViewWithZoom(float zoom) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(mUserLocation.getLatitude(),
+                        mUserLocation.getLongitude()), zoom));
     }
 
     @Override
@@ -184,22 +191,72 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         map.setMyLocationEnabled(true);
         mMap = map;
-        mMap.setOnInfoWindowClickListener(this);
-        mMap.setOnPolylineClickListener(this);
-        addMapMarkers();
+
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this.getContext(), R.raw.map_style));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+
+        locationViewModel.getLocation().observe(this, location -> {
+            boolean firstLocation =mUserLocation == null;
+
+            mUserLocation = location;
+
+            if(firstLocation){
+                setCameraViewWithZoom(DEFAULT_ZOOM);
+                landmarksViewModel.setGeofence(location,new Double(getMapRangeRadius()));
+                //toursViewModel.setGeofence(location,new Double(getMapRangeRadius()));
+                mMap.setOnCameraIdleListener(this);
+                //mMap.setOnCameraMoveStartedListener(this);
+            }
+
+        });
+
+        landmarksViewModel.getLandmarks().observe(this, landmarks -> {
+            mLandmarks = landmarks;
+            addMapMarkers();
+        });
+
+        toursViewModel.getSelectedTour().observe(this, tour -> {
+            if (tour != null) {
+                drawTour(tour);
+            } else {
+                resetTheMap();
+                addMapMarkers();
+            }
+
+        });
+
     }
 
+    private float getMapRangeRadius() {
+        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        Location center = new Location(new String());
+        center.setLatitude(bounds.getCenter().latitude);
+        center.setLongitude(bounds.getCenter().longitude);
+
+        Location northEast = new Location(new String());
+        northEast.setLatitude(bounds.northeast.latitude);
+        northEast.setLongitude(bounds.northeast.longitude);
+
+        float radiusInMeters = center.distanceTo(northEast);
+        float radiusInKm = radiusInMeters / 1000;
+
+        return radiusInKm;
+    }
 
     @Override
     public void onPause() {
@@ -219,95 +276,99 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         mMapView.onLowMemory();
     }
 
-
-
-
-
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_reset_map:{
+        switch (v.getId()) {
+            case R.id.btn_reset_map: {
                 addMapMarkers();
                 break;
             }
         }
     }
 
-    private void addMapMarkers(){
-        updateLandmarks();//Hardcoded ver donde colocarlo para el flujo correcto
-        if(mMap != null){
-            resetMap();
-            if(mClusterManager == null){
-                mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
+    private void addMapMarkers() {
+        if (mMap == null) {
+            return;
+        }
+        resetMap();
+        boolean firstTime = mClusterManager == null;
+        if (firstTime) {
+            setUpClusterManager();
+        }
+        if (mClusterManagerRenderer == null) {
+            setUpClusterManagerRenderer();
+        }
+
+        updateMapMarkers();
+    }
+
+    private void setUpClusterManager() {
+        mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        mMap.setOnInfoWindowClickListener(mClusterManager);
+        mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+    }
+
+    private void setUpClusterManagerRenderer() {
+        mClusterManagerRenderer = new ClusterManagerRenderer(
+                getActivity(),
+                mMap,
+                mClusterManager
+        );
+        mClusterManager.setRenderer(mClusterManagerRenderer);
+    }
+
+    private void updateMapMarkers() {
+
+        for (LandmarkMarkerInfo landmark : mLandmarks) {
+            try {
+                addMarker(landmark);
+            } catch (NullPointerException e) {
+                Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage());
             }
-            if(mClusterManagerRenderer == null){
-                mClusterManagerRenderer = new ClusterManagerRenderer(
-                        getActivity(),
-                        mMap,
-                        mClusterManager
-                );
-                mClusterManager.setRenderer(mClusterManagerRenderer);
-            }
+        }
+        mClusterManager.cluster();
+    }
 
-            for(Landmark landmark: mLandmarks){
+    private void addMarker(LandmarkMarkerInfo landmark) {
 
-                try{
-                    String snippet = "";
-
-                    snippet = "Determine route to " + landmark.getName() + "?";
-
-                    int avatar = R.drawable.test_image; // set the default avatar
-                    /* por ahora seteo la imagen poor defecto queda a implementar el cargar la imagen
-                    try{
-                        avatar = Integer.parseInt(landmark.getImg());
-                    }catch (NumberFormatException e){
-                        Log.d(TAG, "addMapMarkers: no avatar for " + landmark.getName() + ", setting default.");
-                    }*/
-                    LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
-                            new LatLng(landmark.getLat(), landmark.getLon()),
-                            landmark.getName(),
-                            snippet,
-                            avatar,
-                            landmark
-                    );
-                    mClusterManager.addItem(newClusterMarker);
-                    mClusterMarkers.add(newClusterMarker);
-
-                }catch (NullPointerException e){
-                    Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage() );
-                }
-
-            }
-            mClusterManager.cluster();
-
-            setCameraView();
+        boolean alreadyInMap = isMarkerInMap(landmark);
+        if (!alreadyInMap) {
+            String snippet = "Determine route to " + landmark.title + "?";
+            LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
+                    new LatLng(landmark.latitude, landmark.longitude),
+                    landmark.title,
+                    snippet,
+                    landmark.iconBase64,
+                    landmark
+            );
+            mClusterManager.addItem(newClusterMarker);
+            mClusterMarkers.add(newClusterMarker);
         }
     }
-    //Hardcoded
-    private void updateLandmarks() {
-        mLandmarks = MainActivity.getLandmarks();
+
+    private void removeUselessMarkers() {
+        List<LandmarkClusterMarker> auxLandmarks= (List<LandmarkClusterMarker>) mClusterMarkers.clone();
+        for(LandmarkClusterMarker marker: auxLandmarks){
+            if(!markerContainsLandmarkInRange(marker)){
+                mClusterMarkers.remove(marker);
+                mClusterManager.removeItem(marker);
+            }
+        }
+
     }
 
-    @Override
-    public void onInfoWindowClick(final Marker marker) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(marker.getSnippet())
-                .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        resetSelectedMarker();
-                        mSelectedMarker = marker;
-                        calculateDirections(marker);
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
+    private boolean markerContainsLandmarkInRange(LandmarkClusterMarker marker) {
+        return mLandmarks.contains(marker.getLandmark());
+    }
+
+    private boolean isMarkerInMap(LandmarkMarkerInfo landmark) {
+        for(LandmarkClusterMarker marker :mClusterMarkers){
+            if(marker.getLandmark().equals(landmark)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void calculateDirections(Marker marker){
@@ -422,14 +483,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
         }
     }
 
-    private void resetSelectedMarker(){
-        if(mSelectedMarker != null){
-            mSelectedMarker.setVisible(true);
-            mSelectedMarker = null;
-            removeTripMarkers();
-        }
-    }
-
     private void removeTripMarkers(){
         for(Marker marker: mTripMarkers){
             marker.remove();
@@ -456,6 +509,71 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
 
     private void resetMap(){
         if(mMap != null) {
+
+            if(mPolyLinesData.size() > 0){
+                mPolyLinesData.clear();
+                mPolyLinesData = new ArrayList<>();
+            }
+        }
+    }
+
+    @Override
+    public void onClusterItemInfoWindowClick(LandmarkClusterMarker landmarkClusterMarker) {
+        landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
+        mListener.onLandmarkSelected(landmarkClusterMarker.getLandmark());
+    }
+
+    @Override
+    public void onCameraIdle() {
+        float newRadius = getMapRangeRadius();
+        LatLng center = mMap.getCameraPosition().target;
+        landmarksViewModel.setGeofence(latLngToLocation(center), new Double(newRadius));
+    }
+
+    private Location latLngToLocation(LatLng googleData) {
+        Location conversion = new Location(new String());
+        conversion.setLatitude(googleData.latitude);
+        conversion.setLongitude(googleData.longitude);
+        return conversion;
+    }
+
+    //Tours
+    public void drawTour(Tour selected) {
+        addMapMarkers();
+
+        ArrayList<Integer> landmarksIds = selected.landmarksIds;
+        ArrayList<LandmarkMarkerInfo> landmarks = new ArrayList<LandmarkMarkerInfo>();
+
+        for (Integer id : landmarksIds) {
+            for (LandmarkMarkerInfo landmark : mLandmarks) {
+                if (landmark.id == id) {
+                    landmarks.add(landmark);
+                }
+            }
+        }
+
+        PolylineOptions options = new PolylineOptions();
+        options.color(Color.RED);
+
+        for(LandmarkMarkerInfo lm: landmarks){
+            options.add(new LatLng(lm.latitude,lm.longitude));
+        }
+
+
+        ArrayList<PatternItem> linePattern = new ArrayList<PatternItem>();
+        //linePattern.add(new Gap(2));
+        //options.pattern(linePattern);
+
+
+        Polyline polyline = mMap.addPolyline(options);
+        //polyline.setColor(ContextCompat.getColor(getActivity(), R.color.red1));
+        //polyline.setPattern(linePattern);
+        polyline.setClickable(true);
+        //mPolyLinesData.add(new PolylineData(polyline)); no hay ruta en este caso
+    }
+
+    public void resetTheMap() {
+        if(mMap != null) {
             mMap.clear();
 
             if(mClusterManager != null){
@@ -467,13 +585,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback , View.O
                 mClusterMarkers = new ArrayList<>();
             }
 
-            if(mPolyLinesData.size() > 0){
+            if (mPolyLinesData.size() > 0) {
                 mPolyLinesData.clear();
                 mPolyLinesData = new ArrayList<>();
             }
         }
     }
-
-
 
 }

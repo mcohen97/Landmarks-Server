@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:background="@color/blue5"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:weightSum="100"
+    android:backgroundTint="@color/White"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="100dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0px"
+        android:layout_weight="50"
+        >
+
+        <com.smarteist.autoimageslider.SliderLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/imageSlider"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="15dp"
+            android:text="Distance"
+            android:background="@color/transparentPrimaryDark"
+            android:textColor="@color/Grey"
+            android:padding="4dp"
+            android:id="@+id/landmarkDistance"
+            />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="10"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+
+        android:weightSum="10"
+        android:layout_marginTop="10dp"
+        >
+        <ImageView
+            android:id="@+id/icon"
+            android:src="@drawable/placeholder"
+            android:background="@color/transparent"
+            android:gravity="left"
+            android:layout_weight="1"
+            android:layout_width="0px"
+            android:layout_gravity="center_vertical"
+            android:layout_height="25dp" />
+        <TextView
+            android:layout_width="0px"
+            android:layout_weight="9"
+            android:layout_height="wrap_content"
+            android:text="Landmark name"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18dp"
+            android:id="@+id/landmarkName"/>
+    </LinearLayout>
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:text="description"
+        android:layout_weight="30"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:scrollbars = "vertical"
+
+        android:id="@+id/landmarkDescription"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:background="@color/colorPrimary"
+        android:layout_weight="10"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="Reproducir Audio Guía"
+        android:textColor="#fff" />
+
+</LinearLayout>

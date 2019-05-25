@@ -26,16 +26,16 @@ namespace ObligatorioISP.WebAPI
 
             services.AddScoped<ILandmarksRepository>(provider=> new SqlServerLandmarksRepository(
                 new SqlServerConnectionManager(Configuration.GetConnectionString("Landmarks")),
-                GetMediaPath("Images","Uri"),
+                GetMediaPath("LandmarkImages", "Uri"),
                 GetMediaPath("Audios", "Uri")));
 
             services.AddScoped<IToursRepository>(provider => new SqlServerToursRepository(
                 new SqlServerConnectionManager(Configuration.GetConnectionString("Landmarks")),
                 new SqlServerLandmarksRepository(
                 new SqlServerConnectionManager(Configuration.GetConnectionString("Landmarks")),
-                GetMediaPath("Images", "Uri"),
-                GetMediaPath("Audios", "Uri"))
-                ));
+                GetMediaPath("LandmarkImages", "Uri"),
+                GetMediaPath("Audios", "Uri")),
+                GetMediaPath("TourImages", "Uri")));
 
             services.AddScoped<IImagesRepository, DiskImagesRepository>();
             services.AddScoped<IAudiosRepository, DiskAudiosRepository>();

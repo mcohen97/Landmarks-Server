@@ -24,13 +24,13 @@
 
 
             <ImageButton
-                android:layout_width="35dp"
+                android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:src="@drawable/ic_refresh_black_24dp"
                 android:background="@color/White"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="70dp"
+                android:layout_marginBottom="120dp"
                 android:layout_marginLeft="10dp"
                 android:id="@+id/btn_reset_map"/>
 
