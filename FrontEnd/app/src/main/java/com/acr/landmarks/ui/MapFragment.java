@@ -58,6 +58,7 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,
         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
+        ClusterManager.OnClusterItemClickListener<LandmarkClusterMarker>,
         GoogleMap.OnCameraIdleListener {
 
     private final String TAG = "MapFragment";
@@ -371,7 +372,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         return false;
     }
 
-    private void calculateDirections(Marker marker){
+    private void calculateDirections(LandmarkClusterMarker marker){
 
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
                 marker.getPosition().latitude,
@@ -524,6 +525,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     }
 
     @Override
+    public boolean onClusterItemClick(LandmarkClusterMarker landmarkClusterMarker) {
+        landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
+        calculateDirections(landmarkClusterMarker);
+        return true;
+    }
+
+    @Override
     public void onCameraIdle() {
         float newRadius = getMapRangeRadius();
         LatLng center = mMap.getCameraPosition().target;
@@ -591,5 +599,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             }
         }
     }
+
 
 }
