@@ -21,7 +21,7 @@ namespace ObligatorioISP.WebAPI.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery]double lat, [FromQuery]double lng, [FromQuery]double dist)
         {
-            ICollection<LandmarkSummarizedDto> retrieved = landmarks.GetLandmarksWithinZone(lat, lng, dist);
+            ICollection<LandmarkDto> retrieved = landmarks.GetLandmarksWithinZone(lat, lng, dist);
             return Ok(retrieved);
         }
 
@@ -31,7 +31,7 @@ namespace ObligatorioISP.WebAPI.Controllers
             IActionResult result;
             try
             {
-                LandmarkDetailedDto retrieved = landmarks.GetLandmarkById(id);
+                LandmarkDto retrieved = landmarks.GetLandmarkById(id);
                 result = Ok(retrieved);
             }
             catch (ServiceException e) {
@@ -46,7 +46,7 @@ namespace ObligatorioISP.WebAPI.Controllers
             IActionResult result;
             try
             {
-                ICollection<LandmarkSummarizedDto> retrieved = landmarks.GetLandmarksOfTour(id);
+                ICollection<LandmarkDto> retrieved = landmarks.GetLandmarksOfTour(id);
                 result = Ok(retrieved);
             }
             catch (ServiceException e)

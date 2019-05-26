@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.BusinessLogic.Exceptions;
@@ -102,14 +103,15 @@ namespace ObligatorioISP.DataAccess
         private string BuildPath(Dictionary<string, object> rawData, int landmarkId, string table) {
             string resourceId = rawData["ID"].ToString();
             string path;
+            char separator = Path.DirectorySeparatorChar;
             if (table.Equals(IMAGES_TABLE))
             {
                 string extension = rawData["EXTENSION"].ToString();
-                path = $"{imagesDirectory}/{landmarkId}{SEPARATOR}{resourceId}.{extension}";
+                path = $"{imagesDirectory}{separator}{landmarkId}{SEPARATOR}{resourceId}.{extension}";
             }
             else
             {
-                path = $"{audiosDirectory}/{landmarkId}{SEPARATOR}{resourceId}.mp3";
+                path = $"{audiosDirectory}{separator}{landmarkId}{SEPARATOR}{resourceId}.mp3";
             }
             return path;
         }

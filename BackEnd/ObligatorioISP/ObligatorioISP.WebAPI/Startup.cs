@@ -37,8 +37,6 @@ namespace ObligatorioISP.WebAPI
                 GetMediaPath("Audios", "Uri")),
                 GetMediaPath("TourImages", "Uri")));
 
-            services.AddScoped<IImagesRepository, DiskImagesRepository>();
-            services.AddScoped<IAudiosRepository, DiskAudiosRepository>();
 
             services.AddScoped<ILandmarksService, LandmarksService>();
             services.AddScoped<IToursService, ToursService>();
