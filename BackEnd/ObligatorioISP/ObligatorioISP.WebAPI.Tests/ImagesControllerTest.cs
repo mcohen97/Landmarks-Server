@@ -30,7 +30,7 @@ namespace ObligatorioISP.WebAPI.Tests
 
         [TestMethod]
         public void GetExistentImage() {
-            Task<IActionResult> task =controller.Get(testImage);
+            Task<IActionResult> task =controller.GetLandmarkImage(testImage);
             task.Wait();
             IActionResult result = task.Result;
             FileStreamResult stream = result as FileStreamResult;
@@ -41,7 +41,7 @@ namespace ObligatorioISP.WebAPI.Tests
 
         [TestMethod]
         public void GerUnexistentImage() {
-            Task<IActionResult> task = controller.Get("unexistent.jpg");
+            Task<IActionResult> task = controller.GetLandmarkImage("unexistent.jpg");
             task.Wait();
 
             IActionResult result = task.Result;

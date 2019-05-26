@@ -6,22 +6,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ObligatorioISP.Services.Contracts.Dtos;
-using ObligatorioISP.Services.Contracts.Exceptions;
 
 namespace ObligatorioISP.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
-        private string imagesDirectory;
+        private string landmarksImagesDirectory;
+        private string toursImagesDirectory;
 
         public ImagesController(IConfiguration configuration) {
-            imagesDirectory = configuration["LandmarkImages:Uri"];
+            landmarksImagesDirectory = configuration["LandmarkImages:Uri"];
+            toursImagesDirectory = configuration["TourImages:Uri"];
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        [HttpGet("landmarks/{id}")]
+        public async Task<IActionResult> GetLandmarkImage(string id)
         {
+            return await GetImage(landmarksImagesDirectory, id);
+        }
+
+        [HttpGet("tours/{id}")]
+        public async Task<IActionResult> GetTourImage(string id) {
+            return await GetImage(toursImagesDirectory, id);
+        }
+
+        private async Task<IActionResult> GetImage(string imagesDirectory, string id) {
             IActionResult result;
             try
             {
@@ -29,7 +39,8 @@ namespace ObligatorioISP.WebAPI.Controllers
                 FileStream image = System.IO.File.OpenRead(path);
                 result = File(image, "image/jpeg");
             }
-            catch (System.IO.IOException) {
+            catch (IOException)
+            {
                 result = NotFound(new ErrorDto() { ErrorMessage = "Image not found" });
             }
             return result;
