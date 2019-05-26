@@ -3,8 +3,11 @@ package com.acr.landmarks.persistence;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 
-@Database(entities = {LandmarkMarkerEntity.class}, version = 1, exportSchema = false)
+
+@Database(entities = {LandmarkEntity.class}, version = 2, exportSchema = false)
+@TypeConverters({Converter.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract MarkerDao landmarksDao();
 }

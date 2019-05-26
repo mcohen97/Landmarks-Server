@@ -8,12 +8,12 @@ import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 import android.util.Pair;
 
-import com.acr.landmarks.models.LandmarkFullInfo;
-import com.acr.landmarks.models.LandmarkMarkerInfo;
+import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.persistence.LandmarkMarkersStorage;
 import com.acr.landmarks.persistence.RoomMarkersStorage;
 import com.acr.landmarks.services.RetrofitLandmarksService;
 import com.acr.landmarks.services.contracts.ILandmarksService;
+import com.acr.landmarks.util.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +24,11 @@ public class LandmarksViewModel extends AndroidViewModel {
     private ILandmarksService landmarksService;
     private LandmarkMarkersStorage markersStorage;
 
-    private LiveData<LandmarkFullInfo> selectedLandmark;
+    private LiveData<Landmark> selectedLandmark;
 
     private Double lastRadius;
     private Location lastCenterLocation;
-    private LiveData<List<LandmarkMarkerInfo>> landmarksInRange;
+    private LiveData<List<Landmark>> landmarksInRange;
     private MediatorLiveData liveDataMerger;
     private final MutableLiveData<Pair<Location,Double>> geoFence;
     private final AtomicBoolean lastDataRetrieved;
@@ -38,7 +38,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         super(a);
         //se utilizara Dagger mas adelante
         markersStorage = new RoomMarkersStorage(a);
-        landmarksService = new RetrofitLandmarksService();
+        landmarksService = new RetrofitLandmarksService(Config.getConfigValue(a,"api_url"));
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
         lastDataRetrieved = new AtomicBoolean(false);
@@ -70,7 +70,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         lastDataRetrieved.set(true);
         liveDataMerger.setValue(value);
         new Thread(() -> {
-            markersStorage.insertLandmarks((List<LandmarkMarkerInfo>) value);
+            markersStorage.insertLandmarks((List<Landmark>) value);
         }).start();
     }
 
@@ -89,7 +89,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
 
         new Thread(() ->{
-            List<LandmarkMarkerInfo> cachedLandmarks=new ArrayList<>();
+            List<Landmark> cachedLandmarks=new ArrayList<>();
             if(!lastDataRetrieved.get()) {
                 cachedLandmarks = markersStorage.getSavedLandmarks(geoFence.getValue().first, geoFence.getValue().second);
             }
@@ -105,7 +105,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         geoFence.setValue(new Pair<>(aLocation,aRadius));
     }
 
-    public LiveData<List<LandmarkMarkerInfo>> getLandmarks(){
+    public LiveData<List<Landmark>> getLandmarks(){
         return liveDataMerger;
     }
 
@@ -113,6 +113,6 @@ public class LandmarksViewModel extends AndroidViewModel {
         selectedLandmark= landmarksService.getLandmarkById(id);
     }
 
-    public LiveData<LandmarkFullInfo> getSelectedLandmark(){return  selectedLandmark;}
+    public LiveData<Landmark> getSelectedLandmark(){return  selectedLandmark;}
 
 }

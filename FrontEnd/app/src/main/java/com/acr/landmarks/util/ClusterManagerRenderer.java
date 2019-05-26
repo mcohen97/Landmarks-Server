@@ -10,9 +10,10 @@ import android.widget.ImageView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.LandmarkClusterMarker;
+import com.acr.landmarks.services.PicassoImageService;
+import com.acr.landmarks.services.contracts.IImageService;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -25,6 +26,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
     private final ImageView imageView;
     private final int markerWidth;
     private final int markerHeight;
+    private IImageService imageService;
 
     public ClusterManagerRenderer(Context context, GoogleMap googleMap,
                                   ClusterManager<LandmarkClusterMarker> clusterManager) {
@@ -40,6 +42,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
         int padding = (int) context.getResources().getDimension(R.dimen.custom_marker_padding);
         imageView.setPadding(padding, padding, padding, padding);
         iconGenerator.setContentView(imageView);
+        imageService = new PicassoImageService(Config.getConfigValue(context,"api_url"));
     }
 
 
@@ -51,17 +54,24 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
      */
     @Override
     protected void onBeforeClusterItemRendered(LandmarkClusterMarker item, MarkerOptions markerOptions) {
-        Marker marker = getMarker(item);
+        //Marker marker = getMarker(item);
 
         String image = item.getIconPicture();
-        byte[] imageData = Base64.decode(image, Base64.DEFAULT);
+        imageService.loadBitmap(item.getIconPicture(), new IImageService.ImageLoadListener() {
+            @Override
+            public void onImageLoaded(Bitmap img) {
+                Bitmap icon =drawIcon(img);
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+            }
+        });
+        /*byte[] imageData = Base64.decode(image, Base64.DEFAULT);
         Bitmap landmark = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
         landmark = Bitmap.createScaledBitmap(landmark, markerWidth, markerHeight, false);
         Bitmap bubbleIcon = iconGenerator.makeIcon();
         bubbleIcon = Bitmap.createScaledBitmap(bubbleIcon, markerWidth + 30, markerHeight + 60, false);
-        Bitmap icon = drawIcon(bubbleIcon, landmark);
-
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle()).snippet("");
+        Bitmap icon = drawIcon(bubbleIcon, landmark);*/
+       // markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.getTitle()).snippet("");
+        markerOptions.title(item.getTitle()).snippet("");
     }
 
 
@@ -70,7 +80,10 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
         return false;
     }
 
-    private Bitmap drawIcon(Bitmap bubble, Bitmap landmarkImage) {
+    private Bitmap drawIcon(Bitmap landmarkImage) {
+        landmarkImage = Bitmap.createScaledBitmap(landmarkImage, markerWidth, markerHeight, false);
+        Bitmap bubble = iconGenerator.makeIcon();
+        bubble = Bitmap.createScaledBitmap(bubble, markerWidth + 30, markerHeight + 60, false);
         Bitmap icon = Bitmap.createBitmap(bubble.getWidth(), bubble.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(icon);
         canvas.drawBitmap(bubble, 0, 0, null);

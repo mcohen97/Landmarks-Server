@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.os.Handler;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.models.LandmarkMarkerInfo;
+import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
 import com.acr.landmarks.models.Tour;
@@ -75,7 +75,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     private ClusterManagerRenderer mClusterManagerRenderer;
     private static ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
 
-    private List<LandmarkMarkerInfo> mLandmarks;
+    private List<Landmark> mLandmarks;
     private List<Tour> mTours;
 
     //Directions
@@ -117,7 +117,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
         RelativeLayout mMapContainer = view.findViewById(R.id.map_container);
 
-        mLandmarks = new ArrayList<LandmarkMarkerInfo>();
+        mLandmarks = new ArrayList<Landmark>();
         mTours = new ArrayList<Tour>();
 
         landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
@@ -320,7 +320,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     private void updateMapMarkers() {
 
-        for (LandmarkMarkerInfo landmark : mLandmarks) {
+        for (Landmark landmark : mLandmarks) {
             try {
                 addMarker(landmark);
             } catch (NullPointerException e) {
@@ -330,7 +330,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         mClusterManager.cluster();
     }
 
-    private void addMarker(LandmarkMarkerInfo landmark) {
+    private void addMarker(Landmark landmark) {
 
         boolean alreadyInMap = isMarkerInMap(landmark);
         if (!alreadyInMap) {
@@ -339,7 +339,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                     new LatLng(landmark.latitude, landmark.longitude),
                     landmark.title,
                     snippet,
-                    landmark.iconBase64,
+                    landmark.imageFiles[0],
                     landmark
             );
             mClusterManager.addItem(newClusterMarker);
@@ -362,7 +362,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         return mLandmarks.contains(marker.getLandmark());
     }
 
-    private boolean isMarkerInMap(LandmarkMarkerInfo landmark) {
+    private boolean isMarkerInMap(Landmark landmark) {
         for(LandmarkClusterMarker marker :mClusterMarkers){
             if(marker.getLandmark().equals(landmark)){
                 return true;
@@ -542,10 +542,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         addMapMarkers();
 
         ArrayList<Integer> landmarksIds = selected.landmarksIds;
-        ArrayList<LandmarkMarkerInfo> landmarks = new ArrayList<LandmarkMarkerInfo>();
+        ArrayList<Landmark> landmarks = new ArrayList<Landmark>();
 
         for (Integer id : landmarksIds) {
-            for (LandmarkMarkerInfo landmark : mLandmarks) {
+            for (Landmark landmark : mLandmarks) {
                 if (landmark.id == id) {
                     landmarks.add(landmark);
                 }
@@ -555,7 +555,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         PolylineOptions options = new PolylineOptions();
         options.color(Color.RED);
 
-        for(LandmarkMarkerInfo lm: landmarks){
+        for(Landmark lm: landmarks){
             options.add(new LatLng(lm.latitude,lm.longitude));
         }
 

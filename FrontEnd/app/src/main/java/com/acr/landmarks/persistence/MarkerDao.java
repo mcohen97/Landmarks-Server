@@ -14,13 +14,13 @@ import java.util.List;
 public interface MarkerDao {
 
 
-    @Query("SELECT * FROM markers LIMIT 10")
+    @Query("SELECT * FROM Landmark LIMIT 10")
     Cursor getStoredLandmarks();
 
-    @Query("DELETE FROM markers")
+    @Query("DELETE FROM Landmark")
     void clear();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertAll(List<LandmarkMarkerEntity> landmarks);
+    void insertAll(List<LandmarkEntity> landmarks);
 
 }
