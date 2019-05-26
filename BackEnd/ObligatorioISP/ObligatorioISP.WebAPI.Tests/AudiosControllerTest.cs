@@ -22,10 +22,10 @@ namespace ObligatorioISP.WebAPI.Tests
         [TestInitialize]
         public void StartUp()
         {
-            configKey = "LandmarkAudios:Uri";
+            configKey = "Audios:Uri";
             config = new Mock<IConfiguration>();
             config.Setup(c => c[configKey]).Returns(Directory.GetCurrentDirectory());
-            testAudioName = "testAudio.jpg";
+            testAudioName = "testAudio.mp3";
             if (!File.Exists(testAudioName))
             {
                 File.Create(testAudioName);

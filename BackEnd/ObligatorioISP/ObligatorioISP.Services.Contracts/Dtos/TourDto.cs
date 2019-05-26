@@ -14,6 +14,5 @@ namespace ObligatorioISP.Services.Contracts.Dtos
         public IEnumerable<int> LandmarksIds { get; set; }
         public string Category { get; set; } 
         public string ImageFile { get; set; }
-
     }
 }

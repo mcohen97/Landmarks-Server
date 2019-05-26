@@ -85,7 +85,7 @@ namespace ObligatorioISP.DataAccess
             {
                 landmark = new Landmark(id, title, lat, lng, description, images, audios);
             }
-            catch (InvalidLandmarkException) {
+            catch (InvalidLandmarkException e) {
                 throw new CorruptedDataException();
             }
             return landmark;
