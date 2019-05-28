@@ -9,8 +9,8 @@ import android.location.Location;
 import android.util.Pair;
 
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.persistence.LandmarkMarkersStorage;
-import com.acr.landmarks.persistence.RoomMarkersStorage;
+import com.acr.landmarks.persistence.LandmarkStorage;
+import com.acr.landmarks.persistence.RoomLandmarksStorage;
 import com.acr.landmarks.services.RetrofitLandmarksService;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 import com.acr.landmarks.util.Config;
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LandmarksViewModel extends AndroidViewModel {
 
     private ILandmarksService landmarksService;
-    private LandmarkMarkersStorage markersStorage;
+    private LandmarkStorage markersStorage;
 
     private LiveData<Landmark> selectedLandmark;
 
@@ -32,16 +32,18 @@ public class LandmarksViewModel extends AndroidViewModel {
     private MediatorLiveData liveDataMerger;
     private final MutableLiveData<Pair<Location,Double>> geoFence;
     private final AtomicBoolean lastDataRetrieved;
+    private boolean firstGeofenceAssigned;
 
 
     public LandmarksViewModel(Application a){
         super(a);
         //se utilizara Dagger mas adelante
-        markersStorage = new RoomMarkersStorage(a);
+        markersStorage = new RoomLandmarksStorage(a);
         landmarksService = new RetrofitLandmarksService(Config.getConfigValue(a,"api_url"));
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
         lastDataRetrieved = new AtomicBoolean(false);
+        firstGeofenceAssigned = false;
         setDefaultData();
     }
 
@@ -79,7 +81,12 @@ public class LandmarksViewModel extends AndroidViewModel {
                 || (!value.first.equals(lastCenterLocation)) || !value.second.equals(lastRadius)){
            lastCenterLocation = value.first;
            lastRadius = value.second;
-           reload();
+           //avoiding the asignation of first (default value) affect the landmarks collection
+           if(firstGeofenceAssigned){
+               reload();
+           }else{
+               firstGeofenceAssigned = true;
+           }
         }
     }
 
