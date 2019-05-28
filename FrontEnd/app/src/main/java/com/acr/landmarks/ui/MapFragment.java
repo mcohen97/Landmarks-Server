@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -26,7 +27,10 @@ import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
 import com.acr.landmarks.models.Tour;
+import com.acr.landmarks.services.PicassoImageService;
+import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.util.ClusterManagerRenderer;
+import com.acr.landmarks.util.Config;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
@@ -89,11 +93,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     private Marker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
+    private IImageService imageService;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        imageService = new PicassoImageService(Config.getConfigValue(getContext(),"api_url"));
     }
 
     @Override
@@ -334,16 +340,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         boolean alreadyInMap = isMarkerInMap(landmark);
         if (!alreadyInMap) {
-            String snippet = "Determine route to " + landmark.title + "?";
-            LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
-                    new LatLng(landmark.latitude, landmark.longitude),
-                    landmark.title,
-                    snippet,
-                    landmark.imageFiles[0],
-                    landmark
-            );
-            mClusterManager.addItem(newClusterMarker);
-            mClusterMarkers.add(newClusterMarker);
+            imageService.loadBitmap(landmark.imageFiles[0], new IImageService.ImageLoadListener() {
+                @Override
+                public void onImageLoaded(Bitmap img) {
+                    String snippet = "Determine route to " + landmark.title + "?";
+                    LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
+                            new LatLng(landmark.latitude, landmark.longitude),
+                            landmark.title,
+                            snippet,
+                            img,
+                            landmark
+                    );
+                    mClusterManager.addItem(newClusterMarker);
+                    mClusterMarkers.add(newClusterMarker);
+                }
+            });
         }
     }
 

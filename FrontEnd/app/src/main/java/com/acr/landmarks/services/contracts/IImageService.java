@@ -11,7 +11,7 @@ public interface IImageService {
 
     void loadBitmap(String fileName, ImageLoadListener listener);
 
-    public interface ImageLoadListener {
+    interface ImageLoadListener {
         void onImageLoaded(Bitmap img);
     }
 }
