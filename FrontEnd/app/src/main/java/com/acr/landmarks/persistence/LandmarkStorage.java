@@ -6,7 +6,7 @@ import com.acr.landmarks.models.Landmark;
 
 import java.util.List;
 
-public interface LandmarkMarkersStorage {
+public interface LandmarkStorage {
 
     List<Landmark> getSavedLandmarks(Location location, double radius);
 

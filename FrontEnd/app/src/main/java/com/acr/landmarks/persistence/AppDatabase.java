@@ -9,5 +9,5 @@ import android.arch.persistence.room.TypeConverters;
 @Database(entities = {LandmarkEntity.class}, version = 2, exportSchema = false)
 @TypeConverters({Converter.class})
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract MarkerDao landmarksDao();
+    public abstract LandmarkDao landmarksDao();
 }

@@ -11,11 +11,11 @@ import com.acr.landmarks.models.Landmark;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoomMarkersStorage implements LandmarkMarkersStorage {
+public class RoomLandmarksStorage implements LandmarkStorage {
 
     AppDatabase db;
 
-    public RoomMarkersStorage(Context c) {
+    public RoomLandmarksStorage(Context c) {
         db = Room.databaseBuilder(c,
                 AppDatabase.class, "landmarks")
                 .fallbackToDestructiveMigration()

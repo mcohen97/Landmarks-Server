@@ -11,7 +11,7 @@ import android.database.Cursor;
 import java.util.List;
 
 @Dao
-public interface MarkerDao {
+public interface LandmarkDao {
 
 
     @Query("SELECT * FROM Landmark LIMIT 10")
