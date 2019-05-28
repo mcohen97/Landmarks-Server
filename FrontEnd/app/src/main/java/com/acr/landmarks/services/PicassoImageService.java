@@ -6,16 +6,21 @@ import android.widget.ImageView;
 
 import com.acr.landmarks.services.contracts.IImageService;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PicassoImageService implements IImageService {
 
     private String landmarksUrl;
     private String toursUrl;
+    private final List<PicassoLoadingTarget> targets;
+
 
     public  PicassoImageService(String baseUrl){
         this.landmarksUrl = baseUrl+"images/landmarks/%s";
         this.toursUrl = baseUrl + "images/tours/%s";
+        this.targets = new ArrayList<>();
         Picasso.get().setLoggingEnabled(true);
     }
 
@@ -30,23 +35,8 @@ public class PicassoImageService implements IImageService {
     }
 
     public void loadBitmap(String fileName, ImageLoadListener listener){
-        Target target = new Target(){
-
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-              listener.onImageLoaded(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
+        final PicassoLoadingTarget target = new PicassoLoadingTarget(listener,targets);
+        targets.add(target);
         Picasso.get().load(String.format(landmarksUrl,fileName)).into(target);
     }
 }

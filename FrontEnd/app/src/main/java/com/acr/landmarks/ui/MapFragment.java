@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.os.Handler;
+import android.widget.Toast;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
@@ -73,6 +74,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     private static GoogleMap mMap;
     public static Location mUserLocation;
     private static final int DEFAULT_ZOOM = 15;
+    private boolean firstCameraMovement;
 
     //Clustering
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
@@ -129,6 +131,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
         toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
         locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
+        firstCameraMovement = false;
 
         return view;
     }
@@ -223,7 +226,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
             if(firstLocation){
                 setCameraViewWithZoom(DEFAULT_ZOOM);
-                landmarksViewModel.setGeofence(location,new Double(getMapRangeRadius()));
+                Double radius = new Double(getMapRangeRadius());
+                landmarksViewModel.setGeofence(location,radius);
                 //toursViewModel.setGeofence(location,new Double(getMapRangeRadius()));
                 mMap.setOnCameraIdleListener(this);
                 //mMap.setOnCameraMoveStartedListener(this);
@@ -233,7 +237,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         landmarksViewModel.getLandmarks().observe(this, landmarks -> {
             mLandmarks = landmarks;
-            addMapMarkers();
+            Log.d(TAG,"Received "+landmarks.size()+" landmarks");
+            if(!landmarks.isEmpty()) {
+                addMapMarkers();
+            }
         });
 
         toursViewModel.getSelectedTour().observe(this, tour -> {
@@ -326,39 +333,49 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     private void updateMapMarkers() {
 
+        int landmarkIndex =0;
         for (Landmark landmark : mLandmarks) {
             try {
-                addMarker(landmark);
+                addMarker(landmark,mLandmarks.size(),landmarkIndex);
+                landmarkIndex++;
             } catch (NullPointerException e) {
                 Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage());
             }
         }
-        mClusterManager.cluster();
+        //mClusterManager.cluster();
     }
 
-    private void addMarker(Landmark landmark) {
+    private void addMarker(Landmark landmark, int size, int landmarkIndex) {
 
         boolean alreadyInMap = isMarkerInMap(landmark);
+        Log.d(TAG,"ya se encuentra en el mapa: "+ alreadyInMap);
         if (!alreadyInMap) {
+            Log.d(TAG, "Loading marker "+ landmarkIndex);
+            String snippet = "Determine route to " + landmark.title + "?";
+            LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
+                    new LatLng(landmark.latitude, landmark.longitude),
+                    landmark.title,
+                    snippet,
+                    null,
+                    landmark
+            );
+            mClusterMarkers.add(newClusterMarker);
             imageService.loadBitmap(landmark.imageFiles[0], new IImageService.ImageLoadListener() {
                 @Override
                 public void onImageLoaded(Bitmap img) {
-                    String snippet = "Determine route to " + landmark.title + "?";
-                    LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
-                            new LatLng(landmark.latitude, landmark.longitude),
-                            landmark.title,
-                            snippet,
-                            img,
-                            landmark
-                    );
+                    newClusterMarker.setIconPicture(img);
                     mClusterManager.addItem(newClusterMarker);
-                    mClusterMarkers.add(newClusterMarker);
+                    Log.d(TAG, "Loaded marker "+ landmarkIndex);
+                    //if(landmarkIndex == (size-1) ){
+                        mClusterManager.cluster();
+                        Log.d(TAG,"Markers loaded");
+                    //}
                 }
             });
         }
     }
 
-    private void removeUselessMarkers() {
+    /*private void removeUselessMarkers() {
         List<LandmarkClusterMarker> auxLandmarks= (List<LandmarkClusterMarker>) mClusterMarkers.clone();
         for(LandmarkClusterMarker marker: auxLandmarks){
             if(!markerContainsLandmarkInRange(marker)){
@@ -367,7 +384,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             }
         }
 
-    }
+    }*/
 
     private boolean markerContainsLandmarkInRange(LandmarkClusterMarker marker) {
         return mLandmarks.contains(marker.getLandmark());
@@ -536,9 +553,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     @Override
     public void onCameraIdle() {
-        float newRadius = getMapRangeRadius();
-        LatLng center = mMap.getCameraPosition().target;
-        landmarksViewModel.setGeofence(latLngToLocation(center), new Double(newRadius));
+        if(firstCameraMovement) {
+            float newRadius = getMapRangeRadius();
+            LatLng center = mMap.getCameraPosition().target;
+            landmarksViewModel.setGeofence(latLngToLocation(center), new Double(newRadius));
+        }else{
+            firstCameraMovement=true;
+        }
     }
 
     private Location latLngToLocation(LatLng googleData) {
