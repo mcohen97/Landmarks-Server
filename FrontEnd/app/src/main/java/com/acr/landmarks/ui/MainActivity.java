@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -279,6 +280,10 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
         TextView description = findViewById(R.id.landmarkDescription);
         description.setMovementMethod(new ScrollingMovementMethod());
+
+        Button directions = findViewById(R.id.fab_directions);
+        Button audios = findViewById(R.id.fab_audios);
+
         mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             boolean expanded = false;
 

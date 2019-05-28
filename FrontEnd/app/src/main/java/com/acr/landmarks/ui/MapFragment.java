@@ -372,6 +372,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         return false;
     }
 
+    @Override
+    public boolean onClusterItemClick(LandmarkClusterMarker landmarkClusterMarker) {
+        landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
+        calculateDirections(landmarkClusterMarker);
+        return true;
+    }
+
     private void calculateDirections(LandmarkClusterMarker marker){
 
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
@@ -405,7 +412,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             @Override
             public void run() {
 
-                //Evitar polylines duplicadas, en mapa y lista
+                //Evitar polylines duplicadas, en mapa y lista -> controlar no borrar lineas del Tour ni landmarks al pedo
                 if(mPolyLinesData.size() > 0){
                     for(PolylineData polylineData: mPolyLinesData){
                         polylineData.getPolyline().remove();
@@ -524,12 +531,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         mListener.onLandmarkSelected(landmarkClusterMarker.getLandmark());
     }
 
-    @Override
-    public boolean onClusterItemClick(LandmarkClusterMarker landmarkClusterMarker) {
-        landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
-        calculateDirections(landmarkClusterMarker);
-        return true;
-    }
+
 
     @Override
     public void onCameraIdle() {
