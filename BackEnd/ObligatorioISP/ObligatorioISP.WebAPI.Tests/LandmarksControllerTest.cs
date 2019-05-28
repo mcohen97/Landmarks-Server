@@ -24,11 +24,11 @@ namespace ObligatorioISP.WebAPI.Tests
         public void SetUp() {
             fakeLandmarksService = new Mock<ILandmarksService>();
             fakeLandmarksService.Setup(l => l.GetLandmarksWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
-                .Returns(GetFakeSummarizedLandmarks());
+                .Returns(GetFakeLandmarks());
             fakeLandmarksService.Setup(l => l.GetLandmarkById(It.IsAny<int>()))
-                .Returns((int id) => GetFakeDetailedLandmarks().First(lm => lm.Id == id));
+                .Returns((int id) => GetFakeLandmarks().First(lm => lm.Id == id));
             fakeLandmarksService.Setup(l => l.GetLandmarksOfTour(It.IsAny<int>()))
-                .Returns(GetFakeSummarizedLandmarks());
+                .Returns(GetFakeLandmarks());
             controller = new LandmarksController(fakeLandmarksService.Object);
         }
 
@@ -41,14 +41,14 @@ namespace ObligatorioISP.WebAPI.Tests
 
             IActionResult result = controller.Get(centerLat, centerLng, distance);
             OkObjectResult ok = result as OkObjectResult;
-            ICollection<LandmarkSummarizedDto> landmarks = ok.Value as ICollection<LandmarkSummarizedDto>;
+            ICollection<LandmarkDto> landmarks = ok.Value as ICollection<LandmarkDto>;
 
             fakeLandmarksService.Verify(r => r.GetLandmarksWithinZone(centerLat, centerLng, distance), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(ok);
             Assert.AreEqual(200, ok.StatusCode);
             Assert.IsNotNull(landmarks);
-            Assert.AreEqual(GetFakeDetailedLandmarks().Count,landmarks.Count);
+            Assert.AreEqual(GetFakeLandmarks().Count,landmarks.Count);
         }
 
         [TestMethod]
@@ -59,14 +59,14 @@ namespace ObligatorioISP.WebAPI.Tests
 
             IActionResult result = controller.Get(centerLat, centerLng, 2);
             OkObjectResult ok = result as OkObjectResult;
-            List<LandmarkSummarizedDto> landmarks = ok.Value as List<LandmarkSummarizedDto>;
-            LandmarkSummarizedDto firstLandmark = landmarks[0];
+            List<LandmarkDto> landmarks = ok.Value as List<LandmarkDto>;
+            LandmarkDto firstLandmark = landmarks[0];
 
             Assert.AreEqual(1, firstLandmark.Id);
             Assert.AreEqual("Landmark 1", firstLandmark.Title);
             Assert.AreEqual(-34.912126, firstLandmark.Latitude);
             Assert.AreEqual(-56.167282, firstLandmark.Longitude);
-            Assert.AreEqual("image1", firstLandmark.IconBase64);
+            Assert.AreEqual("image1", firstLandmark.ImageFiles.First());
         }
 
         [TestMethod]
@@ -75,7 +75,7 @@ namespace ObligatorioISP.WebAPI.Tests
 
             IActionResult result = controller.Get(id);
             OkObjectResult ok = result as OkObjectResult;
-            LandmarkDetailedDto landmark = ok.Value as LandmarkDetailedDto;
+            LandmarkDto landmark = ok.Value as LandmarkDto;
 
             fakeLandmarksService.Verify(r => r.GetLandmarkById(id), Times.Once);
             Assert.IsNotNull(result);
@@ -127,14 +127,14 @@ namespace ObligatorioISP.WebAPI.Tests
 
             IActionResult result = controller.GetByTour(id);
             OkObjectResult ok = result as OkObjectResult;
-            ICollection<LandmarkSummarizedDto> landmarks = ok.Value as ICollection<LandmarkSummarizedDto>;
+            ICollection<LandmarkDto> landmarks = ok.Value as ICollection<LandmarkDto>;
 
             fakeLandmarksService.Verify(r => r.GetLandmarksOfTour(id), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(ok);
             Assert.AreEqual(200, ok.StatusCode);
             Assert.IsNotNull(landmarks);
-            Assert.AreEqual(GetFakeSummarizedLandmarks().Count, landmarks.Count);
+            Assert.AreEqual(GetFakeLandmarks().Count, landmarks.Count);
         }
 
         [TestMethod]
@@ -156,55 +156,44 @@ namespace ObligatorioISP.WebAPI.Tests
             Assert.AreEqual(toThrow.Message, error.ErrorMessage);
         }
 
-        private ICollection<LandmarkDetailedDto> GetFakeDetailedLandmarks()
+        private ICollection<LandmarkDto> GetFakeLandmarks()
         {
-            ICollection<LandmarkDetailedDto> sampleList = new List<LandmarkDetailedDto>() {
-                new LandmarkDetailedDto(){
+            ICollection<LandmarkDto> sampleList = new List<LandmarkDto>() {
+                new LandmarkDto(){
                     Id = 1,
                     Title = "Landmark 1",
                     Latitude = -34.912126,
                     Longitude =-56.167282,
                     Description = "Description 1",
-                    ImagesBase64 = new List<string>(){"image1","image2","image3" }
+                    ImageFiles = new List<string>(){"image1","image2","image3" }
                 },
-                new LandmarkDetailedDto(){
+                new LandmarkDto(){
                     Id = 2,
                     Title = "Landmark 2",
                     Latitude = -34.912900,
                     Longitude =-56.162263,
                     Description = "Description 2",
-                    ImagesBase64 = new List<string>(){"image1","image2","image3" }
+                    ImageFiles = new List<string>(){"image1","image2","image3" }
                 },
-                new LandmarkDetailedDto(){
+                new LandmarkDto(){
                     Id = 3,
                     Title = "Landmark 3",
                     Latitude = -34.914202,
                     Longitude =-56.157930,
                     Description = "Description 3",
-                    ImagesBase64 = new List<string>(){"image1","image2","image3" }
+                    ImageFiles = new List<string>(){"image1","image2","image3" }
                 },
-                new LandmarkDetailedDto(){
+                new LandmarkDto(){
                     Id = 4,
                     Title = "Landmark 4",
                     Latitude = -34.910866,
                     Longitude =-56.183353,
                     Description = "Description 4",
-                    ImagesBase64 = new List<string>(){"image1","image2","image3" }
+                    ImageFiles = new List<string>(){"image1","image2","image3" }
                 }
 
             };
             return sampleList;
-        }
-
-        private ICollection<LandmarkSummarizedDto> GetFakeSummarizedLandmarks() {
-            return GetFakeDetailedLandmarks().Select(l => new LandmarkSummarizedDto()
-            {
-                Id = l.Id,
-                Title = l.Title,
-                Latitude = l.Latitude,
-                Longitude = l.Longitude,
-                IconBase64 = l.ImagesBase64.First()
-            }).ToList();
         }
     }
 }

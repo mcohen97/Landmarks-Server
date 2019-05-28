@@ -1,11 +1,8 @@
 package com.acr.landmarks.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +12,9 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Tour;
+import com.acr.landmarks.services.PicassoImageService;
+import com.acr.landmarks.services.contracts.IImageService;
+import com.acr.landmarks.util.Config;
 
 import java.util.List;
 
@@ -22,10 +22,12 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
     private Context mContext;
     private TourCardAdapter.TourClickedListener clickListener;
     private List<Tour> lastAvailableTourData;
+    private IImageService imageService;
 
     public TourCardAdapter(Context mContext, TourCardAdapter.TourClickedListener clickListener, List<Tour> data) {
         this.mContext = mContext;
         this.clickListener = clickListener;
+        this.imageService = new PicassoImageService(Config.getConfigValue(mContext,"api_url"));
         lastAvailableTourData = data;
     }
 
@@ -63,11 +65,11 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
                 break;
         }
 
-        String image = requestedTour.imageBase64;
-        byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-        holder.categoryThumbnail.setImageBitmap(bitmap);
-
+        String image = requestedTour.imageFile;
+        //byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
+        //Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        //holder.categoryThumbnail.setImageBitmap(bitmap);
+        imageService.loadTourImageToView(holder.categoryThumbnail,image);
         String tourDescription = requestedTour.description;
         holder.description.setText(tourDescription);
     }

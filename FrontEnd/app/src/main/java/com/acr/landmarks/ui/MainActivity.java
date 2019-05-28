@@ -21,7 +21,6 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -34,8 +33,8 @@ import android.widget.Toast;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.models.LandmarkFullInfo;
-import com.acr.landmarks.models.LandmarkMarkerInfo;
+import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.util.Config;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
@@ -99,8 +98,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
         landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
         toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
-        landmarksViewModel.getSelectedLandmark().observe(this, selected ->
-                addFullLandmarkInfo(selected));
     }
 
     private void setViewPager() {
@@ -326,25 +323,18 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     }
 
     @Override
-    public void onLandmarkSelected(LandmarkMarkerInfo selectedLandmark) {
-        addBasicInfo(selectedLandmark.title, selectedLandmark.latitude, selectedLandmark.longitude);
-        addImages(new String[]{selectedLandmark.iconBase64});
+    public void onLandmarkSelected(Landmark selectedLandmark) {
+        addLandmarkInfo(selectedLandmark.title, selectedLandmark.latitude, selectedLandmark.longitude);
+        addImages(selectedLandmark.imageFiles);
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         bottomSheet.getLayoutParams().height = mViewPager.getHeight();
         bottomSheet.requestLayout();
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
-    private void addFullLandmarkInfo(LandmarkFullInfo landmark) {
-        LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
-        TextView sheetLandmarkDescription = layoutBottomSheet.findViewById(R.id.landmarkDescription);
-        sheetLandmarkDescription.setText(landmark.description);
-        addImages(landmark.imagesBase64);
-    }
-
 
     //The main usage of this method is to fill the drawer with info while waiting for the full landmark information.
-    private void addBasicInfo(String title, double latitude, double longitude) {
+    private void addLandmarkInfo(String title, double latitude, double longitude) {
         LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
         TextView sheetLandmarkName = layoutBottomSheet.findViewById(R.id.landmarkName);
         TextView sheetLandmarkDistance = layoutBottomSheet.findViewById(R.id.landmarkDistance);
@@ -360,10 +350,13 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     private void addImages(String[] images) {
         mSliderLayout.clearSliderViews();
+        String imagesDirectory=Config.getConfigValue(this,"api_url")+"images/landmarks/";
         for (String image : images) {
             SliderView sliderView = new DefaultSliderView(this);
-            byte[] imageData = Base64.decode(image, Base64.DEFAULT);
-            sliderView.setImageByte(imageData);
+            //byte[] imageData = Base64.decode(image, Base64.DEFAULT);
+            //sliderView.setImageByte(imageData);
+
+            sliderView.setImageUrl(imagesDirectory+image);
             sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
 
             mSliderLayout.addSliderView(sliderView);
