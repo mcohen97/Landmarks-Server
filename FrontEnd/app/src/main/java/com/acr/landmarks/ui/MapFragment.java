@@ -58,7 +58,7 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,
         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
-        GoogleMap.OnCameraIdleListener {
+        GoogleMap.OnCameraIdleListener,ClusterManager.OnClusterItemClickListener<LandmarkClusterMarker> {
 
     private final String TAG = "MapFragment";
     private LandmarkSelectedListener mListener;
@@ -243,16 +243,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
             if (isAsked ) {
                 resetTheMap();
-                addMapMarkers();
-                if(toursViewModel.getSelectedTour().getValue()!=null){
+                //addMapMarkers();
+                if(isTourSelected()){
                     drawTour(toursViewModel.getSelectedTour().getValue());
                 }
-                LandmarkClusterMarker selectedMarker = getSelectedMarker();
-                calculateDirections(selectedMarker);
+                calculateDirections(mSelectedMarker);
             }
 
         });
 
+    }
+
+    private boolean isTourSelected() {
+        return toursViewModel.getSelectedTour().getValue()!=null;
     }
 
     private LandmarkClusterMarker getSelectedMarker() {
@@ -329,6 +332,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         mMap.setOnMarkerClickListener(mClusterManager);
         mMap.setOnInfoWindowClickListener(mClusterManager);
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+        mClusterManager.setOnClusterItemClickListener(this);
     }
 
     private void setUpClusterManagerRenderer() {
@@ -396,7 +400,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     private void calculateDirections(LandmarkClusterMarker marker){
 
-        mSelectedMarker = marker;
+
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
                 marker.getPosition().latitude,
                 marker.getPosition().longitude
@@ -540,9 +544,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     @Override
     public void onClusterItemInfoWindowClick(LandmarkClusterMarker landmarkClusterMarker) {
         landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
+        mSelectedMarker = landmarkClusterMarker;
         mListener.onLandmarkSelected(landmarkClusterMarker.getLandmark());
     }
+    @Override
+    public boolean onClusterItemClick(LandmarkClusterMarker landmarkClusterMarker) {
+        landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
+        mSelectedMarker = landmarkClusterMarker;
+        if(isTourSelected() && isPartOfSelectedTour(landmarkClusterMarker)){
+            //resetear mapa por la cant de clicks
+            resetTheMap();
+            drawTour(toursViewModel.getSelectedTour().getValue());
+            calculateDirections(landmarkClusterMarker);
+        }
 
+        return false;
+    }
+
+    private boolean isPartOfSelectedTour(LandmarkClusterMarker landmarkClusterMarker) {
+        Tour selectedTour = toursViewModel.getSelectedTour().getValue();
+
+        for (int landmarkId : selectedTour.landmarksIds){
+            if(landmarkId == landmarkClusterMarker.getLandmark().id){
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     @Override
@@ -615,6 +643,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             }
         }
     }
+
 
 
 }
