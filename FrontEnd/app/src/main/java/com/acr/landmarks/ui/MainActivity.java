@@ -6,9 +6,12 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
@@ -30,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.acr.landmarks.ConnectivityReceiver;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
@@ -92,7 +96,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         createLocationCallback();
         setSlider();
         setViewModels();
+        setConnectivityMonitor();
     }
+
 
     private void setViewModels() {
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
@@ -268,6 +274,35 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 }
             }
         }
+    }
+
+
+    private void setConnectivityMonitor() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        ConnectivityReceiver.ConnectivityLossListener listener = new ConnectivityReceiver.ConnectivityLossListener() {
+            @Override
+            public void onConnectionLost() {
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+
+                alertDialog.setTitle("Alert");
+                alertDialog.setMessage("Internet not available, Cross check your internet connectivity and try again");
+                alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"continue offline", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "go to network settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent=new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                        startActivity(intent);
+                    }
+                });
+               alertDialog.show();
+            }
+        };
+        this.registerReceiver(new ConnectivityReceiver(listener), filter);
     }
 
     private void createBottomSheet() {
