@@ -258,14 +258,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         return toursViewModel.getSelectedTour().getValue()!=null;
     }
 
-    private LandmarkClusterMarker getSelectedMarker() {
-        for (LandmarkClusterMarker marker : mClusterMarkers) {
-            if(marker.getLandmark().id == landmarksViewModel.getSelectedLandmark().getValue().id){
-                return marker;
-            }
-        }
-        return null;
-    }
 
     private float getMapRangeRadius() {
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
