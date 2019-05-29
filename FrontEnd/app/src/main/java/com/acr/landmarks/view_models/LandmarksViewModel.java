@@ -26,6 +26,8 @@ public class LandmarksViewModel extends AndroidViewModel {
 
     private LiveData<LandmarkFullInfo> selectedLandmark;
 
+    private MutableLiveData<Boolean> askedForDirections;
+
     private Double lastRadius;
     private Location lastCenterLocation;
     private LiveData<List<LandmarkMarkerInfo>> landmarksInRange;
@@ -41,6 +43,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         landmarksService = new RetrofitLandmarksService();
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
+        askedForDirections= new MutableLiveData<Boolean>();
         lastDataRetrieved = new AtomicBoolean(false);
         setDefaultData();
     }
@@ -64,6 +67,8 @@ public class LandmarksViewModel extends AndroidViewModel {
                 updateGeofence((Pair<Location, Double>) centerRadius));
         liveDataMerger.addSource(landmarksInRange,
                 value -> updateLandmarks(value));
+
+        askedForDirections.setValue(false);
     }
 
     private void updateLandmarks(Object value) {
@@ -115,4 +120,11 @@ public class LandmarksViewModel extends AndroidViewModel {
 
     public LiveData<LandmarkFullInfo> getSelectedLandmark(){return  selectedLandmark;}
 
+    public MutableLiveData<Boolean> getAskedForDirections() {
+        return askedForDirections;
+    }
+
+    public void setAskedForDirections(MutableLiveData<Boolean> askedForDirections) {
+        this.askedForDirections = askedForDirections;
+    }
 }

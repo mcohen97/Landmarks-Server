@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -281,8 +282,10 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         TextView description = findViewById(R.id.landmarkDescription);
         description.setMovementMethod(new ScrollingMovementMethod());
 
-        Button directions = findViewById(R.id.fab_directions);
-        Button audios = findViewById(R.id.fab_audios);
+        FloatingActionButton directions = findViewById(R.id.fab_directions);
+        directions.setOnClickListener(new FabDirectionsButtonClick());
+
+        FloatingActionButton audios = findViewById(R.id.fab_audios);
 
         mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             boolean expanded = false;
@@ -392,5 +395,21 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     public void generateBackButton() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+
+    class FabDirectionsButtonClick implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            FabDirectionsClicked();
+        }
+    }
+
+    private void FabDirectionsClicked(){
+        TabLayout tabs = findViewById(R.id.tabs);
+        TabLayout.Tab tab = tabs.getTabAt(1);
+        tab.select();
+        landmarksViewModel.getAskedForDirections().postValue(true);
     }
 }

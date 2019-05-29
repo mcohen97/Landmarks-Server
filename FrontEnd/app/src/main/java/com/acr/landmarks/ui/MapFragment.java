@@ -88,7 +88,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     private UserLocationViewModel locationViewModel;
     private ToursViewModel toursViewModel;
 
-    private Marker mSelectedMarker;
+    private LandmarkClusterMarker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
 
 
@@ -241,6 +241,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         });
 
+        landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
+            if (isAsked ) {
+                LandmarkClusterMarker selectedMarker = getSelectedMarker();
+                calculateDirections(selectedMarker);
+            }
+
+        });
+
+    }
+
+    private LandmarkClusterMarker getSelectedMarker() {
+        for (LandmarkClusterMarker marker : mClusterMarkers) {
+            if(marker.getLandmark().id == landmarksViewModel.getSelectedLandmark().getValue().id){
+                return marker;
+            }
+        }
+        return null;
     }
 
     private float getMapRangeRadius() {
@@ -381,6 +398,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     private void calculateDirections(LandmarkClusterMarker marker){
 
+        mSelectedMarker = marker;
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
                 marker.getPosition().latitude,
                 marker.getPosition().longitude
@@ -450,8 +468,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                         onPolylineClick(polyline);
                         zoomRoute(polyline.getPoints());
                     }
-
-                    mSelectedMarker.setVisible(false);
+                    mClusterManager.removeItem(mSelectedMarker);
                 }
             }
 
