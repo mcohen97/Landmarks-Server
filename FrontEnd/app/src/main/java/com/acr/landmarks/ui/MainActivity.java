@@ -410,6 +410,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         TabLayout tabs = findViewById(R.id.tabs);
         TabLayout.Tab tab = tabs.getTabAt(1);
         tab.select();
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
         landmarksViewModel.getAskedForDirections().postValue(true);
     }
 }

@@ -58,7 +58,6 @@ import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,
         GoogleMap.OnPolylineClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
-        ClusterManager.OnClusterItemClickListener<LandmarkClusterMarker>,
         GoogleMap.OnCameraIdleListener {
 
     private final String TAG = "MapFragment";
@@ -243,6 +242,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
             if (isAsked ) {
+                resetTheMap();
+                addMapMarkers();
                 LandmarkClusterMarker selectedMarker = getSelectedMarker();
                 calculateDirections(selectedMarker);
             }
@@ -389,12 +390,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         return false;
     }
 
-    @Override
-    public boolean onClusterItemClick(LandmarkClusterMarker landmarkClusterMarker) {
-        landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
-        calculateDirections(landmarkClusterMarker);
-        return true;
-    }
 
     private void calculateDirections(LandmarkClusterMarker marker){
 
