@@ -24,9 +24,9 @@ public class RetrofitToursService implements ITourService {
     private final MutableLiveData<List<Tour>> toursData;
 
 
-    public RetrofitToursService(){
+    public RetrofitToursService(String apiBaseUrl){
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.104:5000/api/")
+                .baseUrl(apiBaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();

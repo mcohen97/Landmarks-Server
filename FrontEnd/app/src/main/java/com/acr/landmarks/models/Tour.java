@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Tour {
     public ArrayList<Integer> landmarksIds;
-    public String imageBase64;
+    public String imageFile;
     public int id;
     public String title;
     public String description;

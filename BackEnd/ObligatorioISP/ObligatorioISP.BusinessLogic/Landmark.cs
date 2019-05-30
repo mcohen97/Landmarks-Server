@@ -90,7 +90,7 @@ namespace ObligatorioISP.BusinessLogic
             if (!File.Exists(aPath)) {
                 throw new InvalidLandmarkException("Image"+aPath+" doesn't exist");
             }
-            imagesPaths.Add(aPath);
+            imagesPaths.Add(getFileBasename(aPath));
         }
 
         private void SetImages(ICollection<string> pathList)
@@ -104,7 +104,7 @@ namespace ObligatorioISP.BusinessLogic
             if (!pathList.Any()) {
                 throw new InvalidLandmarkException("Images list can't be empty");
             }
-            imagesPaths = pathList;
+            imagesPaths = pathList.Select(p => getFileBasename(p)).ToList();
         }
 
         private void SetAudios(ICollection<string> pathList)
@@ -117,14 +117,20 @@ namespace ObligatorioISP.BusinessLogic
             {
                 throw new InvalidLandmarkException("Audio doesn't exist");
             }
-            audiosPaths = pathList;
+            audiosPaths = pathList.Select(p => getFileBasename(p)).ToList();
         }
 
         public void AddAudio(string path) {
             if (!File.Exists(path)) {
                 throw new InvalidLandmarkException("Audio doesn't exist");
             }
-            audiosPaths.Add(path);
+            audiosPaths.Add(getFileBasename(path));
+        }
+
+        private string getFileBasename(string path) {
+            //checks that image exists, but only keeps image basename.
+            char separator = Path.DirectorySeparatorChar;
+            return path.Split(separator).Last();
         }
     }
 }
