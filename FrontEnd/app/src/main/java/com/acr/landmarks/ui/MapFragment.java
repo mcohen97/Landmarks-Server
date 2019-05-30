@@ -38,7 +38,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -243,7 +242,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
             if (isAsked ) {
                 resetTheMap();
-                //addMapMarkers();
                 if(isTourSelected()){
                     drawTour(toursViewModel.getSelectedTour().getValue());
                 }
@@ -307,7 +305,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         if (mMap == null) {
             return;
         }
-        resetMap();
+        resetMapPolylines();
         boolean firstTime = mClusterManager == null;
         if (firstTime) {
             setUpClusterManager();
@@ -523,7 +521,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         );
     }
 
-    private void resetMap(){
+    private void resetMapPolylines(){
         if(mMap != null) {
 
             if(mPolyLinesData.size() > 0){
