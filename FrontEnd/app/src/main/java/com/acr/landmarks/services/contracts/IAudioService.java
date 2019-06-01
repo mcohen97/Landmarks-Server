@@ -2,6 +2,8 @@ package com.acr.landmarks.services.contracts;
 
 public interface IAudioService {
 
-    void play(String fileName);
+    void load(String fileName);
+    void play();
     void stop();
+    void reset();
 }

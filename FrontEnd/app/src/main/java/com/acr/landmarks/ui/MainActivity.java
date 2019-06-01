@@ -40,6 +40,8 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.services.AudioStreamPlayer;
+import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.util.Config;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private ToursViewModel toursViewModel;
 
     private BottomSheetBehavior mBottomSheetBehaviour;
+    private IAudioService audioPlayer;
     private Location mCurrentLocation;
     private SliderLayout mSliderLayout;
 
@@ -317,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
 
     private void createBottomSheet() {
+        audioPlayerInit();
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         mBottomSheetBehaviour = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -327,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         directions.setOnClickListener(new FabDirectionsButtonClick());
 
         FloatingActionButton audios = findViewById(R.id.fab_audios);
+        audios.setOnClickListener(v -> audioPlayer.play());
 
         mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             boolean expanded = false;
@@ -350,6 +355,12 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             }
         });
     }
+
+    private void audioPlayerInit() {
+        String audiosUrl = Config.getConfigValue(this,"api_url")+"audios/";
+        this.audioPlayer = new AudioStreamPlayer(audiosUrl);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -378,6 +389,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     public void onLandmarkSelected(Landmark selectedLandmark) {
         addLandmarkInfo(selectedLandmark.title, selectedLandmark.latitude, selectedLandmark.longitude);
         addImages(selectedLandmark.imageFiles);
+        if(selectedLandmark.audioFiles != null && selectedLandmark.audioFiles.length > 0)
+            audioPlayer.load(selectedLandmark.audioFiles[0]);
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         bottomSheet.getLayoutParams().height = mViewPager.getHeight();
         bottomSheet.requestLayout();
@@ -448,4 +461,5 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
         landmarksViewModel.getAskedForDirections().postValue(true);
     }
+
 }

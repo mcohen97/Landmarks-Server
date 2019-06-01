@@ -11,10 +11,12 @@ public class AudioStreamPlayer implements IAudioService {
 
     private String url;
     private MediaPlayer mediaPlayer;
+    private boolean isAudioLoaded;
 
     public AudioStreamPlayer(String audioUrl){
         this.url = audioUrl;
         this.mediaPlayer = new MediaPlayer();
+        this.isAudioLoaded = false;
         audioAttributesConfig();
     }
 
@@ -27,21 +29,37 @@ public class AudioStreamPlayer implements IAudioService {
     }
 
     @Override
-    public void play(String fileName) {
-        if(this.mediaPlayer.isPlaying())
-            this.mediaPlayer.release();
-        
+    public void load(String fileName) {
         setMediaPlayerTarget(fileName);
-        this.mediaPlayer.prepareAsync();
-        this.mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+        this.mediaPlayer.setOnPreparedListener(mp -> {
+            isAudioLoaded = true;
+            mediaPlayer.start();
+        });
+    }
 
+    public void reset(){
+        this.mediaPlayer.reset();
+        audioAttributesConfig();
+    }
 
+    @Override
+    public void play() {
+        if(isAudioLoaded){
+            if(mediaPlayer.isPlaying()){
+                mediaPlayer.pause();
+            }else{
+                mediaPlayer.start();
+            }
+        }else {
+            mediaPlayer.prepareAsync();
+        }
     }
 
     @Override
     public void stop() {
-        this.mediaPlayer.release();
+        this.mediaPlayer.stop();
     }
+
 
     private void setMediaPlayerTarget(String filename){
         try {
