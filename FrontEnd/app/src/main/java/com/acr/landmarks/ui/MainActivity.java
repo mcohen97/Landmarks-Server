@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -320,6 +322,12 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
         TextView description = findViewById(R.id.landmarkDescription);
         description.setMovementMethod(new ScrollingMovementMethod());
+
+        FloatingActionButton directions = findViewById(R.id.fab_directions);
+        directions.setOnClickListener(new FabDirectionsButtonClick());
+
+        FloatingActionButton audios = findViewById(R.id.fab_audios);
+
         mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             boolean expanded = false;
 
@@ -424,5 +432,20 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     public void generateBackButton() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    class FabDirectionsButtonClick implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            FabDirectionsClicked();
+        }
+    }
+
+    private void FabDirectionsClicked(){
+        TabLayout tabs = findViewById(R.id.tabs);
+        TabLayout.Tab tab = tabs.getTabAt(1);
+        tab.select();
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+        landmarksViewModel.getAskedForDirections().postValue(true);
     }
 }
