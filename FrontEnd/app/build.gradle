@@ -75,6 +75,8 @@ dependencies {
 
     //image slider
     implementation project(':autoimageslider')
+
+    implementation 'com.github.seratch:java-time-backport:1.0.0'
 }
 
 
