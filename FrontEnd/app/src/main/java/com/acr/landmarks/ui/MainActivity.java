@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private static final String TAG = "Maps Activity";
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
+    private ConnectivityReceiver mConnectionMonitor;
 
     private LocationCallback locationCallback;
     private UserLocationViewModel locationViewModel;
@@ -302,8 +303,16 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                alertDialog.show();
             }
         };
-        this.registerReceiver(new ConnectivityReceiver(listener), filter);
+        mConnectionMonitor = new ConnectivityReceiver(listener);
+        this.registerReceiver(mConnectionMonitor, filter);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.unregisterReceiver(mConnectionMonitor);
+    }
+
 
     private void createBottomSheet() {
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
