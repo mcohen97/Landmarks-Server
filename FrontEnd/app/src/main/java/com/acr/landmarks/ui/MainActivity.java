@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         directions.setOnClickListener(new FabDirectionsButtonClick());
 
         FloatingActionButton audios = findViewById(R.id.fab_audios);
-        audios.setOnClickListener(v -> audioPlayer.play());
+        audios.setOnClickListener(v -> playAudio());
 
         mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             boolean expanded = false;
@@ -343,6 +343,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 }
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    audioPlayer.reset();
                 }
             }
 
@@ -354,6 +355,16 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 }
             }
         });
+    }
+
+    private void playAudio(){
+        if(audioPlayer.isAudioLoaded())
+            audioPlayer.play();
+        else{
+            Toast.makeText(getApplicationContext(),"No audio",Toast.LENGTH_SHORT).show();
+
+        }
+
     }
 
     private void audioPlayerInit() {
@@ -389,6 +400,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     public void onLandmarkSelected(Landmark selectedLandmark) {
         addLandmarkInfo(selectedLandmark.title, selectedLandmark.latitude, selectedLandmark.longitude);
         addImages(selectedLandmark.imageFiles);
+
         if(selectedLandmark.audioFiles != null && selectedLandmark.audioFiles.length > 0)
             audioPlayer.load(selectedLandmark.audioFiles[0]);
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);

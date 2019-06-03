@@ -6,4 +6,6 @@ public interface IAudioService {
     void play();
     void stop();
     void reset();
+    void pause();
+    boolean isAudioLoaded();
 }
