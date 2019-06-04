@@ -313,8 +313,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy(){
+        super.onDestroy();
         this.unregisterReceiver(mConnectionMonitor);
     }
 
@@ -398,31 +398,29 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     @Override
     public void onLandmarkSelected(Landmark selectedLandmark) {
-        addLandmarkInfo(selectedLandmark.title, selectedLandmark.latitude, selectedLandmark.longitude);
-        addImages(selectedLandmark.imageFiles);
-
-        if(selectedLandmark.audioFiles != null && selectedLandmark.audioFiles.length > 0)
-            audioPlayer.load(selectedLandmark.audioFiles[0]);
-        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
-        bottomSheet.getLayoutParams().height = mViewPager.getHeight();
-        bottomSheet.requestLayout();
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
-
-
-    //The main usage of this method is to fill the drawer with info while waiting for the full landmark information.
-    private void addLandmarkInfo(String title, double latitude, double longitude) {
         LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
         TextView sheetLandmarkName = layoutBottomSheet.findViewById(R.id.landmarkName);
         TextView sheetLandmarkDistance = layoutBottomSheet.findViewById(R.id.landmarkDistance);
+        TextView sheetLandmarkDescription = layoutBottomSheet.findViewById(R.id.landmarkDescription);
 
-        sheetLandmarkName.setText(title);
+        sheetLandmarkName.setText(selectedLandmark.title);
+        sheetLandmarkDescription.setText(selectedLandmark.description);
 
-        String distance = "" + (mCurrentLocation.distanceTo(createLocation(latitude, longitude)) / 1000);
+        String distance = "" + (mCurrentLocation.distanceTo(createLocation(selectedLandmark.latitude, selectedLandmark.longitude)) / 1000);
         distance = distance.substring(0, 4);
         distance += " Km";
 
         sheetLandmarkDistance.setText(distance);
+        addImages(selectedLandmark.imageFiles);
+
+        if(selectedLandmark.audioFiles != null && selectedLandmark.audioFiles.length > 0) {
+            audioPlayer.load(selectedLandmark.audioFiles[0]);
+        }
+
+        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
+        bottomSheet.getLayoutParams().height = mViewPager.getHeight();
+        bottomSheet.requestLayout();
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void addImages(String[] images) {

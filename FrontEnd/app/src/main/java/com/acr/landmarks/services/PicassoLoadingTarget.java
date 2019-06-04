@@ -29,7 +29,6 @@ public class PicassoLoadingTarget implements Target {
 
     @Override
     public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-        mListener.onImageLoaded(drawableToBitmap(errorDrawable));
         collection.remove(this);
     }
 
