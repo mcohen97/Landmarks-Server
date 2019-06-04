@@ -134,4 +134,5 @@ public class LandmarksViewModel extends AndroidViewModel {
     public void setAskedForDirections(MutableLiveData<Boolean> askedForDirections) {
         this.askedForDirections = askedForDirections;
     }
+
 }

@@ -40,6 +40,8 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.services.AudioStreamPlayer;
+import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.util.Config;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private ToursViewModel toursViewModel;
 
     private BottomSheetBehavior mBottomSheetBehaviour;
+    private IAudioService audioPlayer;
     private Location mCurrentLocation;
     private SliderLayout mSliderLayout;
 
@@ -310,13 +313,14 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy(){
+        super.onDestroy();
         this.unregisterReceiver(mConnectionMonitor);
     }
 
 
     private void createBottomSheet() {
+        audioPlayerInit();
         View bottomSheet = findViewById(R.id.bottom_sheet_layout);
         mBottomSheetBehaviour = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -327,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         directions.setOnClickListener(new FabDirectionsButtonClick());
 
         FloatingActionButton audios = findViewById(R.id.fab_audios);
+        audios.setOnClickListener(v -> playAudio());
 
         mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             boolean expanded = false;
@@ -338,6 +343,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 }
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    audioPlayer.reset();
                 }
             }
 
@@ -350,6 +356,22 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             }
         });
     }
+
+    private void playAudio(){
+        if(audioPlayer.isAudioLoaded())
+            audioPlayer.play();
+        else{
+            Toast.makeText(getApplicationContext(),"No audio",Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    private void audioPlayerInit() {
+        String audiosUrl = Config.getConfigValue(this,"api_url")+"audios/";
+        this.audioPlayer = new AudioStreamPlayer(audiosUrl);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -376,28 +398,29 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     @Override
     public void onLandmarkSelected(Landmark selectedLandmark) {
-        addLandmarkInfo(selectedLandmark.title, selectedLandmark.latitude, selectedLandmark.longitude);
-        addImages(selectedLandmark.imageFiles);
-        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
-        bottomSheet.getLayoutParams().height = mViewPager.getHeight();
-        bottomSheet.requestLayout();
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
-
-
-    //The main usage of this method is to fill the drawer with info while waiting for the full landmark information.
-    private void addLandmarkInfo(String title, double latitude, double longitude) {
         LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
         TextView sheetLandmarkName = layoutBottomSheet.findViewById(R.id.landmarkName);
         TextView sheetLandmarkDistance = layoutBottomSheet.findViewById(R.id.landmarkDistance);
+        TextView sheetLandmarkDescription = layoutBottomSheet.findViewById(R.id.landmarkDescription);
 
-        sheetLandmarkName.setText(title);
+        sheetLandmarkName.setText(selectedLandmark.title);
+        sheetLandmarkDescription.setText(selectedLandmark.description);
 
-        String distance = "" + (mCurrentLocation.distanceTo(createLocation(latitude, longitude)) / 1000);
+        String distance = "" + (mCurrentLocation.distanceTo(createLocation(selectedLandmark.latitude, selectedLandmark.longitude)) / 1000);
         distance = distance.substring(0, 4);
         distance += " Km";
 
         sheetLandmarkDistance.setText(distance);
+        addImages(selectedLandmark.imageFiles);
+
+        if(selectedLandmark.audioFiles != null && selectedLandmark.audioFiles.length > 0) {
+            audioPlayer.load(selectedLandmark.audioFiles[0]);
+        }
+
+        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
+        bottomSheet.getLayoutParams().height = mViewPager.getHeight();
+        bottomSheet.requestLayout();
+        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void addImages(String[] images) {
@@ -448,4 +471,5 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
         landmarksViewModel.getAskedForDirections().postValue(true);
     }
+
 }

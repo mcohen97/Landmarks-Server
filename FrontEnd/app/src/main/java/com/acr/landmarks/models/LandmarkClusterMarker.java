@@ -51,4 +51,9 @@ public class LandmarkClusterMarker implements ClusterItem {
     public void setIconPicture(Bitmap b) {
         iconPicture =b;
     }
+
+    @Override
+    public boolean equals(Object o){
+        return (o == null) || ((LandmarkClusterMarker) o).getLandmark().equals(getLandmark());
+    }
 }

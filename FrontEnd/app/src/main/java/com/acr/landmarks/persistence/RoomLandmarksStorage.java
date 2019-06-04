@@ -93,6 +93,7 @@ public class RoomLandmarksStorage implements LandmarkStorage {
             entity.longitude = l.longitude;
             entity.title = l.title;
             entity.images = l.imageFiles;
+            entity.audios = l.audioFiles;
             converted.add(entity);
         }
         return converted;
