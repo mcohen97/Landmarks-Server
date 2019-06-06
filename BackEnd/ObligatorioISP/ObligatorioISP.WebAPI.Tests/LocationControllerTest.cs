@@ -20,6 +20,13 @@ namespace ObligatorioISP.WebAPI.Tests
             controller = new LocationController(fakeService.Object);
         }
 
-
+        [TestMethod]
+        public void ShouldCallNotificationServiceWithGivenParameters() {
+            string token = "someToken";
+            double lat = -34.9185678;
+            double lng = -56.1674899;
+            controller.UpdateLocation(token, lat, lng);
+            fakeService.Verify(s => s.NotifyIfCloseToLandmark(token, lat, lng), Times.Once);
+        }
     }
 }
