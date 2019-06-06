@@ -41,7 +41,7 @@ namespace ObligatorioISP.DataAccess
             {
                 result = TryExcecuteRead(query);
             }
-            catch (SqlException) {
+            catch (SqlException e) {
                 throw new DataInaccessibleException();
             }
             return result;

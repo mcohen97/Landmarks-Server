@@ -26,11 +26,14 @@ namespace ObligatorioISP.DataAccess
             audiosDirectory = audiosPath;
         }
 
-        public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm)
+        public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm, int offset =0, int count = 50)
         {
+            //Could not find a way to reuse the result of distance and not calculate it twice, should be improved.
             string command = $"SELECT * "
                 + $"FROM Landmark "
-                + $"WHERE dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) <= {distanceInKm};";
+                + $"WHERE dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) <= {distanceInKm} "
+                + $"ORDER BY dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) ASC "
+                + $"OFFSET {offset} ROWS FETCH NEXT {count} ROWS ONLY;";
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
             ICollection<Landmark> result = rows.Select(r => BuildLandmark(r)).ToList();
