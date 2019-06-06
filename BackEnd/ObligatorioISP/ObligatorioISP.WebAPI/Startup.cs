@@ -40,6 +40,7 @@ namespace ObligatorioISP.WebAPI
 
             services.AddScoped<ILandmarksService, LandmarksService>();
             services.AddScoped<IToursService, ToursService>();
+            services.AddScoped<IProximityNotificationService, FirebaseNotificationService>();
         }
 
         private string GetMediaPath(string section, string key)
