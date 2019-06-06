@@ -23,6 +23,7 @@ namespace ObligatorioISP.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMemoryCache();
 
             services.AddScoped<ILandmarksRepository>(provider=> new SqlServerLandmarksRepository(
                 new SqlServerConnectionManager(Configuration.GetConnectionString("Landmarks")),

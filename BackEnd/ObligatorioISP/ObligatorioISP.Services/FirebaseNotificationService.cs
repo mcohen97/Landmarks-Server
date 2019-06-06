@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts;
@@ -16,27 +17,38 @@ namespace ObligatorioISP.Services
     public class FirebaseNotificationService : IProximityNotificationService
     {
         private ILandmarksRepository landmarks;
+        private IMemoryCache tokenCache;
         private string applicationID;
         private string senderID;
         private double proximityDistance;
+        private double intervalBetweenNotifications;
         private string firebaseEndpoint;
 
-        public FirebaseNotificationService(IConfiguration configuration, ILandmarksRepository landmarksStorage)
+        public FirebaseNotificationService(IConfiguration configuration, ILandmarksRepository landmarksStorage, IMemoryCache cache)
         {
             landmarks = landmarksStorage;
+            tokenCache = cache;
             firebaseEndpoint = configuration["Firebase:Url"];
             applicationID = configuration["Firebase:ApplicationID"];
             senderID = configuration["Firebase:SenderID"];
             proximityDistance = Double.Parse(configuration["ProximityNotifications:MaxDistance"]);
+            //We use this interval to avoid bombarding the user with notifications, since they are not critical.
+            intervalBetweenNotifications = Double.Parse(configuration["ProximityNotifications:NotifMinimumIntervalHours"]);
         }
 
         public async Task<bool> NotifyIfCloseToLandmark(string token, double lat, double lng)
         {
-            //500 m distance, get first landmark.
-            ICollection<Landmark> closeLandmarks = landmarks.GetWithinZone(lat, lng, proximityDistance,0,1);
-            if (closeLandmarks.Any()) {
-                SendPushNotification(token);
-                return true;
+            DateTime time;
+            if (!tokenCache.TryGetValue(token, out time))
+            {
+                //500 m distance, get first landmark.
+                ICollection<Landmark> closeLandmarks = landmarks.GetWithinZone(lat, lng, proximityDistance, 0, 1);
+                if (closeLandmarks.Any())
+                {
+                    SendPushNotification(token);
+                    tokenCache.Set(token, DateTime.Now, DateTimeOffset.UtcNow.AddHours(intervalBetweenNotifications));
+                    return true;
+                }
             }
             return false;
         }

@@ -9,6 +9,7 @@ using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.BusinessLogic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ObligatorioISP.Services.Tests
 {
@@ -18,6 +19,7 @@ namespace ObligatorioISP.Services.Tests
     {
         private IProximityNotificationService testService;
         private Mock<ILandmarksRepository> landmarks;
+        private MemoryCache tokenCache;
 
         [TestInitialize]
         public void SetUp() {
@@ -26,8 +28,10 @@ namespace ObligatorioISP.Services.Tests
             config.Setup(c => c["Firebase:ApplicationID"]).Returns("someAppId");
             config.Setup(c => c["Firebase:SenderID"]).Returns("someSenderId");
             config.Setup(c =>c["ProximityNotifications:MaxDistance"]).Returns("0.5");
+            config.Setup(c => c["ProximityNotifications:NotifMinimumIntervalHours"]).Returns("0.05");
             landmarks = new Mock<ILandmarksRepository>();
-            testService = new FirebaseNotificationService(config.Object, landmarks.Object);
+            tokenCache = new MemoryCache(new MemoryCacheOptions());
+            testService = new FirebaseNotificationService(config.Object, landmarks.Object,tokenCache);
         }
 
         [TestMethod]
@@ -44,6 +48,17 @@ namespace ObligatorioISP.Services.Tests
             Task<bool> task = testService.NotifyIfCloseToLandmark("aToken", -34.9185678, -56.1674899);
             landmarks.Verify(r => r.GetWithinZone(-34.9185678, -56.1674899, It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>()));
             Assert.IsFalse(task.Result);
+        }
+
+        [TestMethod]
+        public void ShouldReturnFalseIfRecentlyNotified() {
+            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>())).Returns(GetFakeLandmarks());
+            Task<bool> task = testService.NotifyIfCloseToLandmark("aToken", -34.9185678, -56.1674899);
+            bool firstAttempt = task.Result;
+            task = testService.NotifyIfCloseToLandmark("aToken", -34.9185678, -56.1674899);
+            bool inmediateAttempt = task.Result;
+            Assert.IsTrue(firstAttempt);
+            Assert.IsFalse(inmediateAttempt);
         }
 
         private List<Landmark> GetFakeLandmarks()
