@@ -17,14 +17,14 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.messaging.RemoteMessage.Notification;
 
+import java.util.Map;
+
 public class MessageService extends FirebaseMessagingService {
     String TAG = "Marcel";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // ...
-        sendNotification(remoteMessage.getNotification());
-        // TODO(developer): Handle FCM messages here.
+        sendNotification(remoteMessage);
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
@@ -46,29 +46,21 @@ public class MessageService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
 
-    /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is called when the InstanceID token
-     * is initially generated so this is where you would retrieve the token.
-     */
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
         Log.d(TAG, "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        //sendRegistrationToServer(token);
     }
 
-    private void sendNotification(Notification notification) {
+    private void sendNotification(RemoteMessage message) {
+        Notification notification = message.getNotification();
+        Map<String,String> data = message.getData();
+        String content = "No te pierdas de visitar el landmark: "+data.get("landmarkName")+" se encuentra a "+ data.get("landmarkDistance");
+
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("landmarkId",1);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -79,7 +71,7 @@ public class MessageService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_launcher_background)
                         .setContentTitle(notification.getTitle())
-                        .setContentText(notification.getBody())
+                        .setContentText(content)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
