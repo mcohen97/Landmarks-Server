@@ -65,20 +65,16 @@ namespace ObligatorioISP.Services
                 client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"key={applicationID}");
                 client.DefaultRequestHeaders.TryAddWithoutValidation("Sender", $"id={senderID}");
 
+                string description = $"No te pierdas de visitar el landmark: {landmark.Title} se encuentra a {distance} m";
+
 
                 object data = new
                 {
                     to = deviceId,
-                    notification = new
-                    {
-                        body = "Landmarks",
-                        title = "Estas cerca de un landmark",
-                        icon = "myicon"
-                    },
                     data = new {
-                        landmarkName= landmark.Title,
+                        title = "Estas cerca de un landmark",
+                        body = description,
                         landmarkId = landmark.Id,
-                        landmarkDistance = distance
                     },
                     priority = "high"
 

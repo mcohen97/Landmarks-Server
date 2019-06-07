@@ -55,12 +55,10 @@ public class MessageService extends FirebaseMessagingService {
     }
 
     private void sendNotification(RemoteMessage message) {
-        Notification notification = message.getNotification();
         Map<String,String> data = message.getData();
-        String content = "No te pierdas de visitar el landmark: "+data.get("landmarkName")+" se encuentra a "+ data.get("landmarkDistance");
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("landmarkId",1);
+        intent.putExtra("landmarkId",Integer.parseInt(data.get("landmarkId")));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -70,8 +68,8 @@ public class MessageService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle(notification.getTitle())
-                        .setContentText(content)
+                        .setContentTitle(data.get("title"))
+                        .setContentText(data.get("body"))
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
