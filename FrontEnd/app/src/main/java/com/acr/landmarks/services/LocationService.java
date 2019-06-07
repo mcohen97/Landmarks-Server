@@ -10,7 +10,6 @@ import com.acr.landmarks.services.contracts.ILocationService;
 public class LocationService implements ILocationService {
 
     private final MutableLiveData<Location> currentLocation;
-    private final MutableLiveData<Double> currentRadius;
 
     private static final LocationService instance = new LocationService();
 
@@ -20,7 +19,6 @@ public class LocationService implements ILocationService {
 
     private LocationService() {
         currentLocation = new MutableLiveData<>();
-        currentRadius = new MutableLiveData<>();
     }
 
     @Override

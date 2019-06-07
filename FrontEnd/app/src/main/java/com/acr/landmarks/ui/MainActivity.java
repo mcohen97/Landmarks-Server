@@ -1,6 +1,7 @@
 package com.acr.landmarks.ui;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -29,7 +31,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.services.AudioStreamPlayer;
+import com.acr.landmarks.services.LocationUpdatesService;
 import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.util.Config;
 import com.acr.landmarks.view_models.LandmarksViewModel;
@@ -173,11 +175,33 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         if (mapServicesAvailable()) {
             if (mLocationPermissionGranted) {
                 startTrackingLocation();
+                startLocationService();
             } else {
                 getLocationPermission();
             }
         }
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
+    private void startLocationService(){
+        if(!isLocationServicesRunning()) {
+            Intent serviceIntent = new Intent(this, LocationUpdatesService.class);
+            if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
+                MainActivity.this.startForegroundService(serviceIntent);
+            }else {
+                startService(serviceIntent);
+            }
+        }
+    }
+
+    private boolean isLocationServicesRunning(){
+        ActivityManager manager= (ActivityManager)getSystemService(ACTIVITY_SERVICE);
+        for(ActivityManager.RunningServiceInfo service: manager.getRunningServices(Integer.MAX_VALUE)){
+            if (LocationUpdatesService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void startTrackingLocation() {
@@ -237,7 +261,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private void getLocationPermission() {
         if (hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
             mLocationPermissionGranted = true;
-            startTrackingLocation();
+            //startTrackingLocation();
+            onResume();
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},

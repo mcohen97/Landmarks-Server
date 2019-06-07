@@ -1,29 +1,34 @@
 {
   "project_info": {
-    "project_number": "32666165459",
-    "firebase_url": "https://landmarksv1.firebaseio.com",
-    "project_id": "landmarksv1",
-    "storage_bucket": "landmarksv1.appspot.com"
+    "project_number": "291533664427",
+    "firebase_url": "https://landmarks-a5f5c.firebaseio.com",
+    "project_id": "landmarks-a5f5c",
+    "storage_bucket": "landmarks-a5f5c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:32666165459:android:36ac1b7db31b4ed1",
+        "mobilesdk_app_id": "1:291533664427:android:36ac1b7db31b4ed1",
         "android_client_info": {
           "package_name": "com.acr.landmarks"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "291533664427-nonikjm8t5gj01lgt7s0l4gfct9fe1l0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAcncn8rPBz-UJIDQbU8626KR2LQ3QKIC8"
+          "current_key": "AIzaSyAriswALiVqYXsAX1c0Hy9tx0E8sk2KQXc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "32666165459-jeoufg790h4c0rhgcc0if3plt3q559j0.apps.googleusercontent.com",
+              "client_id": "291533664427-nonikjm8t5gj01lgt7s0l4gfct9fe1l0.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -73,12 +73,15 @@ dependencies {
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    //image slider
+    //Image slider
     implementation project(':autoimageslider')
 
+    //To solve time-zone class exception
     implementation 'com.github.seratch:java-time-backport:1.0.0'
+
+    //Firebase messaging
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-messaging:17.6.0'
 }
-
-
 
 apply plugin: 'com.google.gms.google-services'
