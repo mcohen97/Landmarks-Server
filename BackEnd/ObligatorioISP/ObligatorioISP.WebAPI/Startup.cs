@@ -23,6 +23,7 @@ namespace ObligatorioISP.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMemoryCache();
 
             services.AddScoped<ILandmarksRepository>(provider=> new SqlServerLandmarksRepository(
                 new SqlServerConnectionManager(Configuration.GetConnectionString("Landmarks")),
@@ -40,6 +41,7 @@ namespace ObligatorioISP.WebAPI
 
             services.AddScoped<ILandmarksService, LandmarksService>();
             services.AddScoped<IToursService, ToursService>();
+            services.AddScoped<IProximityNotificationService, FirebaseNotificationService>();
         }
 
         private string GetMediaPath(string section, string key)

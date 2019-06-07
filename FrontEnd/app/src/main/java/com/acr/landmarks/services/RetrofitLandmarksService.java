@@ -3,6 +3,7 @@ package com.acr.landmarks.services;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
+import android.util.Log;
 
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.services.contracts.ILandmarksService;
@@ -23,6 +24,7 @@ public class RetrofitLandmarksService implements ILandmarksService {
     private RetrofitLandmarksAPI webService;
     private final MutableLiveData<List<Landmark>> landmarksData;
     private final MutableLiveData<Landmark> selectedLandmark;
+    private static final String TAG = RetrofitLandmarksService.class.getName();
 
 
     public RetrofitLandmarksService(String apiBaseUrl) {
@@ -74,7 +76,7 @@ public class RetrofitLandmarksService implements ILandmarksService {
 
             @Override
             public void onFailure(Call<Landmark> call, Throwable t) {
-
+                Log.d(TAG,"Request failed");
             }
         });
         return selectedLandmark;

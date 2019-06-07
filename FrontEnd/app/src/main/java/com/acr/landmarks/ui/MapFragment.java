@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
@@ -78,7 +79,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     //Clustering
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
     private ClusterManagerRenderer mClusterManagerRenderer;
-    private static ArrayList<LandmarkClusterMarker> mClusterMarkers = new ArrayList<>();
+    private  ArrayList<LandmarkClusterMarker> mClusterMarkers;
 
     private List<Landmark> mLandmarks;
     private List<Tour> mTours;
@@ -101,6 +102,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imageService = new PicassoImageService(Config.getConfigValue(getContext(),"api_url"));
+        mUserLocation= null;
+        mClusterMarkers = new ArrayList<>();
     }
 
     @Override
@@ -254,15 +257,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
             if (isAsked ) {
-                resetTheMap();
+                //resetTheMap();
                 if(isTourSelected()){
                     drawTour(toursViewModel.getSelectedTour().getValue());
                 }
-                calculateDirections(mSelectedMarker);
+                LandmarkClusterMarker marker = mSelectedMarker;
+                if(marker == null) {
+                    Landmark selected = landmarksViewModel.getSelectedLandmark().getValue();
+                    marker = getLandmarksMarker(selected);
+                }
+                if(marker != null) {
+                    calculateDirections(marker);
+                }
             }
 
         });
 
+    }
+
+    private LandmarkClusterMarker getLandmarksMarker(Landmark landmark) {
+        for(LandmarkClusterMarker marker: mClusterMarkers){
+            if(marker.getLandmark().equals(landmark)){
+                return marker;
+            }
+        }
+        return null;
     }
 
     private boolean isTourSelected() {
@@ -417,8 +436,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
 
     private void calculateDirections(LandmarkClusterMarker marker){
-
-
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
                 marker.getPosition().latitude,
                 marker.getPosition().longitude

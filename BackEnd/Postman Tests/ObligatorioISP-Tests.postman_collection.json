@@ -383,6 +383,36 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Update Location",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Domain}}/api/location/update/{{Token}}?lat=-34.923844&lng=-56.170590",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"location",
+						"update",
+						"{{Token}}"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "-34.923844"
+						},
+						{
+							"key": "lng",
+							"value": "-56.170590"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -409,9 +439,15 @@
 	],
 	"variable": [
 		{
-			"id": "8f8990b9-c2c7-451a-a06b-d85fbdbed4cd",
+			"id": "2e5f7322-1607-4232-800d-b67519150bd8",
 			"key": "Domain",
 			"value": "https://localhost:44310",
+			"type": "string"
+		},
+		{
+			"id": "8e1bf502-c081-4f65-8794-7ac59c338b3a",
+			"key": "Token",
+			"value": "f9lbBkiVPuo:APA91bGa_mr6j730iPVTQP18w0UbohhKWIf2ke4VFu-G-npbggsWPnHBM5PnTBopjt9dO3kHNX1W8fc6-ULCiQuiyGN83sb61ZV-D9G3YXn4C1HWnsk6FbsWDPpvEOZBMDLT7YD4o-mx",
 			"type": "string"
 		}
 	]

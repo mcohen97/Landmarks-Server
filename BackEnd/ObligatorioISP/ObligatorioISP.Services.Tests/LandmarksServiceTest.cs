@@ -32,7 +32,7 @@ namespace ObligatorioISP.Services.Tests
             testAudioData = "audioData";
             landmarks = new Mock<ILandmarksRepository>();
             landmarks.Setup(r => r.GetTourLandmarks(It.IsAny<int>())).Returns(GetFakeLandmarks());
-            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>())).Returns(GetFakeLandmarks());
+            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(),0,50)).Returns(GetFakeLandmarks());
             landmarks.Setup(r => r.GetById(It.IsAny<int>())).Returns((int id) => GetFakeLandmarks().First(l => l.Id == id));
         }  
 
@@ -43,7 +43,7 @@ namespace ObligatorioISP.Services.Tests
             double dist = 2;
 
             ICollection<LandmarkDto> retrieved = service.GetLandmarksWithinZone(lat, lng, dist);
-            landmarks.Verify(l => l.GetWithinZone(lat, lng, dist), Times.Once);
+            landmarks.Verify(l => l.GetWithinZone(lat, lng, dist,0,50), Times.Once);
             Assert.AreEqual(GetFakeLandmarks().Count, retrieved.Count);
         }
 
@@ -95,7 +95,7 @@ namespace ObligatorioISP.Services.Tests
         [ExpectedException(typeof(ServiceException))]
         public void ShouldFailWhenCantGetDataInGetLandmarksWithinZone()
         {
-            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(),0,50))
                 .Throws(new DataInaccessibleException());
             service.GetLandmarksWithinZone(-34.923844, -56.170590, 2);
         }
@@ -120,7 +120,7 @@ namespace ObligatorioISP.Services.Tests
         [ExpectedException(typeof(ServiceException))]
         public void ShouldFailWhenDataCorruptedInGetLandmarksWithinZone()
         {
-            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
+            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(),0,50))
                 .Throws(new CorruptedDataException());
             service.GetLandmarksWithinZone(-34.923844, -56.170590, 2);
         }
