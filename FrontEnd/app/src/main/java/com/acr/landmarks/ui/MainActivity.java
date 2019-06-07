@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
         landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
         toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
+        landmarksViewModel.getSelectedLandmark().observe( this,
+                landmark -> onLandmarkSelected(landmark) );
     }
 
     private void setViewPager() {
@@ -176,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             if (mLocationPermissionGranted) {
                 startTrackingLocation();
                 startLocationService();
+                setLandmarkIfCommingFromNotification();
             } else {
                 getLocationPermission();
             }
@@ -183,20 +186,30 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
-    private void startLocationService(){
-        if(!isLocationServicesRunning()) {
+    private void setLandmarkIfCommingFromNotification() {
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            int value = extras.getInt("landmarkId", 0);
+            if (value > 0) {
+                landmarksViewModel.setSelectedLandmark(value);
+            }
+        }
+    }
+
+    private void startLocationService() {
+        if (!isLocationServicesRunning()) {
             Intent serviceIntent = new Intent(this, LocationUpdatesService.class);
-            if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 MainActivity.this.startForegroundService(serviceIntent);
-            }else {
+            } else {
                 startService(serviceIntent);
             }
         }
     }
 
-    private boolean isLocationServicesRunning(){
-        ActivityManager manager= (ActivityManager)getSystemService(ACTIVITY_SERVICE);
-        for(ActivityManager.RunningServiceInfo service: manager.getRunningServices(Integer.MAX_VALUE)){
+    private boolean isLocationServicesRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (LocationUpdatesService.class.getName().equals(service.service.getClassName())) {
                 return true;
             }
@@ -318,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 alertDialog.setTitle("Alert");
                 alertDialog.setMessage("Internet not available, Cross check your internet connectivity and try again");
                 alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,"continue offline", new DialogInterface.OnClickListener() {
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "continue offline", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
@@ -326,11 +339,11 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "go to network settings", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent=new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                        Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
                         startActivity(intent);
                     }
                 });
-               alertDialog.show();
+                alertDialog.show();
             }
         };
         mConnectionMonitor = new ConnectivityReceiver(listener);
@@ -338,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         this.unregisterReceiver(mConnectionMonitor);
     }
@@ -382,18 +395,18 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         });
     }
 
-    private void playAudio(){
-        if(audioPlayer.isAudioLoaded())
+    private void playAudio() {
+        if (audioPlayer.isAudioLoaded())
             audioPlayer.play();
-        else{
-            Toast.makeText(getApplicationContext(),"No audio",Toast.LENGTH_SHORT).show();
+        else {
+            Toast.makeText(getApplicationContext(), "No audio", Toast.LENGTH_SHORT).show();
 
         }
 
     }
 
     private void audioPlayerInit() {
-        String audiosUrl = Config.getConfigValue(this,"api_url")+"audios/";
+        String audiosUrl = Config.getConfigValue(this, "api_url") + "audios/";
         this.audioPlayer = new AudioStreamPlayer(audiosUrl);
     }
 
@@ -431,14 +444,16 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         sheetLandmarkName.setText(selectedLandmark.title);
         sheetLandmarkDescription.setText(selectedLandmark.description);
 
-        String distance = "" + (mCurrentLocation.distanceTo(createLocation(selectedLandmark.latitude, selectedLandmark.longitude)) / 1000);
+        if (mCurrentLocation != null){
+            String distance = "" + (mCurrentLocation.distanceTo(createLocation(selectedLandmark.latitude, selectedLandmark.longitude)) / 1000);
         distance = distance.substring(0, 4);
         distance += " Km";
-
         sheetLandmarkDistance.setText(distance);
+        }
+
         addImages(selectedLandmark.imageFiles);
 
-        if(selectedLandmark.audioFiles != null && selectedLandmark.audioFiles.length > 0) {
+        if (selectedLandmark.audioFiles != null && selectedLandmark.audioFiles.length > 0) {
             audioPlayer.load(selectedLandmark.audioFiles[0]);
         }
 
@@ -450,13 +465,13 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     private void addImages(String[] images) {
         mSliderLayout.clearSliderViews();
-        String imagesDirectory=Config.getConfigValue(this,"api_url")+"images/landmarks/";
+        String imagesDirectory = Config.getConfigValue(this, "api_url") + "images/landmarks/";
         for (String image : images) {
             SliderView sliderView = new DefaultSliderView(this);
             //byte[] imageData = Base64.decode(image, Base64.DEFAULT);
             //sliderView.setImageByte(imageData);
 
-            sliderView.setImageUrl(imagesDirectory+image);
+            sliderView.setImageUrl(imagesDirectory + image);
             sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
 
             mSliderLayout.addSliderView(sliderView);
@@ -489,12 +504,13 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         }
     }
 
-    private void FabDirectionsClicked(){
+    private void FabDirectionsClicked() {
         TabLayout tabs = findViewById(R.id.tabs);
         TabLayout.Tab tab = tabs.getTabAt(1);
         tab.select();
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
         landmarksViewModel.getAskedForDirections().postValue(true);
     }
+
 
 }
