@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.BusinessLogic.Exceptions;
@@ -25,11 +26,14 @@ namespace ObligatorioISP.DataAccess
             audiosDirectory = audiosPath;
         }
 
-        public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm)
+        public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm, int offset =0, int count = 50)
         {
+            //Could not find a way to reuse the result of distance and not calculate it twice, should be improved.
             string command = $"SELECT * "
                 + $"FROM Landmark "
-                + $"WHERE dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) <= {distanceInKm};";
+                + $"WHERE dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) <= {distanceInKm} "
+                + $"ORDER BY dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) ASC "
+                + $"OFFSET {offset} ROWS FETCH NEXT {count} ROWS ONLY;";
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
             ICollection<Landmark> result = rows.Select(r => BuildLandmark(r)).ToList();
@@ -84,7 +88,7 @@ namespace ObligatorioISP.DataAccess
             {
                 landmark = new Landmark(id, title, lat, lng, description, images, audios);
             }
-            catch (InvalidLandmarkException) {
+            catch (InvalidLandmarkException e) {
                 throw new CorruptedDataException();
             }
             return landmark;
@@ -102,14 +106,15 @@ namespace ObligatorioISP.DataAccess
         private string BuildPath(Dictionary<string, object> rawData, int landmarkId, string table) {
             string resourceId = rawData["ID"].ToString();
             string path;
+            char separator = Path.DirectorySeparatorChar;
             if (table.Equals(IMAGES_TABLE))
             {
                 string extension = rawData["EXTENSION"].ToString();
-                path = $"{imagesDirectory}/{landmarkId}{SEPARATOR}{resourceId}.{extension}";
+                path = $"{imagesDirectory}{separator}{landmarkId}{SEPARATOR}{resourceId}.{extension}";
             }
             else
             {
-                path = $"{audiosDirectory}/{landmarkId}{SEPARATOR}{resourceId}.mp3";
+                path = $"{audiosDirectory}{separator}{landmarkId}{SEPARATOR}{resourceId}.mp3";
             }
             return path;
         }

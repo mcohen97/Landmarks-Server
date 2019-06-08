@@ -3,9 +3,9 @@ package com.acr.landmarks.services;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
+import android.util.Log;
 
-import com.acr.landmarks.models.LandmarkFullInfo;
-import com.acr.landmarks.models.LandmarkMarkerInfo;
+import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 
 import java.util.ArrayList;
@@ -18,40 +18,40 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitLandmarksService implements  ILandmarksService{
+public class RetrofitLandmarksService implements ILandmarksService {
 
     private Retrofit retrofit;
     private RetrofitLandmarksAPI webService;
-    private final MutableLiveData<List<LandmarkMarkerInfo>> landmarksData;
-    private  final MutableLiveData<LandmarkFullInfo> selectedLandmark;
+    private final MutableLiveData<List<Landmark>> landmarksData;
+    private final MutableLiveData<Landmark> selectedLandmark;
+    private static final String TAG = RetrofitLandmarksService.class.getName();
 
 
-
-    public RetrofitLandmarksService(){
+    public RetrofitLandmarksService(String apiBaseUrl) {
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://172.29.2.126/api/")
+                .baseUrl(apiBaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .callbackExecutor(Executors.newSingleThreadExecutor())
                 .build();
-        webService= retrofit.create(RetrofitLandmarksAPI.class);
+        webService = retrofit.create(RetrofitLandmarksAPI.class);
         landmarksData = new MutableLiveData<>();
         selectedLandmark = new MutableLiveData<>();
         landmarksData.setValue(new ArrayList<>());
     }
 
     @Override
-    public LiveData<List<LandmarkMarkerInfo>> getLandmarks(Location currentLocation, double currentRadius) {
-        Call<List<LandmarkMarkerInfo>> landmarks = webService.getLandmarksInRange(currentLocation.getLatitude(),currentLocation.getLongitude(),currentRadius);
-        landmarks.enqueue(new Callback<List<LandmarkMarkerInfo>>() {
+    public LiveData<List<Landmark>> getLandmarks(Location currentLocation, double currentRadius) {
+        Call<List<Landmark>> landmarks = webService.getLandmarksInRange(currentLocation.getLatitude(), currentLocation.getLongitude(), currentRadius);
+        landmarks.enqueue(new Callback<List<Landmark>>() {
             @Override
-            public void onResponse(Call<List<LandmarkMarkerInfo>> call, Response<List<LandmarkMarkerInfo>> response) {
-                if(response.isSuccessful()){
+            public void onResponse(Call<List<Landmark>> call, Response<List<Landmark>> response) {
+                if (response.isSuccessful()) {
                     landmarksData.postValue(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<List<LandmarkMarkerInfo>> call, Throwable t) {
+            public void onFailure(Call<List<Landmark>> call, Throwable t) {
 
             }
         });
@@ -59,24 +59,24 @@ public class RetrofitLandmarksService implements  ILandmarksService{
     }
 
 
-    public  LiveData<LandmarkFullInfo> getSelectedLandmark(){
+    public LiveData<Landmark> getSelectedLandmark() {
         return selectedLandmark;
     }
 
     @Override
-    public LiveData<LandmarkFullInfo> getLandmarkById(int id) {
-        Call<LandmarkFullInfo> landmark = webService.getLandmark(id);
-        landmark.enqueue(new Callback<LandmarkFullInfo>() {
+    public LiveData<Landmark> getLandmarkById(int id) {
+        Call<Landmark> landmark = webService.getLandmark(id);
+        landmark.enqueue(new Callback<Landmark>() {
             @Override
-            public void onResponse(Call<LandmarkFullInfo> call, Response<LandmarkFullInfo> response) {
-                if(response.isSuccessful()){
+            public void onResponse(Call<Landmark> call, Response<Landmark> response) {
+                if (response.isSuccessful()) {
                     selectedLandmark.postValue(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<LandmarkFullInfo> call, Throwable t) {
-
+            public void onFailure(Call<Landmark> call, Throwable t) {
+                Log.d(TAG,"Request failed");
             }
         });
         return selectedLandmark;

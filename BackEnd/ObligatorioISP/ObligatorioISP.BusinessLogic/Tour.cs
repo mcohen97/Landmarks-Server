@@ -11,14 +11,14 @@ namespace ObligatorioISP.BusinessLogic
     {
         private int id;
         private string title;
-        private string imagePath;
+        private string imageBaseName;
         private ICollection<Landmark> landmarks;
         private string description;
 
         public int Id { get { return id; } private set { SetId(value); } }
         public string Title { get { return title; } private set { SetTitle(value); } }
         public ICollection<Landmark> Landmarks { get { return landmarks; }private set { SetLandmarks(value); } }
-        public string ImagePath { get { return imagePath; } private set { SetImage(value); } }
+        public string ImageBaseName { get { return imageBaseName; } private set { SetImage(value); } }
         public TourCategory Category { get; private set; }
         public string Description { get { return description; } set { SetDescription(value); } }
 
@@ -27,7 +27,7 @@ namespace ObligatorioISP.BusinessLogic
             Title = aTitle;
             Description = aDescription;
             Landmarks = someLandmarks;
-            ImagePath = imagePath;
+            ImageBaseName = imagePath;
             Category = category;
         }
 
@@ -70,7 +70,9 @@ namespace ObligatorioISP.BusinessLogic
             {
                 throw new InvalidTourException("Image doesn't exist");
             }
-            imagePath = path;
+            //checks that image exists, but only keeps image basename.
+            char separator =Path.DirectorySeparatorChar;
+            imageBaseName = path.Split(separator).Last();
         }
     }
 }

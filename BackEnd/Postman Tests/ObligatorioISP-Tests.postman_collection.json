@@ -28,7 +28,8 @@
 							"    pm.expect(jsonData[0]).to.have.property('title');",
 							"    pm.expect(jsonData[0]).to.have.property('latitude');",
 							"    pm.expect(jsonData[0]).to.have.property('longitude');",
-							"    pm.expect(jsonData[0]).to.have.property('iconBase64');",
+							"    pm.expect(jsonData[0]).to.have.property('imageFiles');",
+							"    pm.expect(jsonData[0]).to.have.property('audioFiles');",
 							"});"
 						],
 						"type": "text/javascript"
@@ -38,10 +39,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{Domain}}/api/landmarks?lat=-34.923844&lng=-56.170590&dist=2",
 					"host": [
@@ -90,8 +87,8 @@
 							"  pm.expect(jsonData).to.have.property('description');",
 							"  pm.expect(jsonData).to.have.property('latitude');",
 							"  pm.expect(jsonData).to.have.property('longitude');",
-							"  pm.expect(jsonData).to.have.property('imagesBase64');",
-							"  pm.expect(jsonData).to.have.property('audiosBase64');",
+							"  pm.expect(jsonData).to.have.property('imageFiles');",
+							"  pm.expect(jsonData).to.have.property('audioFiles');",
 							"});"
 						],
 						"type": "text/javascript"
@@ -101,10 +98,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{Domain}}/api/landmarks/1",
 					"host": [
@@ -144,10 +137,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{Domain}}/api/landmarks/15",
 					"host": [
@@ -179,9 +168,10 @@
 							"pm.test(\"Has landmark detailed data\",function(){",
 							"  pm.expect(jsonData).to.have.property('id');",
 							"  pm.expect(jsonData).to.have.property('title');",
+							"  pm.expect(jsonData).to.have.property('description');",
 							"  pm.expect(jsonData).to.have.property('landmarksIds');",
 							"  pm.expect(jsonData).to.have.property('category');",
-							"  pm.expect(jsonData).to.have.property('imageBase64');",
+							"  pm.expect(jsonData).to.have.property('imageFile');",
 							"});"
 						],
 						"type": "text/javascript"
@@ -191,10 +181,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{Domain}}/api/tours/1",
 					"host": [
@@ -230,9 +216,10 @@
 							"pm.test(\"have tour data\", function(){",
 							"    pm.expect(jsonData[0]).to.have.property('id');",
 							"    pm.expect(jsonData[0]).to.have.property('title');",
+							"    pm.expect(jsonData[0]).to.have.property('description');",
 							"    pm.expect(jsonData[0]).to.have.property('landmarksIds');",
 							"    pm.expect(jsonData[0]).to.have.property('category');",
-							"    pm.expect(jsonData[0]).to.have.property('imageBase64');",
+							"    pm.expect(jsonData[0]).to.have.property('imageFile');",
 							"});"
 						],
 						"type": "text/javascript"
@@ -242,10 +229,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{Domain}}/api/tours?lat=-34.923844&lng=-56.170590&dist=20",
 					"host": [
@@ -298,10 +281,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{Domain}}/api/tours/15",
 					"host": [
@@ -339,7 +318,8 @@
 							"    pm.expect(jsonData[0]).to.have.property('title');",
 							"    pm.expect(jsonData[0]).to.have.property('latitude');",
 							"    pm.expect(jsonData[0]).to.have.property('longitude');",
-							"    pm.expect(jsonData[0]).to.have.property('iconBase64');",
+							"    pm.expect(jsonData[0]).to.have.property('imageFiles');",
+							"    pm.expect(jsonData[0]).to.have.property('audioFiles');",
 							"});"
 						],
 						"type": "text/javascript"
@@ -349,10 +329,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{Domain}}/api/landmarks/tour/1",
 					"host": [
@@ -393,12 +369,8 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "{{Domain}}/api/landmarks/tour/1",
+					"raw": "{{Domain}}/api/landmarks/tour/15",
 					"host": [
 						"{{Domain}}"
 					],
@@ -406,7 +378,37 @@
 						"api",
 						"landmarks",
 						"tour",
-						"1"
+						"15"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Location",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Domain}}/api/location/update/{{Token}}?lat=-34.923844&lng=-56.170590",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"location",
+						"update",
+						"{{Token}}"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "-34.923844"
+						},
+						{
+							"key": "lng",
+							"value": "-56.170590"
+						}
 					]
 				}
 			},
@@ -437,9 +439,15 @@
 	],
 	"variable": [
 		{
-			"id": "90b9cc5f-5ef4-442d-9098-c379ee031544",
+			"id": "2e5f7322-1607-4232-800d-b67519150bd8",
 			"key": "Domain",
 			"value": "https://localhost:44310",
+			"type": "string"
+		},
+		{
+			"id": "8e1bf502-c081-4f65-8794-7ac59c338b3a",
+			"key": "Token",
+			"value": "f9lbBkiVPuo:APA91bGa_mr6j730iPVTQP18w0UbohhKWIf2ke4VFu-G-npbggsWPnHBM5PnTBopjt9dO3kHNX1W8fc6-ULCiQuiyGN83sb61ZV-D9G3YXn4C1HWnsk6FbsWDPpvEOZBMDLT7YD4o-mx",
 			"type": "string"
 		}
 	]

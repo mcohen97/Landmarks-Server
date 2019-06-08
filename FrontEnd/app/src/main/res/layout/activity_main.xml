@@ -18,15 +18,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="5dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:background="?attr/actionBarColor"
+
+    >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimaryDark"
+            android:background="?attr/actionBarColor"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:popupTheme="@style/AppTheme.AppBarOverlay"
+            app:titleTextColor="?attr/textColorStrong"
             app:title="@string/app_name">
 
 
@@ -35,7 +38,7 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:background="@color/colorPrimaryDark"
+            android:background="?attr/actionBarColor"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TabItem

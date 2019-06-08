@@ -13,17 +13,13 @@ namespace ObligatorioISP.Services
     public class LandmarksService : ILandmarksService
     {
         private ILandmarksRepository landmarks;
-        private IImagesRepository images;
-        private IAudiosRepository audios;
 
-        public LandmarksService(ILandmarksRepository landmarksStorage, IImagesRepository imagesStorage, IAudiosRepository audiosStorage)
+        public LandmarksService(ILandmarksRepository landmarksStorage)
         {
             landmarks = landmarksStorage;
-            images = imagesStorage;
-            audios = audiosStorage;
         }
 
-        public ICollection<LandmarkSummarizedDto> GetLandmarksOfTour(int id)
+        public ICollection<LandmarkDto> GetLandmarksOfTour(int id)
         {
             try
             {
@@ -41,14 +37,14 @@ namespace ObligatorioISP.Services
             }
         }
 
-        private ICollection<LandmarkSummarizedDto> TryGetLandmarksOfTour(int id)
+        private ICollection<LandmarkDto> TryGetLandmarksOfTour(int id)
         {
             ICollection<Landmark> retrieved = landmarks.GetTourLandmarks(id);
-            ICollection<LandmarkSummarizedDto> dtos = GetSummarizedDtos(retrieved);
+            ICollection<LandmarkDto> dtos = GetLandmarkDtos(retrieved);
             return dtos;
         }
 
-        public ICollection<LandmarkSummarizedDto> GetLandmarksWithinZone(double latitude, double longitude, double distance)
+        public ICollection<LandmarkDto> GetLandmarksWithinZone(double latitude, double longitude, double distance)
         {
             try {
                 return TryGetLandmarksWithinZone(latitude, longitude, distance);
@@ -62,14 +58,14 @@ namespace ObligatorioISP.Services
             }
         }
 
-        private ICollection<LandmarkSummarizedDto> TryGetLandmarksWithinZone(double latitude, double longitude, double distance)
+        private ICollection<LandmarkDto> TryGetLandmarksWithinZone(double latitude, double longitude, double distance)
         {
             ICollection<Landmark> retrieved = landmarks.GetWithinZone(latitude, longitude, distance);
-            ICollection<LandmarkSummarizedDto> dtos = GetSummarizedDtos(retrieved);
+            ICollection<LandmarkDto> dtos = GetLandmarkDtos(retrieved);
             return dtos;
         }
 
-        public LandmarkDetailedDto GetLandmarkById(int id)
+        public LandmarkDto GetLandmarkById(int id)
         {
             try {
                 return TryGetLandmarkById(id);
@@ -87,54 +83,39 @@ namespace ObligatorioISP.Services
             }
         }
 
-        private LandmarkDetailedDto TryGetLandmarkById(int id)
+        private LandmarkDto TryGetLandmarkById(int id)
         {
             Landmark retrieved = landmarks.GetById(id);
-            ICollection<string> currentImages = retrieved.Images
-                                                .Select(path => images.GetImageInBase64(path))
-                                                .ToList();
-            ICollection<string> currentAudios = retrieved.Audios
-                                                .Select(path => audios.GetAudioInBase64(path))
-                                                .ToList();
-            LandmarkDetailedDto dto = ConvertToDto(retrieved, currentImages, currentAudios);
+            ICollection<string> currentImages = retrieved.Images;
+
+            ICollection<string> currentAudios = retrieved.Audios;
+
+            LandmarkDto dto = ConvertToDto(retrieved);
             return dto;
         }
 
-        private ICollection<LandmarkSummarizedDto> GetSummarizedDtos(ICollection<Landmark> retrievedLandmarks)
+        private ICollection<LandmarkDto> GetLandmarkDtos(ICollection<Landmark> retrievedLandmarks)
         {
-            ICollection<LandmarkSummarizedDto> result = new List<LandmarkSummarizedDto>();
+            ICollection<LandmarkDto> result = new List<LandmarkDto>();
             foreach (Landmark current in retrievedLandmarks)
             {
-                string icon = images.GetImageInBase64(current.Icon);
-                LandmarkSummarizedDto dto = ConvertToDto(current,icon);
+                LandmarkDto dto = ConvertToDto(current);
                 result.Add(dto);
             }
             return result;
         }
 
-        private LandmarkSummarizedDto ConvertToDto(Landmark landmark, string icon)
+        private LandmarkDto ConvertToDto(Landmark landmark)
         {
-            return new LandmarkSummarizedDto()
-            {
-                Id = landmark.Id,
-                Title = landmark.Title,
-                Latitude = landmark.Latitude,
-                Longitude = landmark.Longitude,
-                IconBase64 = icon
-            };
-        }
-
-        private LandmarkDetailedDto ConvertToDto(Landmark landmark, ICollection<string> images, ICollection<string> audios)
-        {
-            return new LandmarkDetailedDto()
+            return new LandmarkDto()
             {
                 Id = landmark.Id,
                 Title = landmark.Title,
                 Latitude = landmark.Latitude,
                 Longitude = landmark.Longitude,
                 Description = landmark.Description,
-                ImagesBase64 = images,
-                AudiosBase64 = audios
+                ImageFiles = landmark.Images,
+                AudioFiles = landmark.Audios
             };
         }
 

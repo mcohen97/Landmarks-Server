@@ -4,12 +4,14 @@ using System.Text;
 
 namespace ObligatorioISP.Services.Contracts.Dtos
 {
-    public class LandmarkSummarizedDto
+    public class LandmarkDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public string IconBase64 { get; set; }
+        public string Description { get; set; }
+        public ICollection<string> ImageFiles { get; set; }
+        public ICollection<string> AudioFiles { get; set; }
     }
 }

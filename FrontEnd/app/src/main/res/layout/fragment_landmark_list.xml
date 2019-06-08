@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.LandmarkListFragment"
     android:gravity="center"
+    android:background="?attr/backgroundColor"
     >
 
     <LinearLayout
@@ -13,12 +14,16 @@
         android:padding="8dp"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
+        android:background="?attr/backgroundColor"
+
         >
         <android.support.v7.widget.RecyclerView
             android:id="@+id/cards_recyclerview_id"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:gravity="center_horizontal"
+            android:background="?attr/backgroundColor"
+
             >
         </android.support.v7.widget.RecyclerView>
 

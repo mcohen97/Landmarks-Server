@@ -36,6 +36,15 @@ namespace ObligatorioISP.DataAccess.Tests
         }
 
         [TestMethod]
+        public void ShouldAllowOptionalPagination() {
+            double centerLat = -34.923844;
+            double centerLng = -56.170590;
+
+            ICollection<Landmark> withinBounds = landmarks.GetWithinZone(centerLat, centerLng, 2,1,1);
+            Assert.AreEqual(1, withinBounds.Count);
+        }
+
+        [TestMethod]
         public void ShouldGiveLandmarksCoveredByTour() {
             int tourId = 1;
             ICollection<Landmark> fromTour = landmarks.GetTourLandmarks(tourId);

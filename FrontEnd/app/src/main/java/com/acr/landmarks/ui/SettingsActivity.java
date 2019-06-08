@@ -3,7 +3,10 @@ package com.acr.landmarks.ui;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.acr.landmarks.R;
@@ -15,8 +18,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loadTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SharedPreferences preferences = getSharedPreferences("PREFS",0);
         darkThemeActivated = preferences.getBoolean("darkTheme", false);
@@ -28,6 +35,24 @@ public class SettingsActivity extends AppCompatActivity {
             SharedPreferences.Editor preferencesEditor = preferences.edit();
             preferencesEditor.putBoolean("darkTheme",darkThemeActivated);
             preferencesEditor.apply();
+            finish();
+            startActivity(getIntent());
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void loadTheme(){
+        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+        darkThemeActivated = preferences.getBoolean("darkTheme", false);
+        if(darkThemeActivated){
+            setTheme(R.style.NightTheme);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
     }
 }

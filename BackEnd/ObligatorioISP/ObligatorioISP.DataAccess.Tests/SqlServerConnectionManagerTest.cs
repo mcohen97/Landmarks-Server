@@ -7,12 +7,12 @@ using System.Text;
 namespace ObligatorioISP.DataAccess.Tests
 {
     [TestClass]
-    class SqlServerConnectionManagerTest
+    public class SqlServerConnectionManagerTest
     {
         private SqlServerConnectionManager connection;
         [TestInitialize]
         public void SetUp() {
-          string unexistentServer = "DESKTOP-JH1M2MF\\SQLSERVER_R15;Initial Catalog=DB;Trusted_Connection=True;Integrated Security=True;";
+          string unexistentServer = "Server=DESKTOP-JH1M2MF\\SQLSERVER_R14;Initial Catalog=unexistentDB;Trusted_Connection=True;Integrated Security=True;";
           connection = new SqlServerConnectionManager(unexistentServer);
         }
 
