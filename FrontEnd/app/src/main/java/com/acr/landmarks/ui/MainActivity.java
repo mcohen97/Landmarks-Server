@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.view.View;
 import android.widget.Toast;
 
 import com.acr.landmarks.ConnectivityReceiver;
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
-    private static final String TAG = "Maps Activity";
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
     private ConnectivityReceiver mConnectionMonitor;
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     private Location mCurrentLocation;
     private BottomSheetManager mBottomSheetManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +85,12 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
         createViewPager();
         mBottomSheetManager = new BottomSheetManager(this);
+        setUpBottomSheetManager();
         setViewPager();
         createLocationCallback();
         setViewModels();
         setConnectivityMonitor();
     }
-
 
     private void setViewModels() {
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
@@ -132,7 +131,18 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mViewPager.setCurrentItem(1);
     }
 
-
+    private void setUpBottomSheetManager() {
+        mBottomSheetManager.setDirectionsButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TabLayout tabs = findViewById(R.id.tabs);
+                TabLayout.Tab tab = tabs.getTabAt(1);
+                tab.select();
+                mBottomSheetManager.hideSheetIfExpanded();
+                landmarksViewModel.getAskedForDirections().postValue(true);
+            }
+        });
+    }
 
     private void createLocationCallback() {
         locationCallback = new LocationCallback() {
@@ -144,8 +154,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 mCurrentLocation = locationResult.getLastLocation();
                 locationViewModel.setLocation(mCurrentLocation);
             }
-
-            ;
         };
     }
 
@@ -361,7 +369,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     public void onLandmarkSelected(Landmark selectedLandmark) {
         mBottomSheetManager.onLandmarkSelected(selectedLandmark,mCurrentLocation,mViewPager.getHeight());
     }
-
 
     @Override
     public void onTourSelected(Tour selected) {

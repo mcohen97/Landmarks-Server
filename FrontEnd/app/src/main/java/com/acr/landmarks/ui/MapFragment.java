@@ -457,7 +457,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
             @Override
             public void onFailure(Throwable e) {
-                int x =2;
+                Log.d("Directions", e.getMessage());
             }
         });
     }
