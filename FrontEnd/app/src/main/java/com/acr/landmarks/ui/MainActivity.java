@@ -5,7 +5,6 @@ import android.app.ActivityManager;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -13,12 +12,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -105,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }
+
     private void setViewPager() {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
@@ -237,30 +235,17 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
+            AlertManager.buildAlertMessageNoGps(this);
             return false;
         }
         return true;
     }
 
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
+
 
     private void getLocationPermission() {
         if (hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
             mLocationPermissionGranted = true;
-            //startTrackingLocation();
             onResume();
         } else {
             ActivityCompat.requestPermissions(this,
@@ -305,31 +290,12 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
             }
         }
     }
-
-
     private void setConnectivityMonitor() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         ConnectivityReceiver.ConnectivityLossListener listener = new ConnectivityReceiver.ConnectivityLossListener() {
             @Override
             public void onConnectionLost() {
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-
-                alertDialog.setTitle("Alert");
-                alertDialog.setMessage("Internet not available, Cross check your internet connectivity and try again");
-                alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "continue offline", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "go to network settings", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                        startActivity(intent);
-                    }
-                });
-                alertDialog.show();
+                AlertManager.buildAlertMessageConnectionLost(MainActivity.this);
             }
         };
         mConnectionMonitor = new ConnectivityReceiver(listener);
@@ -381,5 +347,4 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     public void generateBackButton() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
 }
