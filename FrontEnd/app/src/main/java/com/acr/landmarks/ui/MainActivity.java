@@ -15,8 +15,6 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -26,14 +24,9 @@ import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.ConnectivityReceiver;
@@ -41,10 +34,7 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.AudioStreamPlayer;
 import com.acr.landmarks.services.LocationUpdatesService;
-import com.acr.landmarks.services.contracts.IAudioService;
-import com.acr.landmarks.util.Config;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
@@ -55,10 +45,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.smarteist.autoimageslider.DefaultSliderView;
-import com.smarteist.autoimageslider.IndicatorAnimations;
-import com.smarteist.autoimageslider.SliderLayout;
-import com.smarteist.autoimageslider.SliderView;
 
 
 import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
@@ -81,10 +67,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     private LandmarksViewModel landmarksViewModel;
     private ToursViewModel toursViewModel;
 
-    private BottomSheetBehavior mBottomSheetBehaviour;
-    private IAudioService audioPlayer;
     private Location mCurrentLocation;
-    private SliderLayout mSliderLayout;
+    private BottomSheetManager mBottomSheetManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +84,10 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         /* Create the adapter that will return a fragment for each of the three primary sections of the activity.*/
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        createBottomSheet();
+        createViewPager();
+        mBottomSheetManager = new BottomSheetManager(this);
         setViewPager();
         createLocationCallback();
-        setSlider();
         setViewModels();
         setConnectivityMonitor();
     }
@@ -116,19 +101,18 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 landmark -> onLandmarkSelected(landmark) );
     }
 
-    private void setViewPager() {
+    private void createViewPager() {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+    }
+    private void setViewPager() {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (mBottomSheetBehaviour.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
-                }
+                mBottomSheetManager.hideSheetIfExpanded();
             }
 
             @Override
@@ -146,15 +130,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         mViewPager.setCurrentItem(1);
-
     }
 
-    private void setSlider() {
-        LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
-        mSliderLayout = layoutBottomSheet.findViewById(R.id.imageSlider);
-        mSliderLayout.setAutoScrolling(false);
-        mSliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);
-    }
+
 
     private void createLocationCallback() {
         locationCallback = new LocationCallback() {
@@ -183,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
                 getLocationPermission();
             }
         }
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+        mBottomSheetManager.hideSheetIfExpanded();
     }
 
     private void setLandmarkIfCommingFromNotification() {
@@ -356,61 +334,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         this.unregisterReceiver(mConnectionMonitor);
     }
 
-
-    private void createBottomSheet() {
-        audioPlayerInit();
-        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
-        mBottomSheetBehaviour = BottomSheetBehavior.from(bottomSheet);
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
-        TextView description = findViewById(R.id.landmarkDescription);
-        description.setMovementMethod(new ScrollingMovementMethod());
-
-        FloatingActionButton directions = findViewById(R.id.fab_directions);
-        directions.setOnClickListener(new FabDirectionsButtonClick());
-
-        FloatingActionButton audios = findViewById(R.id.fab_audios);
-        audios.setOnClickListener(v -> playAudio());
-
-        mBottomSheetBehaviour.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            boolean expanded = false;
-
-            @Override
-            public void onStateChanged(View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    expanded = true;
-                }
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    audioPlayer.reset();
-                }
-            }
-
-            @Override
-            public void onSlide(View bottomSheet, float slideOffset) {
-                if (expanded) {
-                    expanded = false;
-                    mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
-                }
-            }
-        });
-    }
-
-    private void playAudio() {
-        if (audioPlayer.isAudioLoaded())
-            audioPlayer.play();
-        else {
-            Toast.makeText(getApplicationContext(), "No audio", Toast.LENGTH_SHORT).show();
-
-        }
-
-    }
-
-    private void audioPlayerInit() {
-        String audiosUrl = Config.getConfigValue(this, "api_url") + "audios/";
-        this.audioPlayer = new AudioStreamPlayer(audiosUrl);
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -436,54 +359,9 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
 
     @Override
     public void onLandmarkSelected(Landmark selectedLandmark) {
-        LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
-        TextView sheetLandmarkName = layoutBottomSheet.findViewById(R.id.landmarkName);
-        TextView sheetLandmarkDistance = layoutBottomSheet.findViewById(R.id.landmarkDistance);
-        TextView sheetLandmarkDescription = layoutBottomSheet.findViewById(R.id.landmarkDescription);
-
-        sheetLandmarkName.setText(selectedLandmark.title);
-        sheetLandmarkDescription.setText(selectedLandmark.description);
-
-        if (mCurrentLocation != null){
-            String distance = "" + (mCurrentLocation.distanceTo(createLocation(selectedLandmark.latitude, selectedLandmark.longitude)) / 1000);
-        distance = distance.substring(0, 4);
-        distance += " Km";
-        sheetLandmarkDistance.setText(distance);
-        }
-
-        addImages(selectedLandmark.imageFiles);
-
-        if (selectedLandmark.audioFiles != null && selectedLandmark.audioFiles.length > 0) {
-            audioPlayer.load(selectedLandmark.audioFiles[0]);
-        }
-
-        View bottomSheet = findViewById(R.id.bottom_sheet_layout);
-        bottomSheet.getLayoutParams().height = mViewPager.getHeight();
-        bottomSheet.requestLayout();
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
+        mBottomSheetManager.onLandmarkSelected(selectedLandmark,mCurrentLocation,mViewPager.getHeight());
     }
 
-    private void addImages(String[] images) {
-        mSliderLayout.clearSliderViews();
-        String imagesDirectory = Config.getConfigValue(this, "api_url") + "images/landmarks/";
-        for (String image : images) {
-            SliderView sliderView = new DefaultSliderView(this);
-            //byte[] imageData = Base64.decode(image, Base64.DEFAULT);
-            //sliderView.setImageByte(imageData);
-
-            sliderView.setImageUrl(imagesDirectory + image);
-            sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
-
-            mSliderLayout.addSliderView(sliderView);
-        }
-    }
-
-    private Location createLocation(double lat, double lng) {
-        Location conversion = new Location(new String());
-        conversion.setLatitude(lat);
-        conversion.setLongitude(lng);
-        return conversion;
-    }
 
     @Override
     public void onTourSelected(Tour selected) {
@@ -496,21 +374,5 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
     public void generateBackButton() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-    class FabDirectionsButtonClick implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            FabDirectionsClicked();
-        }
-    }
-
-    private void FabDirectionsClicked() {
-        TabLayout tabs = findViewById(R.id.tabs);
-        TabLayout.Tab tab = tabs.getTabAt(1);
-        tab.select();
-        mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
-        landmarksViewModel.getAskedForDirections().postValue(true);
-    }
-
 
 }
