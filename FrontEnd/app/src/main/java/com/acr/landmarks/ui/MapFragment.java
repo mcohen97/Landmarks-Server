@@ -2,7 +2,6 @@ package com.acr.landmarks.ui;
 
 import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -18,8 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.os.Handler;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
@@ -39,14 +36,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.GeoApiContext;
-import com.google.maps.PendingResult;
 import com.google.maps.android.clustering.ClusterManager;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.http.HEAD;
 
 import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
@@ -168,6 +163,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
                 mMapManager.setCameraDefaultView(mUserLocation);
                 Double radius = new Double(mMapManager.getMapRangeRadius());
                 landmarksViewModel.setGeofence(location,radius);
+                toursViewModel.setGeofence(location,radius);
                 mMap.setOnCameraIdleListener(this);
             }
         });
@@ -391,7 +387,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
         if(firstCameraMovement) {
             float newRadius = mMapManager.getMapRangeRadius();
             LatLng center = mMap.getCameraPosition().target;
-            landmarksViewModel.setGeofence(MapManager.latLngToLocation(center), new Double(newRadius));
+            Location centerLocation = MapManager.latLngToLocation(center);
+            Double radius =new Double(newRadius);
+            landmarksViewModel.setGeofence(centerLocation,radius );
+            toursViewModel.setGeofence(centerLocation,radius);
         }else{
             firstCameraMovement=true;
         }

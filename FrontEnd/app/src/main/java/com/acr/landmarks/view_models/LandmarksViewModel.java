@@ -123,11 +123,6 @@ public class LandmarksViewModel extends AndroidViewModel {
     }
 
     public void setSelectedLandmark(int id){
-         /*for(Landmark l : landmarksInRange.getValue()){
-             if(l.id == id){
-                 selectedLandmark.setValue(l);
-             }
-         }*/
          selectedLandmark = landmarksService.getLandmarkById(id);
     }
 
