@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
@@ -45,7 +44,7 @@ import java.util.List;
 import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
+public class MapFragment extends Fragment implements OnMapReadyCallback, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
         GoogleMap.OnCameraIdleListener,ClusterManager.OnClusterItemClickListener<LandmarkClusterMarker> {
 
     private final String TAG = "MapFragment";
@@ -81,6 +80,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         imageService = new PicassoImageService(Config.getConfigValue(getContext(),"api_url"));
         mUserLocation= null;
         mClusterMarkers = new ArrayList<>();
+        mLandmarks = new ArrayList<Landmark>();
+
+        landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
+        toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
+        locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
+        firstCameraMovement = false;
     }
 
     @Nullable
@@ -88,19 +93,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mMapView = view.findViewById(R.id.fragmented_map);
-
         initGoogleMap(savedInstanceState);
-
-        view.findViewById(R.id.btn_reset_map).setOnClickListener(this);
-        RelativeLayout mMapContainer = view.findViewById(R.id.map_container);
-
-        mLandmarks = new ArrayList<Landmark>();
-
-        landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
-        toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
-        locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
-        firstCameraMovement = false;
-
         return view;
     }
 
@@ -130,18 +123,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mMapView.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mMapView.onStop();
+        if(mUserLocation != null){
+            mMapManager.setCameraDefaultView(mUserLocation);
+        }
     }
 
     @Override
@@ -180,7 +164,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 landmarksViewModel.setGeofence(location,radius);
                 mMap.setOnCameraIdleListener(this);
             }
-
         });
     }
 
@@ -257,34 +240,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         return toursViewModel.getSelectedTour().getValue()!=null;
     }
 
-    @Override
-    public void onPause() {
-        mMapView.onPause();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mMapView.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_reset_map: {
-                addMapMarkers();
-                break;
-            }
-        }
-    }
-
     private void addMapMarkers() {
         if (mMap == null) {
             return;
@@ -297,7 +252,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         if (mClusterManagerRenderer == null) {
             setUpClusterManagerRenderer();
         }
-
         updateMapMarkers();
     }
 
@@ -362,7 +316,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         }
     }
 
-    /*private void removeUselessMarkers() {
+    private void removeUselessMarkers() {
         List<LandmarkClusterMarker> auxLandmarks= (List<LandmarkClusterMarker>) mClusterMarkers.clone();
         for(LandmarkClusterMarker marker: auxLandmarks){
             if(!markerContainsLandmarkInRange(marker)){
@@ -370,8 +324,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 mClusterManager.removeItem(marker);
             }
         }
-
-    }*/
+    }
 
     private boolean markerContainsLandmarkInRange(LandmarkClusterMarker marker) {
         return mLandmarks.contains(marker.getLandmark());
@@ -385,13 +338,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         }
         return false;
     }
-
-    private void removeTripMarkers(){
-        for(Marker marker: mTripMarkers){
-            marker.remove();
-        }
-    }
-
 
     @Override
     public void onClusterItemInfoWindowClick(LandmarkClusterMarker landmarkClusterMarker) {
@@ -433,7 +379,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         }
     }
 
-    //Tours
     public void drawTour(Tour selected) {
         addMapMarkers();
 
@@ -465,4 +410,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMapView.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
 }
