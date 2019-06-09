@@ -24,7 +24,7 @@ public class LandmarksViewModel extends AndroidViewModel {
     private ILandmarksService landmarksService;
     private LandmarkStorage markersStorage;
 
-    private MutableLiveData<Landmark> selectedLandmark;
+    private LiveData<Landmark> selectedLandmark;
 
     private MutableLiveData<Boolean> askedForDirections;
 
@@ -35,6 +35,7 @@ public class LandmarksViewModel extends AndroidViewModel {
     private final MutableLiveData<Pair<Location,Double>> geoFence;
     private final AtomicBoolean lastDataRetrieved;
     private boolean firstGeofenceAssigned;
+    private static final double SERVERSIDE_MIN_DISTANCE = 2.5;
 
 
     public LandmarksViewModel(Application a){
@@ -44,7 +45,6 @@ public class LandmarksViewModel extends AndroidViewModel {
         landmarksService = new RetrofitLandmarksService(Config.getConfigValue(a,"api_url"));
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
-        selectedLandmark = new MutableLiveData<Landmark>();
         askedForDirections= new MutableLiveData<Boolean>();
         lastDataRetrieved = new AtomicBoolean(false);
         firstGeofenceAssigned = false;
@@ -60,9 +60,10 @@ public class LandmarksViewModel extends AndroidViewModel {
 
 
     private void setDefaultData(){
-        geoFence.setValue(new Pair<>(generateDefaultLocation(),new Double(2)));
+        geoFence.setValue(new Pair<>(generateDefaultLocation(),new Double(SERVERSIDE_MIN_DISTANCE)));
         lastCenterLocation = null;
         lastRadius = null;
+        selectedLandmark = landmarksService.getSelectedLandmark();
         landmarksInRange = landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
         liveDataMerger = new MediatorLiveData<>();
         liveDataMerger.addSource(geoFence, centerRadius ->
@@ -95,8 +96,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         }
     }
 
-
-    public void reload(){
+    private void reload(){
         lastDataRetrieved.set(false);
         landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
 
@@ -109,11 +109,12 @@ public class LandmarksViewModel extends AndroidViewModel {
                 liveDataMerger.postValue(cachedLandmarks);
             }
         }).start();
-
-
     }
 
     public void setGeofence(Location aLocation, Double aRadius){
+        if(aRadius < SERVERSIDE_MIN_DISTANCE){
+            aRadius =SERVERSIDE_MIN_DISTANCE;
+        }
         geoFence.setValue(new Pair<>(aLocation,aRadius));
     }
 
@@ -122,12 +123,12 @@ public class LandmarksViewModel extends AndroidViewModel {
     }
 
     public void setSelectedLandmark(int id){
-         for(Landmark l : landmarksInRange.getValue()){
+         /*for(Landmark l : landmarksInRange.getValue()){
              if(l.id == id){
                  selectedLandmark.setValue(l);
              }
-         }
-        //selectedLandmark= landmarksService.getLandmarkById(id);
+         }*/
+         selectedLandmark = landmarksService.getLandmarkById(id);
     }
 
     public LiveData<Landmark> getSelectedLandmark(){return  selectedLandmark;}
