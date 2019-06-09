@@ -24,7 +24,7 @@ public class LandmarksViewModel extends AndroidViewModel {
     private ILandmarksService landmarksService;
     private LandmarkStorage markersStorage;
 
-    private LiveData<Landmark> selectedLandmark;
+    private MutableLiveData<Landmark> selectedLandmark;
 
     private MutableLiveData<Boolean> askedForDirections;
 
@@ -44,6 +44,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         landmarksService = new RetrofitLandmarksService(Config.getConfigValue(a,"api_url"));
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
+        selectedLandmark = new MutableLiveData<Landmark>();
         askedForDirections= new MutableLiveData<Boolean>();
         lastDataRetrieved = new AtomicBoolean(false);
         firstGeofenceAssigned = false;
@@ -62,7 +63,6 @@ public class LandmarksViewModel extends AndroidViewModel {
         geoFence.setValue(new Pair<>(generateDefaultLocation(),new Double(2)));
         lastCenterLocation = null;
         lastRadius = null;
-        selectedLandmark = landmarksService.getSelectedLandmark();
         landmarksInRange = landmarksService.getLandmarks(geoFence.getValue().first,geoFence.getValue().second);
         liveDataMerger = new MediatorLiveData<>();
         liveDataMerger.addSource(geoFence, centerRadius ->
@@ -122,7 +122,12 @@ public class LandmarksViewModel extends AndroidViewModel {
     }
 
     public void setSelectedLandmark(int id){
-        selectedLandmark= landmarksService.getLandmarkById(id);
+         for(Landmark l : landmarksInRange.getValue()){
+             if(l.id == id){
+                 selectedLandmark.setValue(l);
+             }
+         }
+        //selectedLandmark= landmarksService.getLandmarkById(id);
     }
 
     public LiveData<Landmark> getSelectedLandmark(){return  selectedLandmark;}
