@@ -32,8 +32,10 @@ public class SettingsActivity extends AppCompatActivity {
         darkTheme.setChecked(darkThemeActivated);
         darkTheme.setOnClickListener(v -> {
             darkThemeActivated = !darkThemeActivated;
+            String mapStyle = darkThemeActivated ? "map_style_night" : "map_style_light";
             SharedPreferences.Editor preferencesEditor = preferences.edit();
             preferencesEditor.putBoolean("darkTheme",darkThemeActivated);
+            preferencesEditor.putString("mapStyle",mapStyle);
             preferencesEditor.apply();
             finish();
             startActivity(getIntent());

@@ -3,6 +3,7 @@ package com.acr.landmarks.ui;
 import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -21,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.os.Handler;
-import android.widget.Toast;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
@@ -49,7 +49,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
@@ -207,12 +206,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         map.setMyLocationEnabled(true);
         mMap = map;
 
+        boolean success = false;
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
-            boolean success = map.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this.getContext(), R.raw.map_style));
+            SharedPreferences preferences = getActivity().getSharedPreferences("PREFS",0);
+            String mapStyle = preferences.getString("mapStyle", "map_style_light");
+            switch (mapStyle){
+                case "map_style_light":
+                    success = map.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this.getContext(), R.raw.map_style_light));
+                    break;
+                case "map_style_night":
+                    success = map.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    this.getContext(), R.raw.map_style_night));
+                    break;
+            }
 
             if (!success) {
                 Log.e(TAG, "Style parsing failed.");

@@ -18,7 +18,7 @@
     <color name="colorPrimaryNight">#212121</color>
     <color name="colorPrimaryDarkNight">#000000</color>
     <color name="backgroundNight">#303030</color>
-    <color name= "cardBackgroundNight">#424242</color>
+    <color name= "cardBackgroundNight">#000000</color>
     <color name="textColorNight">#FFFFFF</color>
     <color name="tintColorNight">#FFFFFF</color>
     <color name="buttonColorNight">#001541</color>
