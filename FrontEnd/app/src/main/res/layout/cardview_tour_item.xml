@@ -25,6 +25,7 @@
                 android:id="@+id/tour_card_theme"
                 android:background="@color/transparent"
                 android:gravity="left"
+                android:layout_marginLeft="5dp"
                 android:padding="5dp"
                 android:layout_weight="1"
                 android:layout_width="0px"
@@ -33,7 +34,7 @@
             <TextView
                 android:id="@+id/tour_card_title"
                 android:textColor="?attr/textColorStrong"
-                android:textSize="18dp"
+                android:textSize="16dp"
                 android:gravity="left"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="10dp"

@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/landmark_card_title"
-            android:background="?attr/colorPrimaryDark"
+            android:background="@color/darkGrayBlue"
             android:textColor="@color/White"
             android:textSize="10dp"
             android:gravity="center"
