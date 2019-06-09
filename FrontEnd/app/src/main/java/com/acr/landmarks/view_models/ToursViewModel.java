@@ -50,7 +50,7 @@ public class ToursViewModel extends AndroidViewModel {
 
 
     private void setDefaultData(){
-        geoFence.setValue(new Pair<>(generateDefaultLocation(),new Double(4)));
+        geoFence.setValue(new Pair<>(generateDefaultLocation(),new Double(2)));
         lastCenterLocation = null;
         lastRadius = null;
         toursInRange = tourService.getTours(geoFence.getValue().first,geoFence.getValue().second);
@@ -79,7 +79,7 @@ public class ToursViewModel extends AndroidViewModel {
     }
 
 
-    public void reload(){
+    private void reload(){
         lastDataRetrieved.set(false);
         tourService.getTours(geoFence.getValue().first,geoFence.getValue().second);
 
@@ -107,9 +107,9 @@ public class ToursViewModel extends AndroidViewModel {
 
     public void setSelectedTour(int id){
         //auxiliary tour to find original, taking advantage of Tour equals method, by id
-        Tour findHelper = new Tour();
-        findHelper.id=id;
-        int index = toursInRange.getValue().indexOf(findHelper);
+        Tour searchHelper = new Tour();
+        searchHelper.id=id;
+        int index = toursInRange.getValue().indexOf(searchHelper);
         if(index >=0) {
             selectedTour.setValue(toursInRange.getValue().get(index));
         }else{
