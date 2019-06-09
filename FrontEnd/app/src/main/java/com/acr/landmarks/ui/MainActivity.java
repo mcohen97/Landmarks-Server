@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         setViewPager();
         createLocationCallback();
         setViewModels();
-        setConnectivityMonitor();
     }
 
     private void loadTheme() {
@@ -197,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
             }
         }
         mBottomSheetManager.hideSheetIfExpanded();
+        setConnectivityMonitor();
     }
 
     private void setLandmarkIfCommingFromNotification() {
@@ -332,8 +332,8 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         this.unregisterReceiver(mConnectionMonitor);
     }
 
