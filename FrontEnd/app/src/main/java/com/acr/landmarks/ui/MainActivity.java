@@ -49,7 +49,7 @@ import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
-public class MainActivity extends AppCompatActivity implements LandmarkSelectedListener, TourSelectedListener {
+public class MainActivity extends AppCompatActivity implements TourSelectedListener {
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -331,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements LandmarkSelectedL
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
     public void onLandmarkSelected(Landmark selectedLandmark) {
         mBottomSheetManager.onLandmarkSelected(selectedLandmark,mCurrentLocation,mViewPager.getHeight());
     }
