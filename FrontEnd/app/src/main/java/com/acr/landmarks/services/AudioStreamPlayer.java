@@ -17,7 +17,6 @@ public class AudioStreamPlayer implements IAudioService {
         this.url = audioUrl;
         this.mediaPlayer = new MediaPlayer();
         this.isAudioLoaded = false;
-        audioAttributesConfig();
     }
 
     private void audioAttributesConfig() {
@@ -30,14 +29,19 @@ public class AudioStreamPlayer implements IAudioService {
 
     @Override
     public void load(String fileName) {
-        setMediaPlayerTarget(fileName);
-        this.mediaPlayer.prepareAsync();
-        isAudioLoaded = true;
+        try {
+            audioAttributesConfig();
+            setMediaPlayerTarget(fileName);
+            isAudioLoaded = true;
+        } catch (IOException e){
+            mediaPlayer.reset();
+        } catch (IllegalStateException e){
+            mediaPlayer.reset();
+        }
     }
 
     public void reset(){
         this.mediaPlayer.reset();
-        audioAttributesConfig();
         this.isAudioLoaded = false;
     }
 
@@ -67,12 +71,9 @@ public class AudioStreamPlayer implements IAudioService {
         return  this.isAudioLoaded;
     }
 
-    private void setMediaPlayerTarget(String filename){
-        try {
-            this.mediaPlayer.setDataSource(this.url+filename);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setMediaPlayerTarget(String filename) throws IOException {
+        this.mediaPlayer.setDataSource(this.url+filename);
+        this.mediaPlayer.prepareAsync();
     }
 
 }

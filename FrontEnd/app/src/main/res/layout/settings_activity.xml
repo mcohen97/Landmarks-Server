@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".ui.SettingsActivity"
+    android:background="?attr/backgroundColor"
+    android:id="@+id/mainLayout_settings"
+    >
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="5dp"
+        android:background="?attr/actionBarColor"
+
+        >
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_settings"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/actionBarColor"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.AppBarOverlay"
+            app:titleTextColor="?attr/textColorStrong"
+            app:title="Settings">
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tema oscuro"
+        android:layout_margin="10dp"
+        android:id="@+id/theme_switch"
+        />
+
+
+</LinearLayout>

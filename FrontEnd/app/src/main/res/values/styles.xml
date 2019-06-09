@@ -1,11 +1,42 @@
 <resources>
 
     <!-- Base application theme. -->
+    <!-- Light theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarColor">@color/White</item>
+        <item name="backgroundColor">@color/backgroundLight</item>
+        <item name="cardBackgroundColor">@color/cardBackgroundLight</item>
+        <item name="textColor">@color/textColorLight</item>
+        <item name="textColorStrong">@color/Black</item>
+        <item name="tintColor">@color/tintColorLight</item>
+        <item name="buttonColor">@color/buttonColorLight</item>
+        <item name="buttonTextColor">@color/White</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <!-- Night theme. -->
+    <style name="NightTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryNight</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarColor">@color/darkGrayBlue</item>
+        <item name="backgroundColor">@color/backgroundNight</item>
+        <item name="cardBackgroundColor">@color/cardBackgroundNight</item>
+        <item name="textColor">@color/textColorNight</item>
+        <item name="textColorStrong">@color/White</item>
+        <item name="tintColor">@color/tintColorNight</item>
+        <item name="buttonColor">@color/buttonColorNight</item>
+        <item name="buttonTextColor">@color/White</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">

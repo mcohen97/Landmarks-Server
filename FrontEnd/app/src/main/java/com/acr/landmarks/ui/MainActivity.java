@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -25,6 +26,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.ConnectivityReceiver;
@@ -67,8 +71,12 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
     private Location mCurrentLocation;
     private BottomSheetManager mBottomSheetManager;
 
+    private boolean darkThemeActivated;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loadTheme();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -87,6 +95,26 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         createLocationCallback();
         setViewModels();
         setConnectivityMonitor();
+    }
+
+    private void loadTheme() {
+        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+        darkThemeActivated = preferences.getBoolean("darkTheme", false);
+        if(darkThemeActivated){
+           setTheme(R.style.NightTheme);
+        }else{
+            setTheme(R.style.AppTheme);
+        }
+    }
+
+    private void checkThemeUpdate(){
+        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+        boolean savedOption = preferences.getBoolean("darkTheme", false);
+        if(savedOption != darkThemeActivated){
+            finish();
+            startActivity(getIntent());
+        }
+
     }
 
     private void setViewModels() {
@@ -157,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
 
     @Override
     protected void onResume() {
+        checkThemeUpdate();
         super.onResume();
         if (mapServicesAvailable()) {
             if (mLocationPermissionGranted) {
@@ -318,16 +347,20 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingsIntent);
+                break;
+
+            case android.R.id.home:
+                TabLayout tabs = findViewById(R.id.tabs);
+                TabLayout.Tab tab = tabs.getTabAt(0);
+                tab.select();
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toursViewModel.setSelectedTour(-1);
         }
-        if (id == android.R.id.home) {
-            TabLayout tabs = findViewById(R.id.tabs);
-            TabLayout.Tab tab = tabs.getTabAt(0);
-            tab.select();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            toursViewModel.setSelectedTour(-1);
-        }
+
         return super.onOptionsItemSelected(item);
     }
 
