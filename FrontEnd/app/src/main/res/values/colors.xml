@@ -19,15 +19,15 @@
     <color name="colorPrimaryNight">#212121</color>
     <color name="colorPrimaryDarkNight">#000000</color>
     <color name="backgroundNight">#303030</color>
-    <color name= "cardBackgroundNight">#000000</color>
+    <color name= "cardBackgroundNight">#2F2F31</color>
     <color name="textColorNight">#FFFFFF</color>
     <color name="tintColorNight">#FFFFFF</color>
-    <color name="buttonColorNight">#001541</color>
+    <color name="buttonColorNight">#131925</color>
 
     <!-- Other colors -->
     <color name="transparentPrimaryDark">#E50A1927</color>
     <color name="transparent">#000A1927</color>
-    <color name="red1">#af0a0a</color>
+    <color name="red1">#af0a0a</color>2F2F31
     <color name="red2">#c40909</color>
     <color name="red3">#e50909</color>
     <color name="orange1">#FF8333</color>
