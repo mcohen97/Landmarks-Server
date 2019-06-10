@@ -48,7 +48,7 @@ public class RetrofitToursService implements ITourService {
 
             @Override
             public void onFailure(Call<List<Tour>> call, Throwable t) {
-
+                ServerErrorHandler.getInstance().raiseError(t);
             }
         });
         return toursData;
@@ -69,7 +69,7 @@ public class RetrofitToursService implements ITourService {
 
             @Override
             public void onFailure(Call<Tour> call, Throwable t) {
-
+                ServerErrorHandler.getInstance().raiseError(t);
             }
         });
         return  data;

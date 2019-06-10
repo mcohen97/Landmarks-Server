@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.acr.landmarks.services.contracts.IImageService;
 import com.squareup.picasso.Picasso;
@@ -15,6 +16,7 @@ public class PicassoLoadingTarget implements Target {
 
     private IImageService.ImageLoadListener mListener;
     private List<PicassoLoadingTarget> collection;
+    private static final String TAG = "PicassoLoadingTarget";
 
     public PicassoLoadingTarget(IImageService.ImageLoadListener listener, List<PicassoLoadingTarget> targets) {
         mListener = listener;
@@ -30,6 +32,8 @@ public class PicassoLoadingTarget implements Target {
     @Override
     public void onBitmapFailed(Exception e, Drawable errorDrawable) {
         collection.remove(this);
+        Log.d(TAG,"Request failed");
+        ServerErrorHandler.getInstance().raiseError(e);
     }
 
     @Override

@@ -37,6 +37,7 @@ import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.services.LocationUpdatesService;
+import com.acr.landmarks.services.ServerErrorHandler;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         setViewPager();
         createLocationCallback();
         setViewModels();
+        setServerErrorHandler();
     }
 
     private void loadTheme() {
@@ -122,6 +124,15 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
         landmarksViewModel.getSelectedLandmark().observe( this,
                 landmark -> onLandmarkSelected(landmark) );
+    }
+
+    private void setServerErrorHandler() {
+        ServerErrorHandler handler = ServerErrorHandler.getInstance();
+
+        handler.serverError().observe(this, throwable -> {
+            Toast.makeText(getApplicationContext(),"Server is unavailable",Toast.LENGTH_SHORT).show();
+            handler.serverError().removeObservers(this);
+        });
     }
 
     private void createViewPager() {

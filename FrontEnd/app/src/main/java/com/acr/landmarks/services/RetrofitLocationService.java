@@ -15,6 +15,7 @@ public class RetrofitLocationService {
 
     private Retrofit retrofit;
     private RetrofitLocationAPI webService;
+    private static final String TAG = "RetrofitLocationService";
 
     public RetrofitLocationService(String apiBaseUrl){
         retrofit = new Retrofit.Builder()
@@ -31,12 +32,13 @@ public class RetrofitLocationService {
             @Override
             public void onResponse(Call<OkResult> call, Response<OkResult> response) {
                 if (response.isSuccessful()) {
-                    Log.d("Retrofit","Llego location");
+                    Log.d("Retrofit","Location updated");
                 }
             }
             @Override
             public void onFailure(Call<OkResult> call, Throwable t) {
-                Log.d("Retrofit", "request failed");
+                Log.d(TAG,"Request failed");
+                ServerErrorHandler.getInstance().raiseError(t);
             }
         });
 

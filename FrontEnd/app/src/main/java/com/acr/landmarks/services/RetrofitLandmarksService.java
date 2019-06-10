@@ -52,7 +52,8 @@ public class RetrofitLandmarksService implements ILandmarksService {
 
             @Override
             public void onFailure(Call<List<Landmark>> call, Throwable t) {
-
+                Log.d(TAG,"Request failed");
+                ServerErrorHandler.getInstance().raiseError(t);
             }
         });
         return landmarksData;
@@ -77,6 +78,7 @@ public class RetrofitLandmarksService implements ILandmarksService {
             @Override
             public void onFailure(Call<Landmark> call, Throwable t) {
                 Log.d(TAG,"Request failed");
+                ServerErrorHandler.getInstance().raiseError(t);
             }
         });
         return selectedLandmark;
