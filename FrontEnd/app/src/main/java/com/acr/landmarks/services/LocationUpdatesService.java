@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.acr.landmarks.util.Config;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -46,7 +47,8 @@ public class LocationUpdatesService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mServer = new RetrofitLocationService("http://192.168.0.108/api/");
+        String url =Config.getConfigValue(this,"api_url");
+        mServer = new RetrofitLocationService(url);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (Build.VERSION.SDK_INT >= 26) {
