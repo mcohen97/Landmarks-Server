@@ -26,7 +26,6 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
     private LandmarksViewModel viewModel;
     private List<Landmark> data;
 
-    private LandmarkSelectedListener mListener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,16 +61,5 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
     @Override
     public void onLandmarkClicked(Landmark clicked) {
         viewModel.setSelectedLandmark(clicked.id);
-        mListener.onLandmarkSelected(clicked);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mListener = (LandmarkSelectedListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement " + LandmarkSelectedListener.class);
-        }
     }
 }
