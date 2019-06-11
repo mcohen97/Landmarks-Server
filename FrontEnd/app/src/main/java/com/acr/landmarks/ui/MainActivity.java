@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -26,9 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acr.landmarks.ConnectivityReceiver;
@@ -130,7 +128,16 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         ServerErrorHandler handler = ServerErrorHandler.getInstance();
 
         handler.serverError().observe(this, throwable -> {
-            Toast.makeText(getApplicationContext(),"Server is unavailable",Toast.LENGTH_SHORT).show();
+            View appView = findViewById(R.id.main_content);
+            Snackbar snackbar = Snackbar
+                    .make(appView, "El servidor esta indisponible", Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("CONTINUAR", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.show();
             handler.serverError().removeObservers(this);
         });
     }
