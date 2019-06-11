@@ -9,7 +9,7 @@
     <!-- Light colors -->
     <color name="colorPrimary">#002A85</color>
     <color name="colorPrimaryDark">#001541</color>
-    <color name="backgroundLight">#FCFCFC</color>
+    <color name="backgroundLight">#FAFAFA</color>
     <color name= "cardBackgroundLight">#FFFFFF</color>
     <color name="textColorLight">#252525</color>
     <color name="tintColorLight">#FFFFFF</color>
@@ -19,7 +19,7 @@
     <color name="colorPrimaryNight">#212121</color>
     <color name="colorPrimaryDarkNight">#000000</color>
     <color name="backgroundNight">#303030</color>
-    <color name= "cardBackgroundNight">#2F2F31</color>
+    <color name= "cardBackgroundNight">#4B4B4B</color>
     <color name="textColorNight">#FFFFFF</color>
     <color name="tintColorNight">#FFFFFF</color>
     <color name="buttonColorNight">#131925</color>

@@ -116,6 +116,8 @@ public class BottomSheetManager {
 
         sheetLandmarkName.setText(selectedLandmark.title);
         sheetLandmarkDescription.setText(selectedLandmark.description);
+        sheetLandmarkDescription.scrollTo(0,0);
+
 
         if (mCurrentLocation != null){
             String distance = "" + (mCurrentLocation.distanceTo(createLocation(selectedLandmark.latitude, selectedLandmark.longitude)) / 1000);

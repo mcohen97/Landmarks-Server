@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         SharedPreferences preferences = getSharedPreferences("PREFS",0);
         darkThemeActivated = preferences.getBoolean("darkTheme", false);
         if(darkThemeActivated){
-           setTheme(R.style.NightTheme);
+            setTheme(R.style.NightTheme);
         }else{
             setTheme(R.style.AppTheme);
         }
