@@ -19,7 +19,7 @@ namespace ObligatorioISP.WebAPI.Controllers
             service = notificationService;
         }
 
-        [HttpGet("update/{token}")]
+        [HttpPost("update/{token}")]
         public IActionResult UpdateLocation(string token, [FromQuery] double lat, [FromQuery] double lng)
         {   
             //Notification will be sent by firebase.
