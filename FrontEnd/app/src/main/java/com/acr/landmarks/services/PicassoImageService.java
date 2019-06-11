@@ -1,7 +1,5 @@
 package com.acr.landmarks.services;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.acr.landmarks.services.contracts.IImageService;
@@ -15,11 +13,13 @@ public class PicassoImageService implements IImageService {
     private String landmarksUrl;
     private String toursUrl;
     private final List<PicassoLoadingTarget> targets;
+    private static final String LANDMARK_IMAGES_PATH ="images/landmarks/%s";
+    private static final String TOUR_IMAGES_PATH ="images/tours/%s";
 
 
     public  PicassoImageService(String baseUrl){
-        this.landmarksUrl = baseUrl+"images/landmarks/%s";
-        this.toursUrl = baseUrl + "images/tours/%s";
+        this.landmarksUrl = baseUrl+LANDMARK_IMAGES_PATH;
+        this.toursUrl = baseUrl + TOUR_IMAGES_PATH;
         this.targets = new ArrayList<>();
         Picasso.get().setLoggingEnabled(true);
     }
