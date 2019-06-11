@@ -211,7 +211,6 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
     }
 
     public void setCameraDefaultView(Location mUserLocation) {
-        float currentZoom = mMap.getCameraPosition().zoom;
         setCameraViewWithZoom(DEFAULT_ZOOM,mUserLocation);
     }
 

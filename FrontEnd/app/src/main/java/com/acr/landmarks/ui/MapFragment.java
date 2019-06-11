@@ -139,7 +139,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
         }
         map.setMyLocationEnabled(true);
         GeoApiContext mGeoApiContext = new GeoApiContext.Builder()
-                    .apiKey(getString(R.string.google_map_api_key))
+                    .apiKey(getString(R.string.google_api_key))
                     .build();
 
         int colorForSelected =ContextCompat.getColor(getActivity(), R.color.blue1);
