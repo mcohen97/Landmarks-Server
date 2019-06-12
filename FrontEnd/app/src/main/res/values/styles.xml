@@ -17,7 +17,13 @@
         <item name="buttonTextColor">@color/White</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
         <item name="android:statusBarColor">@color/White</item>
+
+        <!-- Transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+
 
     </style>
 
@@ -37,6 +43,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@color/colorPrimaryDarkNight</item>
+
+        <!-- Transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">

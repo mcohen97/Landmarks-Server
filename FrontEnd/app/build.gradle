@@ -18,7 +18,6 @@ android {
     }
     productFlavors {
     }
-    //Arreglo de errores de compilación, ver que se pierde al respecto
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -38,6 +37,8 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
+
+    //implementation 'com.github.mohammadatif:Animatoo:master'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
