@@ -5,8 +5,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(tableName = "markers")
-public class LandmarkMarkerEntity {
+@Entity(tableName = "Landmark")
+public class LandmarkEntity {
 
     @PrimaryKey
     public int id;
@@ -14,12 +14,18 @@ public class LandmarkMarkerEntity {
     @ColumnInfo(name = "title")
     public String title;
 
+    @ColumnInfo(name = "description")
+    public String description;
+
     @ColumnInfo(name = "latitude")
     public double latitude;
 
     @ColumnInfo(name = "longitude")
     public double longitude;
 
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    public byte[] image;
+    @ColumnInfo(name = "images")
+    public String[] images;
+
+    @ColumnInfo(name = "audios")
+    public String[] audios;
 }

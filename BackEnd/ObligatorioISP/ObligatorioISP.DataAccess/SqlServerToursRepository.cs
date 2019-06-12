@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.BusinessLogic.Exceptions;
@@ -52,7 +53,8 @@ namespace ObligatorioISP.DataAccess
             string title = rawData["TITLE"].ToString();
             string description = rawData["DESCRIPTION"].ToString();
             Enum.TryParse(rawData["CATEGORY"].ToString(), out TourCategory category);
-            string imagePath = $"{imagesDirectory}/{tourId}.{rawData["IMAGE_EXTENSION"]}";
+            char separator = Path.DirectorySeparatorChar;
+            string imagePath = $"{imagesDirectory}{separator}{tourId}.{rawData["IMAGE_EXTENSION"]}";
             ICollection<Landmark> tourStops = landmarks.GetTourLandmarks(tourId);
 
             Tour tour;

@@ -64,14 +64,19 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.0"
     implementation "android.arch.lifecycle:viewmodel:1.1.0"
 
-    //room
+    //Room
     def room_version = "1.1.1"
 
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
 
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     //image slider
     implementation project(':autoimageslider')
+
+    implementation 'com.github.seratch:java-time-backport:1.0.0'
 }
 
 

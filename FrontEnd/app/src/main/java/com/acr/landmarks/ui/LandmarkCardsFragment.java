@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkCardAdapter;
-import com.acr.landmarks.models.LandmarkMarkerInfo;
+import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
     private LandmarkCardAdapter adapter;
     private RecyclerView recyclerView;
     private LandmarksViewModel viewModel;
-    private List<LandmarkMarkerInfo> data;
+    private List<Landmark> data;
 
     private LandmarkSelectedListener mListener;
 
@@ -39,13 +39,13 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_landmark_list, container, false);
-        data = new ArrayList<LandmarkMarkerInfo>();
+        data = new ArrayList<Landmark>();
 
         initRecyclerView(inflater, view);
         viewModel.getLandmarks().observe(this, landmarks -> {
             //Fragment and adapter share the same reference to data
             data.clear();
-            ;
+
             data.addAll(landmarks);
             adapter.notifyDataSetChanged();
         });
@@ -60,7 +60,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
     }
 
     @Override
-    public void onLandmarkClicked(LandmarkMarkerInfo clicked) {
+    public void onLandmarkClicked(Landmark clicked) {
         viewModel.setSelectedLandmark(clicked.id);
         mListener.onLandmarkSelected(clicked);
     }

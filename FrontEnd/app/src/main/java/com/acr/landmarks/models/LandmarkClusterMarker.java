@@ -1,5 +1,8 @@
 package com.acr.landmarks.models;
 
+
+import android.graphics.Bitmap;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
@@ -7,10 +10,10 @@ public class LandmarkClusterMarker implements ClusterItem {
     private LatLng position;
     private String title;
     private String snippet;
-    private String iconPicture;
-    private LandmarkMarkerInfo landmark;
+    private Bitmap iconPicture;
+    private Landmark landmark;
 
-    public LandmarkClusterMarker(LatLng position, String title, String snippet, String iconPicture, LandmarkMarkerInfo lm) {
+    public LandmarkClusterMarker(LatLng position, String title, String snippet, Bitmap iconPicture, Landmark lm) {
         this.position = position;
         this.title = title;
         this.snippet = snippet;
@@ -37,11 +40,20 @@ public class LandmarkClusterMarker implements ClusterItem {
         this.title = title;
     }
 
-    public String getIconPicture() {
+    public Bitmap getIconPicture() {
         return iconPicture;
     }
 
-    public LandmarkMarkerInfo getLandmark() {
+    public Landmark getLandmark() {
         return landmark;
+    }
+
+    public void setIconPicture(Bitmap b) {
+        iconPicture =b;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        return (o == null) || ((LandmarkClusterMarker) o).getLandmark().equals(getLandmark());
     }
 }

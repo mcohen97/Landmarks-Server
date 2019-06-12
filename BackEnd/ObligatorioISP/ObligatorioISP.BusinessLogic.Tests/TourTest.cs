@@ -70,7 +70,7 @@ namespace ObligatorioISP.BusinessLogic.Tests
             Assert.AreEqual(1, testTour.Id);
             Assert.AreEqual("Tour 1", testTour.Title);
             Assert.AreEqual(3, fakeLandmarks.Count);
-            Assert.AreEqual(testImage, testTour.ImagePath);
+            Assert.AreEqual(testImage, testTour.ImageBaseName);
             Assert.AreEqual(TourCategory.CULTURAL, testTour.Category);
         }
 

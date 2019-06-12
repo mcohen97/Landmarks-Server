@@ -22,7 +22,26 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:id="@+id/imageSlider"/>
+            android:id="@+id/imageSlider"
+        />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_directions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/round_directions_walk_24"
+            android:layout_margin="16dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_audios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
+            android:src="@drawable/round_volume_up_24"
+            android:layout_margin="16dp" />
+
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -84,13 +103,5 @@
 
         android:id="@+id/landmarkDescription"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:background="@color/colorPrimary"
-        android:layout_weight="10"
-        android:foreground="?attr/selectableItemBackground"
-        android:text="Reproducir Audio Guía"
-        android:textColor="#fff" />
 
 </LinearLayout>
