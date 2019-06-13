@@ -13,12 +13,10 @@ namespace ObligatorioISP.Services
     public class ToursService : IToursService
     {
         private IToursRepository tours;
-        private ILandmarksRepository landmarks;
 
 
-        public ToursService(IToursRepository toursStorage, ILandmarksRepository landmarksStorage) {
+        public ToursService(IToursRepository toursStorage) {
             tours = toursStorage;
-            landmarks = landmarksStorage;
         }
 
         public TourDto GetTourById(int id)

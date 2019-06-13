@@ -30,7 +30,7 @@ namespace ObligatorioISP.Services.Tests
             fakeLandmarksStorage = new Mock<ILandmarksRepository>();
 
             testImageData = "imageData";
-            service = new ToursService(fakeToursStorage.Object, fakeLandmarksStorage.Object);
+            service = new ToursService(fakeToursStorage.Object);
         }
 
         [TestMethod]
