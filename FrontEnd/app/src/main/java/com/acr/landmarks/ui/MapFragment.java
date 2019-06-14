@@ -424,7 +424,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
                 mClusterMarkers = new ArrayList<>();
             }
             mMapManager.resetMapPolylines();
-            mMapManager.setCameraDefaultView(mUserLocation);
         }
     }
 
