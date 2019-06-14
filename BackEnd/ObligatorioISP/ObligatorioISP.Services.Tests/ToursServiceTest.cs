@@ -52,6 +52,11 @@ namespace ObligatorioISP.Services.Tests
 
             fakeToursStorage.Verify(r => r.GetById(id), Times.Once);
             Assert.AreEqual(id,retrieved.Id);
+            Assert.AreEqual("Tour 3", retrieved.Title);
+            Assert.AreEqual("description 3", retrieved.Description);
+            Assert.AreEqual("GREEN_SITES", retrieved.Category);
+            Assert.AreEqual(2, retrieved.LandmarksIds.Count());
+            Assert.AreEqual("tourTestImage.jpg", retrieved.ImageFile);
         }
 
         [TestMethod]

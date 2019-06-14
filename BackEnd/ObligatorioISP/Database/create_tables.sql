@@ -6,8 +6,6 @@ IF OBJECT_ID('dbo.LandmarkImages', 'U') IS NOT NULL
   DROP TABLE dbo.LandmarkImages;
 IF OBJECT_ID('dbo.LandmarkAudios', 'U') IS NOT NULL 
   DROP TABLE dbo.LandmarkAudios;
-IF OBJECT_ID('dbo.LandmarkWebLinks', 'U') IS NOT NULL 
-  DROP TABLE dbo.LandmarkWebLinks;
 IF OBJECT_ID('dbo.Landmark', 'U') IS NOT NULL 
   DROP TABLE dbo.Landmark;
 
@@ -46,9 +44,4 @@ LANDMARK_ID INT FOREIGN KEY REFERENCES Landmark,
 STOP_NUMBER INT NOT NULL CHECK(STOP_NUMBER>=0),
 PRIMARY KEY(LANDMARK_ID,TOUR_ID),
 UNIQUE(TOUR_ID,STOP_NUMBER)
-);
-
-CREATE TABLE LandmarkWebLinks(
-LANDMARK_ID INT FOREIGN KEY REFERENCES Landmark,
-LINK VARCHAR(50) NOT NULL
 );

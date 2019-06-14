@@ -13,14 +13,17 @@ namespace ObligatorioISP.WebAPI.Tests
     {
         private ImagesController controller;
         private Mock<IConfiguration> config;
-        private string configKey;
+        private string landmarksConfigKey;
+        private string toursConfigKey;
         private string testImage;
 
         [TestInitialize]
         public void StartUp() {
-            configKey = "LandmarkImages:Uri";
+            landmarksConfigKey = "LandmarkImages:Uri";
+            toursConfigKey = "TourImages:Uri";
             config = new Mock<IConfiguration>();
-            config.Setup(c => c[configKey]).Returns(Directory.GetCurrentDirectory());
+            config.Setup(c => c[landmarksConfigKey]).Returns(Directory.GetCurrentDirectory());
+            config.Setup(c => c[toursConfigKey]).Returns(Directory.GetCurrentDirectory());
             testImage = "testImage.jpg";
             if (!File.Exists(testImage)) {
                 File.Create(testImage);
@@ -29,7 +32,7 @@ namespace ObligatorioISP.WebAPI.Tests
         }
 
         [TestMethod]
-        public void GetExistentImage() {
+        public void GetExistentLandmarkImage() {
             Task<IActionResult> task =controller.GetLandmarkImage(testImage);
             task.Wait();
             IActionResult result = task.Result;
@@ -37,6 +40,18 @@ namespace ObligatorioISP.WebAPI.Tests
 
             Assert.IsNotNull(stream);
             Assert.AreEqual("image/jpeg",stream.ContentType);
+        }
+
+        [TestMethod]
+        public void GetExistentTourImage()
+        {
+            Task<IActionResult> task = controller.GetTourImage(testImage);
+            task.Wait();
+            IActionResult result = task.Result;
+            FileStreamResult stream = result as FileStreamResult;
+
+            Assert.IsNotNull(stream);
+            Assert.AreEqual("image/jpeg", stream.ContentType);
         }
 
         [TestMethod]
