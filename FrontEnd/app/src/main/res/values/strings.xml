@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Landmarks</string>
     <string name="title_activity_maps">Map</string>
-    <string name="google_map_api_key">AIzaSyBwpUs0_sE60F6dGoUeRwjfcZBiKTst6AI</string>
+    <string name="google_map_api_key">AIzaSyAriswALiVqYXsAX1c0Hy9tx0E8sk2KQXc</string>
     <string name="title_activity_home_tab">HomeTabActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>

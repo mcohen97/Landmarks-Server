@@ -47,7 +47,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.acr.landmarks.services.LocationUpdatesService"
+               <service android:name="com.acr.landmarks.services.LocationUpdatesService"
             android:stopWithTask="false">
         </service>
 

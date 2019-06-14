@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -205,8 +206,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             return;
         }
         map.setMyLocationEnabled(true);
+        map.setOnPolylineClickListener(this);
         mMap = map;
-
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -267,6 +268,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                     marker = getLandmarksMarker(selected);
                 }
                 if(marker != null) {
+                    resetRoutes();
                     calculateDirections(marker);
                 }
             }
@@ -353,6 +355,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         mClusterManager = new ClusterManager<LandmarkClusterMarker>(getActivity().getApplicationContext(), mMap);
         mMap.setOnMarkerClickListener(mClusterManager);
         mMap.setOnInfoWindowClickListener(mClusterManager);
+
         mClusterManager.setOnClusterItemInfoWindowClickListener(this);
         mClusterManager.setOnClusterItemClickListener(this);
     }
@@ -517,23 +520,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             if(polyline.getId().equals(polylineData.getPolyline().getId())){
                 polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.blue1));
                 polylineData.getPolyline().setZIndex(1);
-
-                LatLng endLocation = new LatLng(
-                        polylineData.getLeg().endLocation.lat,
-                        polylineData.getLeg().endLocation.lng
-                );
-
-                /* Para cambiar el marker por otro
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(endLocation)
-                        .title("Trip #" + index)
-                        .snippet("Duration: " + polylineData.getLeg().duration
-                        ));
-
-
-                marker.showInfoWindow();
-                mTripMarkers.add(marker);*/
             }
             else{
                 polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
@@ -590,6 +576,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             //resetear mapa por la cant de clicks
             resetTheMap();
             drawTour(toursViewModel.getSelectedTour().getValue());
+            resetRoutes();
             calculateDirections(landmarkClusterMarker);
         }
 
@@ -617,6 +604,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         }else{
             firstCameraMovement=true;
         }
+        mClusterManager.cluster();//Nuevo
     }
 
     private Location latLngToLocation(LatLng googleData) {
@@ -680,6 +668,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 mPolyLinesData.clear();
                 mPolyLinesData = new ArrayList<>();
             }
+        }
+    }
+
+    private void resetRoutes(){
+        if (mPolyLinesData.size() > 0) {
+            for(PolylineData data : mPolyLinesData){
+                data.getPolyline().remove();
+            }
+            mPolyLinesData.clear();
+            mPolyLinesData = new ArrayList<>();
         }
     }
 
