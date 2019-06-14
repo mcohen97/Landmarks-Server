@@ -65,20 +65,7 @@ namespace ObligatorioISP.Services
                 client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"key={applicationID}");
                 client.DefaultRequestHeaders.TryAddWithoutValidation("Sender", $"id={senderID}");
 
-                string description = $"No te pierdas de visitar el landmark: {landmark.Title} se encuentra a {distance} m";
-
-
-                object data = new
-                {
-                    to = deviceId,
-                    data = new {
-                        title = "Estas cerca de un landmark",
-                        body = description,
-                        landmarkId = landmark.Id,
-                    },
-                    priority = "high"
-
-                };
+                object data = RequestData(deviceId, landmark, distance);
 
                 string json = JsonConvert.SerializeObject(data);
                 StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
@@ -86,6 +73,23 @@ namespace ObligatorioISP.Services
                 HttpResponseMessage result = await client.PostAsync("/fcm/send", httpContent);
             }
             return true;
+        }
+
+        private object RequestData(string deviceId, Landmark landmark, double distance)
+        {
+            string description = $"No te pierdas de visitar el landmark: {landmark.Title} se encuentra a {distance} m";
+
+            return new
+            {
+                to = deviceId,
+                data = new
+                {
+                    title = "Estas cerca de un landmark",
+                    body = description,
+                    landmarkId = landmark.Id,
+                },
+                priority = "high"
+            };
         }
 
         private double ComputeDistanceMeters(double lat1, double lon1, double lat2, double lon2)
