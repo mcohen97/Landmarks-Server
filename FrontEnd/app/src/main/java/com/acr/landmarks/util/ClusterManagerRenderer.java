@@ -2,11 +2,16 @@ package com.acr.landmarks.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.acr.landmarks.R;
+import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -16,8 +21,12 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 
 public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClusterMarker> {
+    public static final int landmarkLimit = 10;
     private final IconGenerator iconGenerator;
     private final ImageView imageView;
     private final int markerWidth;
@@ -54,7 +63,36 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
 
     @Override
     protected boolean shouldRenderAsCluster(Cluster cluster) {
-        return false;
+        return cluster.getSize()>landmarkLimit;
+    }
+
+    @Override
+    protected void onBeforeClusterRendered(Cluster<LandmarkClusterMarker> cluster, MarkerOptions markerOptions) {
+        Collection<LandmarkClusterMarker> items = cluster.getItems();
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        Bitmap icon = Bitmap.createBitmap(100, 100, conf);
+        int quantity = items.size();
+
+        Paint color = new Paint();
+        color.setTextSize(35);
+        color.setColor(Color.BLACK);
+        int counter = 0;
+        for( LandmarkClusterMarker item : items){
+            Canvas canvas1 = new Canvas(icon);
+
+            // modify canvas
+            if(counter == 0){
+                canvas1.drawBitmap(item.getIconPicture(), 0,0, color);
+            }
+            else{
+                canvas1.drawBitmap(item.getIconPicture(), 100/counter,0, color);
+            }
+        }
+
+        //Canvas canvas = new Canvas(icon);
+        //canvas.drawText(Integer.toString(quantity), 30, 40, color);
+
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
     }
 
     private Bitmap drawIcon(Bitmap landmarkImage) {
