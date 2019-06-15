@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         handler.serverError().observe(this, throwable -> {
             View appView = findViewById(R.id.main_content);
             Snackbar snackbar = Snackbar
-                    .make(appView, "El servidor esta indisponible", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("CONTINUAR", new View.OnClickListener() {
+                    .make(appView, getString(R.string.server_error_message), Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getString(R.string.server_error_action_btntext), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     snackbar.dismiss();
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQUEST);
             dialog.show();
         } else {
-            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.google_maps_error_message), Toast.LENGTH_SHORT).show();
         }
         return false;
     }
@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
-                    onResume();
+                    this.recreate();
                 }
             }
         }

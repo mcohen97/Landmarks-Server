@@ -26,7 +26,7 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/AppTheme.AppBarOverlay"
             app:titleTextColor="?attr/textColorStrong"
-            app:title="Settings">
+            app:title="@string/settings_title">
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -34,7 +34,7 @@
     <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tema oscuro"
+        android:text="@string/dark_theme_name"
         android:layout_margin="10dp"
         android:id="@+id/theme_switch"
         />

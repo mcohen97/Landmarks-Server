@@ -32,7 +32,7 @@ public class RetrofitLocationService {
             @Override
             public void onResponse(Call<OkResult> call, Response<OkResult> response) {
                 if (response.isSuccessful()) {
-                    Log.d("Retrofit","Location updated");
+                    Log.d(TAG,"Location updated");
                 }
             }
             @Override

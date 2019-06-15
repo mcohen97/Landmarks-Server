@@ -62,6 +62,8 @@ namespace ObligatorioISP.Services.Tests
             LandmarkDto retrieved = service.GetLandmarkById(id);
             landmarks.Verify(l => l.GetById(id), Times.Once);
             Assert.AreEqual(fake.Title, retrieved.Title);
+            Assert.AreEqual(fake.Description, retrieved.Description);
+            Assert.AreEqual(fake.Audios.Count, retrieved.AudioFiles.Count);
         }
 
         [TestMethod]

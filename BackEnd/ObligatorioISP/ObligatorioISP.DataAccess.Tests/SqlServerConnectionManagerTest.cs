@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,12 @@ namespace ObligatorioISP.DataAccess.Tests
         private SqlServerConnectionManager connection;
         [TestInitialize]
         public void SetUp() {
-          string unexistentServer = "Server=DESKTOP-JH1M2MF\\SQLSERVER_R14;Initial Catalog=unexistentDB;Trusted_Connection=True;Integrated Security=True;";
+            IConfigurationRoot config = new ConfigurationBuilder()
+.           AddJsonFile("testconfig.json")
+.           Build();
+            string serverString = config["serverString"];
+            string securityString = config["securityString"];
+            string unexistentServer = $"{serverString}Initial Catalog=unexistentDB;{securityString}";
           connection = new SqlServerConnectionManager(unexistentServer);
         }
 

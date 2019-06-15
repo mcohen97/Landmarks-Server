@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.ui.MainActivity;
+import com.acr.landmarks.util.Config;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -34,7 +35,7 @@ public class MessageService extends FirebaseMessagingService {
 
     private void sendNotification(RemoteMessage message) {
         Map<String,String> data = message.getData();
-        String channelId = getString(R.string.default_notification_channel_id);
+        String channelId = Config.getConfigValue(getApplicationContext(),"default_notification_channel_id");
 
         NotificationCompat.Builder notificationBuilder = createNotificationBuilder(data,channelId);
 

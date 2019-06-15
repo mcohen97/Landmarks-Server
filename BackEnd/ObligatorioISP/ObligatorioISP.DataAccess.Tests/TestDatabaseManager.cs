@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
@@ -8,15 +9,21 @@ namespace ObligatorioISP.DataAccess.Tests
 {
     public class TestDatabaseManager
     {
-        private string serverString = $"Server=DESKTOP-JH1M2MF\\SQLSERVER_R14;";
-        private string securityString = "Trusted_Connection=True;Integrated Security=True;";
-        public string dbName = "LandmarksTestDB";
+        private string serverString ;
+        private string securityString;
+        public string dbName;
         public string LandmarksImagesPath { get; private set; }
         public string ToursImagesPaths { get; private set; }
         public string AudiosPath { get; private set; }
         public string ConnectionString { get; private set; }
 
         public TestDatabaseManager() {
+             IConfigurationRoot config = new ConfigurationBuilder()
+            .AddJsonFile("testconfig.json")
+            .Build();
+            serverString = config["serverString"];
+            securityString = config["securityString"];
+            dbName = config["dbName"];
             ConnectionString = serverString + $"Initial Catalog={dbName};" + securityString;
             LandmarksImagesPath = "LandmarkImages";
             ToursImagesPaths = "TourImages";
@@ -72,7 +79,8 @@ namespace ObligatorioISP.DataAccess.Tests
 
         private void CreateDB(string connectionString)
         {
-            using (SqlConnection client = new SqlConnection(connectionString))
+            string connString = serverString + "Initial Catalog=master;" + securityString;
+            using (SqlConnection client = new SqlConnection(connString))
             {
                 client.Open();
                 string cmd = $"CREATE DATABASE {dbName} ; ";
