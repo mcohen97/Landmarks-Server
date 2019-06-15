@@ -1,9 +1,9 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- Themes -->
+
     <!-- Light theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -18,15 +18,21 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
+        <item name="android:statusBarColor">@color/White</item>
+
+        <!-- Transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+
+
     </style>
 
     <!-- Night theme. -->
     <style name="NightTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimaryNight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionBarColor">@color/darkGrayBlue</item>
+        <item name="actionBarColor">@color/colorPrimaryDarkNight</item>
         <item name="backgroundColor">@color/backgroundNight</item>
         <item name="cardBackgroundColor">@color/cardBackgroundNight</item>
         <item name="textColor">@color/textColorNight</item>
@@ -36,6 +42,10 @@
         <item name="buttonTextColor">@color/White</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDarkNight</item>
+
+        <!-- Transitions -->
+        <item name="android:windowActivityTransitions">true</item>
 
     </style>
 

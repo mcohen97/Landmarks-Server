@@ -1,6 +1,6 @@
 <resources>
     <!--MainActivity-->
-    <string name="app_name">Landmarks</string>
+    <string name="app_name">  Landmarks</string>
     <string name="action_settings">Configuración</string>
 
     <!--Tabs titles-->
@@ -34,7 +34,7 @@
 
     <string name="settings_title">Configuración</string>
     <string name="dark_theme_name">Tema oscuro</string>
-
+    <string name="no_item_available">No hay elementos para mostrar</string>
 
     <string name="google_map_api_key">AIzaSyBwpUs0_sE60F6dGoUeRwjfcZBiKTst6AI</string>
 </resources>
