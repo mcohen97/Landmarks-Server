@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setIconVisibility(true);
 
         /* Create the adapter that will return a fragment for each of the three primary sections of the activity.*/
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -94,6 +95,11 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         createLocationCallback();
         setViewModels();
         setServerErrorHandler();
+    }
+
+    private void setIconVisibility(boolean show) {
+        getSupportActionBar().setDisplayShowHomeEnabled(show);
+        getSupportActionBar().setIcon(R.drawable.icon);
     }
 
     private void loadTheme() {
@@ -154,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                setBackButtonVisibility(false);
                 mBottomSheetManager.hideSheetIfExpanded();
             }
 
@@ -375,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
                 TabLayout tabs = findViewById(R.id.tabs);
                 TabLayout.Tab tab = tabs.getTabAt(0);
                 tab.select();
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                setBackButtonVisibility(false);
                 toursViewModel.setSelectedTour(-1);
         }
 
@@ -388,13 +395,15 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
 
     @Override
     public void onTourSelected(Tour selected) {
-        generateBackButton();
+        setBackButtonVisibility(true);
         TabLayout tabs = findViewById(R.id.tabs);
         TabLayout.Tab tab = tabs.getTabAt(1);
         tab.select();
     }
 
-    public void generateBackButton() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public void setBackButtonVisibility(boolean show) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(show);
+        setIconVisibility(!show);
     }
+
 }

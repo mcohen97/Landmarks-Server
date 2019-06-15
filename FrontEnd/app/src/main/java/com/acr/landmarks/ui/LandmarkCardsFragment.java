@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkCardAdapter;
@@ -24,6 +25,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
     private LandmarkCardAdapter adapter;
     private RecyclerView recyclerView;
     private LandmarksViewModel viewModel;
+    private TextView emptyView;
     private List<Landmark> data;
 
 
@@ -44,18 +46,41 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
         viewModel.getLandmarks().observe(this, landmarks -> {
             //Fragment and adapter share the same reference to data
             data.clear();
-
             data.addAll(landmarks);
+            checkEmpty();
             adapter.notifyDataSetChanged();
         });
         return view;
     }
 
+    private void checkEmpty(){
+        if(data.isEmpty()){
+            this.emptyView.setVisibility(View.VISIBLE);
+            this.recyclerView.setVisibility(View.GONE);
+        }else{
+            this.emptyView.setVisibility(View.GONE);
+            this.recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void initRecyclerView(LayoutInflater inflater, View view) {
         recyclerView = view.findViewById(R.id.cards_recyclerview_id);
         adapter = new LandmarkCardAdapter(getContext(), this, data);
+        emptyView = view.findViewById(R.id.empty_landmarks);
+        emptyView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                checkEmpty();
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+                checkEmpty();
+            }
+        });
     }
 
     @Override

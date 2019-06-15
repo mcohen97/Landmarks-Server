@@ -45,13 +45,14 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
             //Fragment and adapter share the same reference to data
             data.clear();
             data.addAll(tours);
+            checkEmpty();
             adapter.notifyDataSetChanged();
         });
         return view;
     }
 
     private void checkEmpty(){
-        if(emptyView != null && this.recyclerView != null && data.isEmpty()){
+        if(data.isEmpty()){
             this.emptyView.setVisibility(View.VISIBLE);
             this.recyclerView.setVisibility(View.GONE);
         }else{
