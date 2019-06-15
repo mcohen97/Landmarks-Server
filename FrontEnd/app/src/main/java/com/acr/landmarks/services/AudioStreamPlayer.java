@@ -32,7 +32,6 @@ public class AudioStreamPlayer implements IAudioService {
         try {
             audioAttributesConfig();
             setMediaPlayerTarget(fileName);
-            isAudioLoaded = true;
         } catch (IOException e){
             mediaPlayer.reset();
         } catch (IllegalStateException e){
@@ -74,6 +73,9 @@ public class AudioStreamPlayer implements IAudioService {
     private void setMediaPlayerTarget(String filename) throws IOException {
         this.mediaPlayer.setDataSource(this.url+filename);
         this.mediaPlayer.prepareAsync();
+        this.mediaPlayer.setOnPreparedListener(mp -> {
+            this.isAudioLoaded = true;
+        });
     }
 
 }
