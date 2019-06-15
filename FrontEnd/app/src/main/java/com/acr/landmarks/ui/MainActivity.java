@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -34,6 +35,7 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.services.DebugConstants;
 import com.acr.landmarks.services.LocationUpdatesService;
 import com.acr.landmarks.services.ServerErrorHandler;
 import com.acr.landmarks.view_models.LandmarksViewModel;
@@ -182,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
                 TabLayout.Tab tab = tabs.getTabAt(1);
                 tab.select();
                 mBottomSheetManager.hideSheetIfExpanded();
+                Log.d(DebugConstants.AP_DEX,"Directions to landmark requested, time: "+System.currentTimeMillis());
                 landmarksViewModel.getAskedForDirections().postValue(true);
             }
         });

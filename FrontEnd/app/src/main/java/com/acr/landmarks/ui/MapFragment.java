@@ -22,6 +22,7 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.Tour;
+import com.acr.landmarks.services.DebugConstants;
 import com.acr.landmarks.services.PicassoImageService;
 import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.util.ClusterManagerRenderer;
@@ -172,6 +173,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
     private void observeLandmarksInRange() {
         landmarksViewModel.getLandmarks().observe(this, landmarks -> {
             mLandmarks = landmarks;
+            Log.d(DebugConstants.AP_DEX, "Receiving new landmarks, time: "+System.currentTimeMillis());
             Log.d(TAG,"Received "+landmarks.size()+" landmarks");
             if(!landmarks.isEmpty()) {
                 addMapMarkers();
@@ -322,8 +324,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
                     mClusterManager.addItem(newClusterMarker);
                     Log.d(TAG, "Loaded marker "+ landmarkIndex);
                     //if(landmarkIndex == (size-1) ){
-                        mClusterManager.cluster();
-                        Log.d(TAG,"Markers loaded");
+                    mClusterManager.cluster();
+                    //Log.d(TAG,"Markers loaded");
                     //}
                 }
             });
@@ -389,6 +391,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
             LatLng center = mMap.getCameraPosition().target;
             Location centerLocation = MapManager.latLngToLocation(center);
             Double radius =new Double(newRadius);
+            Log.d(DebugConstants.AP_DEX, "Requesting new landmarks, time: "+System.currentTimeMillis());
+            Log.d(DebugConstants.AP_DEX, "Requesting new tours, time: "+System.currentTimeMillis());
             landmarksViewModel.setGeofence(centerLocation,radius );
             toursViewModel.setGeofence(centerLocation,radius);
         }else{

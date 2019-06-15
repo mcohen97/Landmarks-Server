@@ -2,6 +2,7 @@ package com.acr.landmarks.services;
 
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import com.acr.landmarks.services.contracts.IAudioService;
 
@@ -30,8 +31,10 @@ public class AudioStreamPlayer implements IAudioService {
     @Override
     public void load(String fileName) {
         try {
+            Log.d(DebugConstants.AP_DEX, "Audio requested, time: "+ System.currentTimeMillis());
             audioAttributesConfig();
             setMediaPlayerTarget(fileName);
+            Log.d(DebugConstants.AP_DEX, "Audio loaded, time: "+ System.currentTimeMillis());
             isAudioLoaded = true;
         } catch (IOException e){
             mediaPlayer.reset();

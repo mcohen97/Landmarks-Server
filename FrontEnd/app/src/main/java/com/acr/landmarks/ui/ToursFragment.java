@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.TourCardAdapter;
 import com.acr.landmarks.models.Tour;
+import com.acr.landmarks.services.DebugConstants;
 import com.acr.landmarks.view_models.ToursViewModel;
 
 import java.util.ArrayList;
@@ -40,10 +42,12 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
         data = new ArrayList<>();
         initRecyclerView(inflater, view);
         viewModel.getTours().observe(this, tours -> {
+            Log.d(DebugConstants.AP_DEX, "Received new tours, time: "+System.currentTimeMillis());
             //Fragment and adapter share the same reference to data
             data.clear();
             data.addAll(tours);
             adapter.notifyDataSetChanged();
+            Log.d(DebugConstants.AP_DEX, "Displayed new tours, time: "+System.currentTimeMillis());
         });
         return view;
     }

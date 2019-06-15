@@ -9,6 +9,7 @@ import android.util.Log;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
+import com.acr.landmarks.services.DebugConstants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -89,6 +90,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
         polyline.setClickable(true);
 
         zoomRoute(polyline.getPoints());
+        Log.d(DebugConstants.AP_DEX,"Selected tour drawn in map, time: "+ System.currentTimeMillis());
     }
 
     public static Location latLngToLocation(LatLng googleData) {
@@ -147,15 +149,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
             }
             highlightPolyline(shortestPath);
             zoomRoute(shortestPath.getPoints());
-
-
-           /* // highlight the fastest route and adjust camera
-            double tempDuration = route.legs[0].duration.inSeconds;
-            if (tempDuration < duration) {
-                duration = tempDuration;
-                onPolylineClick(polyline);
-                zoomRoute(polyline.getPoints());
-            }*/
+            Log.d(DebugConstants.AP_DEX,"Route to landmark drawn in map, time: "+ System.currentTimeMillis());
         });
     }
 

@@ -46,6 +46,10 @@ public class RetrofitLandmarksService implements ILandmarksService {
             @Override
             public void onResponse(Call<List<Landmark>> call, Response<List<Landmark>> response) {
                 if (response.isSuccessful()) {
+                    long responseTime = response.raw().receivedResponseAtMillis();
+                    long requestTime = response.raw().sentRequestAtMillis();
+                    Log.d(DebugConstants.AP_DEX, "Landmarks HTTP request time: "+ requestTime);
+                    Log.d(DebugConstants.AP_DEX, "Landmarks HTTP response time: "+ responseTime);
                     landmarksData.postValue(response.body());
                 }
             }

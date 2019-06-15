@@ -6,11 +6,13 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
+import android.util.Log;
 import android.util.Pair;
 
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.persistence.LandmarkStorage;
 import com.acr.landmarks.persistence.RoomLandmarksStorage;
+import com.acr.landmarks.services.DebugConstants;
 import com.acr.landmarks.services.RetrofitLandmarksService;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 import com.acr.landmarks.util.Config;
@@ -106,6 +108,7 @@ public class LandmarksViewModel extends AndroidViewModel {
                 cachedLandmarks = markersStorage.getSavedLandmarks(geoFence.getValue().first, geoFence.getValue().second);
             }
             if(!lastDataRetrieved.get()) {
+                Log.d(DebugConstants.AP_DEX, "Retrieved landmarks from cache, time: "+ System.currentTimeMillis());
                 liveDataMerger.postValue(cachedLandmarks);
             }
         }).start();

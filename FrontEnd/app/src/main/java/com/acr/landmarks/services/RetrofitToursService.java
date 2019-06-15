@@ -3,6 +3,7 @@ package com.acr.landmarks.services;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
+import android.util.Log;
 
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.services.contracts.ITourService;
@@ -42,6 +43,10 @@ public class RetrofitToursService implements ITourService {
             @Override
             public void onResponse(Call<List<Tour>> call, Response<List<Tour>> response) {
                 if(response.isSuccessful()){
+                    long responseTime = response.raw().receivedResponseAtMillis();
+                    long requestTime = response.raw().sentRequestAtMillis();
+                    Log.d(DebugConstants.AP_DEX, "Tours HTTP request time: "+ requestTime);
+                    Log.d(DebugConstants.AP_DEX, "Tours HTTP response time: "+ responseTime);
                     toursData.postValue(response.body());
                 }
             }
