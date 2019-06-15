@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using Exception = System.Exception;
 
 namespace ObligatorioISP.BusinessLogic.Exceptions
 {
