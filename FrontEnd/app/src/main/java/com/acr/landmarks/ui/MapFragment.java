@@ -275,6 +275,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         });
         setUpClusterManager();
+        mClusterManager.cluster();
     }
 
     private LandmarkClusterMarker getLandmarksMarker(Landmark landmark) {
@@ -405,7 +406,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                     mClusterManager.addItem(newClusterMarker);
                     Log.d(TAG, "Loaded marker "+ landmarkIndex);
                     //if(landmarkIndex == (size-1) ){
-                        mClusterManager.cluster();
+                        mClusterManager.cluster(); // Cuidado
                         Log.d(TAG,"Markers loaded");
                     //}
                 }
@@ -604,7 +605,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         }else{
             firstCameraMovement=true;
         }
-        mClusterManager.cluster();//Nuevo
+       // mClusterManager.cluster();//Nuevo
     }
 
     private Location latLngToLocation(LatLng googleData) {
