@@ -9,7 +9,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.persistence.LandmarkStorage;
+import com.acr.landmarks.persistence.contracts.LandmarkStorage;
 import com.acr.landmarks.debug.DebugConstants;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 

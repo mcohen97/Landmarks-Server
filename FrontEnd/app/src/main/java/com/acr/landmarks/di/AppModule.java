@@ -3,7 +3,7 @@ package com.acr.landmarks.di;
 
 import android.app.Application;
 
-import com.acr.landmarks.persistence.LandmarkStorage;
+import com.acr.landmarks.persistence.contracts.LandmarkStorage;
 import com.acr.landmarks.persistence.RoomLandmarksStorage;
 import com.acr.landmarks.services.AudioStreamPlayer;
 import com.acr.landmarks.services.LocationService;

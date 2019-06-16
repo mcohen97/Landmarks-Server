@@ -7,6 +7,7 @@ import android.location.Location;
 
 
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.persistence.contracts.LandmarkStorage;
 
 import java.util.ArrayList;
 import java.util.List;
