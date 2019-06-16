@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.inject.Inject;
+
 public class LandmarksViewModel extends AndroidViewModel {
 
     private ILandmarksService landmarksService;
@@ -40,6 +42,7 @@ public class LandmarksViewModel extends AndroidViewModel {
     private static final double SERVERSIDE_MIN_DISTANCE = 2.5;
 
 
+    @Inject
     public LandmarksViewModel(Application a){
         super(a);
         //se utilizara Dagger mas adelante

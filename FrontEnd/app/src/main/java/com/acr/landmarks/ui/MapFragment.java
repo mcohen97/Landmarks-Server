@@ -30,6 +30,7 @@ import com.acr.landmarks.util.Config;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
+import com.acr.landmarks.view_models.ViewModelProviderFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -72,6 +73,8 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     private List<Landmark> mLandmarks;
 
     //ViewModels
+    @Inject
+    ViewModelProviderFactory viewModelFactory;
     private LandmarksViewModel landmarksViewModel;
     private UserLocationViewModel locationViewModel;
     private ToursViewModel toursViewModel;
@@ -90,7 +93,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         mClusterMarkers = new ArrayList<>();
         mLandmarks = new ArrayList<Landmark>();
 
-        landmarksViewModel = ViewModelProviders.of(getActivity()).get(LandmarksViewModel.class);
+        landmarksViewModel = ViewModelProviders.of(getActivity(),viewModelFactory).get(LandmarksViewModel.class);
         toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
         locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
         firstCameraMovement = false;
