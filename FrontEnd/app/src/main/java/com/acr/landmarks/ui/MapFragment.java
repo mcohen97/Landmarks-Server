@@ -94,7 +94,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
         locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
         firstCameraMovement = false;
-        Log.d("DAGGER", stringy);
     }
 
     @Nullable
