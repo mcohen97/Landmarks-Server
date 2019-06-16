@@ -3,10 +3,18 @@ package com.acr.landmarks.di;
 
 import android.app.Application;
 
+import com.acr.landmarks.persistence.LandmarkStorage;
+import com.acr.landmarks.persistence.RoomLandmarksStorage;
+import com.acr.landmarks.services.AudioStreamPlayer;
+import com.acr.landmarks.services.LocationService;
 import com.acr.landmarks.services.PicassoImageService;
 import com.acr.landmarks.services.RetrofitLandmarksService;
+import com.acr.landmarks.services.RetrofitToursService;
+import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.services.contracts.ILandmarksService;
+import com.acr.landmarks.services.contracts.ILocationService;
+import com.acr.landmarks.services.contracts.ITourService;
 import com.acr.landmarks.util.Config;
 
 import javax.inject.Singleton;
@@ -17,6 +25,7 @@ import dagger.Provides;
 @Module
 public class AppModule {
 
+    //Register all singleton services that are available for injection.
 
     @Singleton
     @Provides
@@ -29,4 +38,30 @@ public class AppModule {
     static ILandmarksService provideLandmarksService(Application application){
         return new RetrofitLandmarksService(Config.getConfigValue(application,"api_url"));
     }
+
+    @Singleton
+    @Provides
+    static ITourService provideTourService(Application application){
+        return new RetrofitToursService(Config.getConfigValue(application,"api_url"));
+    }
+
+    @Singleton
+    @Provides
+    static LandmarkStorage provideLandmarksStorage(Application application){
+        return new RoomLandmarksStorage(application);
+    }
+
+    @Singleton
+    @Provides
+    static IAudioService provideAudioService(Application application){
+        String audiosUrl = Config.getConfigValue(application, "api_url") + "audios/";
+        return new AudioStreamPlayer(audiosUrl);
+    }
+
+    @Singleton
+    @Provides
+    static ILocationService provideLocationService(){
+        return LocationService.getInstance();
+    }
+
 }

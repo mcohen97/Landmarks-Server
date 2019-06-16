@@ -20,8 +20,9 @@ import com.acr.landmarks.view_models.ToursViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import dagger.android.support.DaggerFragment;
 
-public class ToursFragment extends android.support.v4.app.Fragment implements TourCardAdapter.TourClickedListener {
+public class ToursFragment extends DaggerFragment implements TourCardAdapter.TourClickedListener {
 
     private TourCardAdapter adapter;
     private RecyclerView recyclerView;

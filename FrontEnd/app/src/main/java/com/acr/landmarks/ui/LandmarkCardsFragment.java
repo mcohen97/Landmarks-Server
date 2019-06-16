@@ -1,7 +1,6 @@
 package com.acr.landmarks.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,19 +13,26 @@ import android.widget.TextView;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkCardAdapter;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 
-public class LandmarkCardsFragment extends android.support.v4.app.Fragment implements LandmarkCardAdapter.LandmarkCardClickListener {
+import dagger.android.support.DaggerFragment;
+
+
+public class LandmarkCardsFragment extends DaggerFragment implements LandmarkCardAdapter.LandmarkCardClickListener {
 
     private LandmarkCardAdapter adapter;
     private RecyclerView recyclerView;
     private LandmarksViewModel viewModel;
     private TextView emptyView;
     private List<Landmark> data;
+    @Inject
+    IImageService imageService;
 
 
     @Override
@@ -65,7 +71,7 @@ public class LandmarkCardsFragment extends android.support.v4.app.Fragment imple
 
     private void initRecyclerView(LayoutInflater inflater, View view) {
         recyclerView = view.findViewById(R.id.cards_recyclerview_id);
-        adapter = new LandmarkCardAdapter(getContext(), this, data);
+        adapter = new LandmarkCardAdapter(getContext(), this, data,imageService);
         emptyView = view.findViewById(R.id.empty_landmarks);
         emptyView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));

@@ -1,7 +1,5 @@
 package com.acr.landmarks.view_models;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -12,11 +10,8 @@ import android.util.Pair;
 
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.persistence.LandmarkStorage;
-import com.acr.landmarks.persistence.RoomLandmarksStorage;
 import com.acr.landmarks.services.DebugConstants;
-import com.acr.landmarks.services.RetrofitLandmarksService;
 import com.acr.landmarks.services.contracts.ILandmarksService;
-import com.acr.landmarks.util.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
-public class LandmarksViewModel extends AndroidViewModel {
+public class LandmarksViewModel extends ViewModel {
 
     private ILandmarksService landmarksService;
     private LandmarkStorage markersStorage;
@@ -44,12 +39,12 @@ public class LandmarksViewModel extends AndroidViewModel {
 
 
     @Inject
-    public LandmarksViewModel(Application a){
-        super(a);
+    public LandmarksViewModel(ILandmarksService service, LandmarkStorage cache){
         //se utilizara Dagger mas adelante
-        markersStorage = new RoomLandmarksStorage(a);
-        landmarksService = new RetrofitLandmarksService(Config.getConfigValue(a,"api_url"));
-        //landmarksService =service;
+        //markersStorage = new RoomLandmarksStorage(a);
+        markersStorage=cache;
+        //landmarksService = new RetrofitLandmarksService(Config.getConfigValue(a,"api_url"));
+        landmarksService =service;
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
         askedForDirections= new MutableLiveData<Boolean>();

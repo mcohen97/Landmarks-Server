@@ -18,7 +18,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
@@ -38,10 +37,12 @@ import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.services.DebugConstants;
 import com.acr.landmarks.services.LocationUpdatesService;
 import com.acr.landmarks.services.ServerErrorHandler;
+import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
 import com.acr.landmarks.view_models.ViewModelProviderFactory;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -77,6 +78,8 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     private ToursViewModel toursViewModel;
 
     private Location mCurrentLocation;
+    @Inject
+    IAudioService audioPlayer;
     private BottomSheetManager mBottomSheetManager;
 
     private boolean darkThemeActivated;
@@ -98,7 +101,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         createViewPager();
-        mBottomSheetManager = new BottomSheetManager(this);
+        mBottomSheetManager = new BottomSheetManager(this,audioPlayer);
         setUpBottomSheetManager();
         setViewPager();
         createLocationCallback();
