@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 import android.util.Log;
 
+import com.acr.landmarks.debug.DebugConstants;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.services.contracts.ITourService;
 

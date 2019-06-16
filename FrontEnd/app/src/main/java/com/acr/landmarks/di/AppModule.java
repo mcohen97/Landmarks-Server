@@ -10,10 +10,12 @@ import com.acr.landmarks.services.LocationService;
 import com.acr.landmarks.services.PicassoImageService;
 import com.acr.landmarks.services.RetrofitLandmarksService;
 import com.acr.landmarks.services.RetrofitToursService;
+import com.acr.landmarks.services.ServerErrorHandler;
 import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 import com.acr.landmarks.services.contracts.ILocationService;
+import com.acr.landmarks.services.contracts.IServerErrorHandler;
 import com.acr.landmarks.services.contracts.ITourService;
 import com.acr.landmarks.util.Config;
 
@@ -64,4 +66,9 @@ public class AppModule {
         return LocationService.getInstance();
     }
 
+    @Singleton
+    @Provides
+    static IServerErrorHandler provideServerErrorHandler(){
+        return ServerErrorHandler.getInstance();
+    }
 }

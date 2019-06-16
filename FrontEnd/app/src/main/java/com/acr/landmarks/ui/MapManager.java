@@ -9,7 +9,7 @@ import android.util.Log;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.PolylineData;
-import com.acr.landmarks.services.DebugConstants;
+import com.acr.landmarks.debug.DebugConstants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;

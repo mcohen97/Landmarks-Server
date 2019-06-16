@@ -34,10 +34,10 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.DebugConstants;
+import com.acr.landmarks.debug.DebugConstants;
 import com.acr.landmarks.services.LocationUpdatesService;
-import com.acr.landmarks.services.ServerErrorHandler;
 import com.acr.landmarks.services.contracts.IAudioService;
+import com.acr.landmarks.services.contracts.IServerErrorHandler;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
@@ -56,9 +56,9 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
-import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
-import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
-import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
+import static com.acr.landmarks.ui.RequestCodes.ERROR_DIALOG_REQUEST;
+import static com.acr.landmarks.ui.RequestCodes.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+import static com.acr.landmarks.ui.RequestCodes.PERMISSIONS_REQUEST_ENABLE_GPS;
 
 public class MainActivity extends DaggerAppCompatActivity implements TourSelectedListener {
 
@@ -81,6 +81,9 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     @Inject
     IAudioService audioPlayer;
     private BottomSheetManager mBottomSheetManager;
+
+    @Inject
+    IServerErrorHandler errorHandler;
 
     private boolean darkThemeActivated;
 
@@ -143,9 +146,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     }
 
     private void setServerErrorHandler() {
-        ServerErrorHandler handler = ServerErrorHandler.getInstance();
-
-        handler.serverError().observe(this, throwable -> {
+        errorHandler.serverError().observe(this, throwable -> {
             View appView = findViewById(R.id.main_content);
             Snackbar snackbar = Snackbar
                     .make(appView, getString(R.string.server_error_message), Snackbar.LENGTH_INDEFINITE);
@@ -156,7 +157,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
                 }
             });
             snackbar.show();
-            handler.serverError().removeObservers(this);
+            errorHandler.serverError().removeObservers(this);
         });
     }
 

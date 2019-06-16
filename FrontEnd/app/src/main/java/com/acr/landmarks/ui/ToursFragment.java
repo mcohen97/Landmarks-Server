@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.TourCardAdapter;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.services.DebugConstants;
+import com.acr.landmarks.debug.DebugConstants;
 import com.acr.landmarks.view_models.ToursViewModel;
 
 import java.util.ArrayList;

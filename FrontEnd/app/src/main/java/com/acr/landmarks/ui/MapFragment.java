@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,7 @@ import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.services.DebugConstants;
+import com.acr.landmarks.debug.DebugConstants;
 import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.view_models.LandmarksViewModel;
@@ -47,13 +46,12 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerFragment;
 
-import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
-
 
 public class MapFragment extends DaggerFragment implements OnMapReadyCallback, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
         GoogleMap.OnCameraIdleListener,ClusterManager.OnClusterItemClickListener<LandmarkClusterMarker> {
 
     private final String TAG = "MapFragment";
+    private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
 
     private MapView mMapView;
 
@@ -109,7 +107,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     private void initGoogleMap(Bundle savedInstanceState) {
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
         }
         mMapView.onCreate(mapViewBundle);
         mMapView.getMapAsync(this);
@@ -119,10 +117,10 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+        Bundle mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY);
         if (mapViewBundle == null) {
             mapViewBundle = new Bundle();
-            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+            outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle);
         }
 
         mMapView.onSaveInstanceState(mapViewBundle);

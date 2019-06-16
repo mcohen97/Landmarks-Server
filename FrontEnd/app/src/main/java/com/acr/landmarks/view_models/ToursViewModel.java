@@ -9,14 +9,12 @@ import android.location.Location;
 import android.util.Log;
 import android.util.Pair;
 
-import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.services.DebugConstants;
+import com.acr.landmarks.debug.DebugConstants;
 import com.acr.landmarks.services.RetrofitToursService;
 import com.acr.landmarks.services.contracts.ITourService;
 import com.acr.landmarks.util.Config;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
