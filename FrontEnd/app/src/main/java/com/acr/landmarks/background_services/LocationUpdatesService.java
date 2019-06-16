@@ -1,4 +1,4 @@
-package com.acr.landmarks.services;
+package com.acr.landmarks.background_services;
 
 import android.Manifest;
 import android.app.Notification;
@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.acr.landmarks.services.RetrofitLocationService;
 import com.acr.landmarks.util.Config;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;

@@ -1,4 +1,4 @@
-package com.acr.landmarks;
+package com.acr.landmarks.background_services;
 
 
 import android.content.BroadcastReceiver;

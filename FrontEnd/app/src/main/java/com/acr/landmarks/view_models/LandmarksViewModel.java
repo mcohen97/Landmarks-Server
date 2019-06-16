@@ -40,10 +40,7 @@ public class LandmarksViewModel extends ViewModel {
 
     @Inject
     public LandmarksViewModel(ILandmarksService service, LandmarkStorage cache){
-        //se utilizara Dagger mas adelante
-        //markersStorage = new RoomLandmarksStorage(a);
         markersStorage=cache;
-        //landmarksService = new RetrofitLandmarksService(Config.getConfigValue(a,"api_url"));
         landmarksService =service;
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();

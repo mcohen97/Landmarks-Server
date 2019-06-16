@@ -1,4 +1,4 @@
-package com.acr.landmarks.services;
+package com.acr.landmarks.background_services;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

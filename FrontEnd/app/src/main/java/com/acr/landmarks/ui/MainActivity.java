@@ -29,13 +29,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.acr.landmarks.ConnectivityReceiver;
+import com.acr.landmarks.background_services.ConnectivityReceiver;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.debug.DebugConstants;
-import com.acr.landmarks.services.LocationUpdatesService;
+import com.acr.landmarks.background_services.LocationUpdatesService;
 import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.services.contracts.IServerErrorHandler;
 import com.acr.landmarks.view_models.LandmarksViewModel;
@@ -138,9 +138,9 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     }
 
     private void setViewModels() {
-        locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
+        locationViewModel = ViewModelProviders.of(this,viewModelsFactory).get(UserLocationViewModel.class);
         landmarksViewModel = ViewModelProviders.of(this,viewModelsFactory).get(LandmarksViewModel.class);
-        toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
+        toursViewModel = ViewModelProviders.of(this,viewModelsFactory).get(ToursViewModel.class);
         landmarksViewModel.getSelectedLandmark().observe( this,
                 landmark -> onLandmarkSelected(landmark) );
     }
