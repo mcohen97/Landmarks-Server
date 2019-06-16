@@ -44,10 +44,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
+
 import static com.acr.landmarks.Constants.MAPVIEW_BUNDLE_KEY;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
+public class MapFragment extends DaggerFragment implements OnMapReadyCallback, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
         GoogleMap.OnCameraIdleListener,ClusterManager.OnClusterItemClickListener<LandmarkClusterMarker> {
 
     private final String TAG = "MapFragment";
@@ -74,13 +78,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
 
     private LandmarkClusterMarker mSelectedMarker;
     private ArrayList<Marker> mTripMarkers = new ArrayList<>();
-    private IImageService imageService;
+    @Inject
+    public IImageService imageService;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imageService = new PicassoImageService(Config.getConfigValue(getContext(),"api_url"));
+        //imageService = new PicassoImageService(Config.getConfigValue(getContext(),"api_url"));
         mUserLocation= null;
         mClusterMarkers = new ArrayList<>();
         mLandmarks = new ArrayList<Landmark>();
@@ -89,6 +94,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Cluster
         toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
         locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
         firstCameraMovement = false;
+        Log.d("DAGGER", stringy);
     }
 
     @Nullable
