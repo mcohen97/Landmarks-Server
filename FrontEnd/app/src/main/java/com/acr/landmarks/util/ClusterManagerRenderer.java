@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClusterMarker> {
@@ -68,30 +70,24 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<LandmarkClust
 
     @Override
     protected void onBeforeClusterRendered(Cluster<LandmarkClusterMarker> cluster, MarkerOptions markerOptions) {
-        Collection<LandmarkClusterMarker> items = cluster.getItems();
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        Bitmap icon = Bitmap.createBitmap(100, 100, conf);
-        int quantity = items.size();
+        // Draw multiple landmarks.
+        // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
+        List<Drawable> landmarkPhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
+        int width = markerWidth;
+        int height = markerHeight;
 
-        Paint color = new Paint();
-        color.setTextSize(35);
-        color.setColor(Color.BLACK);
-        int counter = 0;
-        for( LandmarkClusterMarker item : items){
-            Canvas canvas1 = new Canvas(icon);
-
-            // modify canvas
-            if(counter == 0){
-                canvas1.drawBitmap(item.getIconPicture(), 0,0, color);
-            }
-            else{
-                canvas1.drawBitmap(item.getIconPicture(), 100/counter,0, color);
-            }
+        for (LandmarkClusterMarker item : cluster.getItems()) {
+            // Draw 4 at most.
+            if (landmarkPhotos.size() == 4) break;
+            Drawable drawable = new BitmapDrawable(item.getIconPicture());
+            drawable.setBounds(0, 0, width, height);
+            landmarkPhotos.add(drawable);
         }
+        MultiDrawable multiDrawable = new MultiDrawable(landmarkPhotos);
+        multiDrawable.setBounds(0, 0, width, height);
 
-        //Canvas canvas = new Canvas(icon);
-        //canvas.drawText(Integer.toString(quantity), 30, 40, color);
-
+        imageView.setImageDrawable(multiDrawable);
+        Bitmap icon = iconGenerator.makeIcon(String.valueOf(cluster.getSize()));
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
     }
 

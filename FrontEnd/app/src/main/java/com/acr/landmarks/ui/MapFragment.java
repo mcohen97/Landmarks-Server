@@ -274,7 +274,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             }
 
         });
-
+        setUpClusterManager();
     }
 
     private LandmarkClusterMarker getLandmarksMarker(Landmark landmark) {
