@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
 import android.location.Location;
 import android.util.Log;
 import android.util.Pair;
@@ -48,6 +49,7 @@ public class LandmarksViewModel extends AndroidViewModel {
         //se utilizara Dagger mas adelante
         markersStorage = new RoomLandmarksStorage(a);
         landmarksService = new RetrofitLandmarksService(Config.getConfigValue(a,"api_url"));
+        //landmarksService =service;
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
         askedForDirections= new MutableLiveData<Boolean>();

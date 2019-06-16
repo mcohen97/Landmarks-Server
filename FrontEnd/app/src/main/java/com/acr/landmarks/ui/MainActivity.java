@@ -41,6 +41,7 @@ import com.acr.landmarks.services.ServerErrorHandler;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
+import com.acr.landmarks.view_models.ViewModelProviderFactory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -50,11 +51,15 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
-public class MainActivity extends AppCompatActivity implements TourSelectedListener {
+public class MainActivity extends DaggerAppCompatActivity implements TourSelectedListener {
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -66,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
 
     private LocationCallback locationCallback;
     private UserLocationViewModel locationViewModel;
+    @Inject
+    ViewModelProviderFactory viewModelsFactory;
     private LandmarksViewModel landmarksViewModel;
     private ToursViewModel toursViewModel;
 
@@ -126,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
 
     private void setViewModels() {
         locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
-        landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
+        landmarksViewModel = ViewModelProviders.of(this,viewModelsFactory).get(LandmarksViewModel.class);
         toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
         landmarksViewModel.getSelectedLandmark().observe( this,
                 landmark -> onLandmarkSelected(landmark) );
