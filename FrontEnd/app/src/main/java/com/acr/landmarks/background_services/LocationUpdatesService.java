@@ -19,6 +19,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.acr.landmarks.services.RetrofitLocationService;
+import com.acr.landmarks.services.contracts.ILocationService;
+import com.acr.landmarks.services.contracts.ILocationUpdatesService;
 import com.acr.landmarks.util.Config;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -30,14 +32,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import javax.inject.Inject;
 
-public class LocationUpdatesService extends Service {
+import dagger.android.DaggerService;
+
+
+public class LocationUpdatesService extends DaggerService {
     private static final String TAG = "LocationUpdatesService";
 
     private FusedLocationProviderClient mFusedLocationClient;
-    private RetrofitLocationService mServer;
     private final static long UPDATE_INTERVAL = 4 * 1000;  /* 4 secs */
     private final static long FASTEST_INTERVAL = 2000; /* 2 sec */
+    @Inject
+    ILocationUpdatesService mServer;
+
 
     @Nullable
     @Override
@@ -48,8 +56,6 @@ public class LocationUpdatesService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        String url =Config.getConfigValue(this,"api_url");
-        mServer = new RetrofitLocationService(url);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (Build.VERSION.SDK_INT >= 26) {

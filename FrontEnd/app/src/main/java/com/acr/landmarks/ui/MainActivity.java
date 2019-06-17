@@ -31,10 +31,9 @@ import android.widget.Toast;
 
 import com.acr.landmarks.background_services.ConnectivityReceiver;
 import com.acr.landmarks.R;
-import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.debug.DebugConstants;
+import com.acr.landmarks.services.contracts.DebugConstants;
 import com.acr.landmarks.background_services.LocationUpdatesService;
 import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.services.contracts.IServerErrorHandler;

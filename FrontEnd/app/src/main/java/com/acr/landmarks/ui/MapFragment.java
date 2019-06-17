@@ -19,11 +19,9 @@ import android.view.ViewGroup;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.models.LandmarkClusterMarker;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.debug.DebugConstants;
+import com.acr.landmarks.services.contracts.DebugConstants;
 import com.acr.landmarks.services.contracts.IImageService;
-import com.acr.landmarks.util.ClusterManagerRenderer;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;

@@ -9,12 +9,14 @@ import com.acr.landmarks.services.AudioStreamPlayer;
 import com.acr.landmarks.services.LocationService;
 import com.acr.landmarks.services.PicassoImageService;
 import com.acr.landmarks.services.RetrofitLandmarksService;
+import com.acr.landmarks.services.RetrofitLocationService;
 import com.acr.landmarks.services.RetrofitToursService;
 import com.acr.landmarks.services.ServerErrorHandler;
 import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 import com.acr.landmarks.services.contracts.ILocationService;
+import com.acr.landmarks.services.contracts.ILocationUpdatesService;
 import com.acr.landmarks.services.contracts.IServerErrorHandler;
 import com.acr.landmarks.services.contracts.ITourService;
 import com.acr.landmarks.util.Config;
@@ -70,5 +72,12 @@ public class AppModule {
     @Provides
     static IServerErrorHandler provideServerErrorHandler(){
         return ServerErrorHandler.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    static ILocationUpdatesService provideLocationUpdatesService(Application application){
+        String url =Config.getConfigValue(application,"api_url");
+        return new RetrofitLocationService(url);
     }
 }

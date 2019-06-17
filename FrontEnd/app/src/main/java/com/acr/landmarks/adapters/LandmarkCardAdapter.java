@@ -11,9 +11,7 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.PicassoImageService;
 import com.acr.landmarks.services.contracts.IImageService;
-import com.acr.landmarks.util.Config;
 
 import java.util.List;
 

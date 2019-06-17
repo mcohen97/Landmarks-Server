@@ -9,7 +9,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.debug.DebugConstants;
+import com.acr.landmarks.services.contracts.DebugConstants;
 import com.acr.landmarks.services.contracts.ITourService;
 
 import java.util.List;

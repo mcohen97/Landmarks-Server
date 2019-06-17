@@ -1,4 +1,4 @@
-package com.acr.landmarks.adapters;
+package com.acr.landmarks.ui;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

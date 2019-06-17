@@ -1,4 +1,4 @@
-package com.acr.landmarks.models;
+package com.acr.landmarks.ui;
 
 import com.google.android.gms.maps.model.Polyline;
 import com.google.maps.model.DirectionsLeg;

@@ -1,4 +1,4 @@
-package com.acr.landmarks.util;
+package com.acr.landmarks.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.acr.landmarks.R;
-import com.acr.landmarks.models.LandmarkClusterMarker;
+import com.acr.landmarks.ui.LandmarkClusterMarker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
