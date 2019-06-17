@@ -132,6 +132,9 @@ public class BottomSheetManager {
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
+    public boolean isHidden(){
+        return mBottomSheetBehaviour.getState() == mBottomSheetBehaviour.STATE_HIDDEN;
+    }
     private void addImages(String[] images) {
         mSliderLayout.clearSliderViews();
         String imagesDirectory = Config.getConfigValue(mActivity, "api_url") + "images/landmarks/";
@@ -150,5 +153,6 @@ public class BottomSheetManager {
         conversion.setLongitude(lng);
         return conversion;
     }
+
 
 }

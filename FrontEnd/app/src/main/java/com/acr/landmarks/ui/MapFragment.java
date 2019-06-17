@@ -217,6 +217,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
 
     private void loadMapStyle() {
         boolean success = false;
+        mMap.getUiSettings().setMapToolbarEnabled(false);
         try {
             SharedPreferences preferences = getActivity().getSharedPreferences("PREFS",0);
             String mapStyle = preferences.getString("mapStyle", "map_style_light");

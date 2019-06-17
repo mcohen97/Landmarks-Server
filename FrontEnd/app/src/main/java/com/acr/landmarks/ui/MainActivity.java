@@ -405,7 +405,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
                 break;
 
             case android.R.id.home:
-                goHome();
+                goBack();
         }
 
         return super.onOptionsItemSelected(item);
@@ -431,26 +431,29 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
         if (keyCode == KeyEvent.KEYCODE_BACK ) {
-            goHome();
+            goBack();
             return true;
         }
 
         return super.onKeyDown(keyCode, event);
     }
 
-    public void goHome(){
-        mBottomSheetManager.hideSheetIfExpanded();
-        TabLayout tabs = findViewById(R.id.tabs);
-        TabLayout.Tab tab = tabs.getTabAt(MAP_TAB);
-        tab.select();
+    public void goBack(){
+        if(!mBottomSheetManager.isHidden()){
+            mBottomSheetManager.hideSheetIfExpanded();
+        }else{
+            TabLayout tabs = findViewById(R.id.tabs);
+            TabLayout.Tab tab = tabs.getTabAt(MAP_TAB);
+            tab.select();
+        }
         toursViewModel.setSelectedTour(ToursViewModel.NO_TOUR_SELECTED);
         landmarksViewModel.getAskedForDirections().postValue(false);
 
     }
 
-    private static final int STOPSPLASH = 0;
-    //time in milliseconds
-    private static final long SPLASHTIME = 3000;
+    private static final int STOP_SPLASH = 0;
+    private static final long SPLASH_TIME = 2500;
+    private static final int ANIMATION_TIME = 500;
 
     private View splash;
 
@@ -462,11 +465,11 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case STOPSPLASH:
+                case STOP_SPLASH:
                     //remove SplashScreen from view
                     splash.animate()
                             .alpha(0.0f)
-                            .setDuration(300)
+                            .setDuration(ANIMATION_TIME)
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
@@ -486,8 +489,8 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         splash = findViewById(R.id.splashscreen);
         if(showSplashScreen){
             Message msg = new Message();
-            msg.what = STOPSPLASH;
-            splashHandler.sendMessageDelayed(msg, SPLASHTIME);
+            msg.what = STOP_SPLASH;
+            splashHandler.sendMessageDelayed(msg, SPLASH_TIME);
         } else {
             splash.setVisibility(View.GONE);
         }
