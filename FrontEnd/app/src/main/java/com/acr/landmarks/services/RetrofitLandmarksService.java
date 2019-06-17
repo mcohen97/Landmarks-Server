@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 import android.util.Log;
 
+import com.acr.landmarks.services.contracts.DebugConstants;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 

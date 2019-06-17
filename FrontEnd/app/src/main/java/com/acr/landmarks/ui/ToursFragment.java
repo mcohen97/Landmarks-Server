@@ -15,13 +15,18 @@ import android.widget.TextView;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.TourCardAdapter;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.services.DebugConstants;
+import com.acr.landmarks.services.contracts.DebugConstants;
+import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.view_models.ToursViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToursFragment extends android.support.v4.app.Fragment implements TourCardAdapter.TourClickedListener {
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
+
+public class ToursFragment extends DaggerFragment implements TourCardAdapter.TourClickedListener {
 
     private TourCardAdapter adapter;
     private RecyclerView recyclerView;
@@ -29,6 +34,8 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
     private TextView emptyView;
     private List<Tour> data;
     private TourSelectedListener mListener;
+    @Inject
+    IImageService imageService;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +76,7 @@ public class ToursFragment extends android.support.v4.app.Fragment implements To
         recyclerView = view.findViewById(R.id.tour_cards_recyclerview_id);
         emptyView = view.findViewById(R.id.empty_tours);
         emptyView.setVisibility(View.VISIBLE);
-        adapter = new TourCardAdapter(getContext(), this, data);
+        adapter = new TourCardAdapter(getContext(), this, data,imageService);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         recyclerView.setAdapter(adapter);
         recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {

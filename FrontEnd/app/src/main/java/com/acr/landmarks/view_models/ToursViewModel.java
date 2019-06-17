@@ -1,26 +1,23 @@
 package com.acr.landmarks.view_models;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
 import android.location.Location;
 import android.util.Log;
 import android.util.Pair;
 
-import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.services.DebugConstants;
-import com.acr.landmarks.services.RetrofitToursService;
+import com.acr.landmarks.services.contracts.DebugConstants;
 import com.acr.landmarks.services.contracts.ITourService;
-import com.acr.landmarks.util.Config;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ToursViewModel extends AndroidViewModel {
+import javax.inject.Inject;
+
+public class ToursViewModel extends ViewModel {
     private ITourService tourService;
 
     private MutableLiveData<Tour> selectedTour;
@@ -32,10 +29,9 @@ public class ToursViewModel extends AndroidViewModel {
     private final MutableLiveData<Pair<Location,Double>> geoFence;
     private final AtomicBoolean lastDataRetrieved;
 
-
-    public ToursViewModel(Application a){
-        super(a);
-        tourService = new RetrofitToursService(Config.getConfigValue(a,"api_url"));
+    @Inject
+    public ToursViewModel(ITourService service){
+        tourService = service;
         liveDataMerger = new MediatorLiveData();
         geoFence = new MutableLiveData<Pair<Location,Double>>();
         lastDataRetrieved = new AtomicBoolean(false);

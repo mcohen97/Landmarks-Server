@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.AudioStreamPlayer;
 import com.acr.landmarks.services.contracts.IAudioService;
 import com.acr.landmarks.util.Config;
 import com.smarteist.autoimageslider.DefaultSliderView;
@@ -29,11 +28,11 @@ public class BottomSheetManager {
     private SliderLayout mSliderLayout;
     private IAudioService audioPlayer;
 
-    public BottomSheetManager(AppCompatActivity activity){
+    public BottomSheetManager(AppCompatActivity activity, IAudioService service){
         mActivity = activity;
         createBottomSheet();
         setSlider();
-        audioPlayerInit();
+        audioPlayer = service;
     }
 
     private void createBottomSheet() {
@@ -87,11 +86,6 @@ public class BottomSheetManager {
         mSliderLayout = layoutBottomSheet.findViewById(R.id.imageSlider);
         mSliderLayout.setAutoScrolling(false);
         mSliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);
-    }
-
-    private void audioPlayerInit() {
-        String audiosUrl = Config.getConfigValue(mActivity, "api_url") + "audios/";
-        this.audioPlayer = new AudioStreamPlayer(audiosUrl);
     }
 
     public void setDirectionsButtonClickListener(View.OnClickListener listener){

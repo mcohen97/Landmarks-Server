@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.acr.landmarks.R;
 
-import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
+import static com.acr.landmarks.ui.RequestCodes.PERMISSIONS_REQUEST_ENABLE_GPS;
 
 public class AlertManager {
 

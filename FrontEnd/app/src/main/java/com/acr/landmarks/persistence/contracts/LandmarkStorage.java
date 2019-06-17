@@ -1,4 +1,4 @@
-package com.acr.landmarks.persistence;
+package com.acr.landmarks.persistence.contracts;
 
 import android.location.Location;
 

@@ -11,9 +11,7 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.PicassoImageService;
 import com.acr.landmarks.services.contracts.IImageService;
-import com.acr.landmarks.util.Config;
 
 import java.util.List;
 
@@ -24,10 +22,10 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
     private List<Landmark> lastAvailableData;
     private IImageService imageService;
 
-    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, List<Landmark> data) {
+    public LandmarkCardAdapter(Context mContext, LandmarkCardClickListener clickListener, List<Landmark> data, IImageService service) {
         this.mContext = mContext;
         this.clickListener = clickListener;
-        this.imageService = new PicassoImageService(Config.getConfigValue(mContext,"api_url"));
+        this.imageService = service;
         this.lastAvailableData = data;
     }
 

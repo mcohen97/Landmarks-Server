@@ -18,7 +18,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
@@ -30,17 +29,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.acr.landmarks.ConnectivityReceiver;
+import com.acr.landmarks.background_services.ConnectivityReceiver;
 import com.acr.landmarks.R;
-import com.acr.landmarks.adapters.SectionsPagerAdapter;
 import com.acr.landmarks.models.Tour;
 import com.acr.landmarks.models.Landmark;
-import com.acr.landmarks.services.DebugConstants;
-import com.acr.landmarks.services.LocationUpdatesService;
-import com.acr.landmarks.services.ServerErrorHandler;
+import com.acr.landmarks.services.contracts.DebugConstants;
+import com.acr.landmarks.background_services.LocationUpdatesService;
+import com.acr.landmarks.services.contracts.IAudioService;
+import com.acr.landmarks.services.contracts.IServerErrorHandler;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 import com.acr.landmarks.view_models.ToursViewModel;
 import com.acr.landmarks.view_models.UserLocationViewModel;
+import com.acr.landmarks.view_models.ViewModelProviderFactory;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -50,11 +51,15 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 
-import static com.acr.landmarks.Constants.ERROR_DIALOG_REQUEST;
-import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
-import static com.acr.landmarks.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
+import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements TourSelectedListener {
+import dagger.android.support.DaggerAppCompatActivity;
+
+import static com.acr.landmarks.ui.RequestCodes.ERROR_DIALOG_REQUEST;
+import static com.acr.landmarks.ui.RequestCodes.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+import static com.acr.landmarks.ui.RequestCodes.PERMISSIONS_REQUEST_ENABLE_GPS;
+
+public class MainActivity extends DaggerAppCompatActivity implements TourSelectedListener {
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -66,11 +71,18 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
 
     private LocationCallback locationCallback;
     private UserLocationViewModel locationViewModel;
+    @Inject
+    ViewModelProviderFactory viewModelsFactory;
     private LandmarksViewModel landmarksViewModel;
     private ToursViewModel toursViewModel;
 
     private Location mCurrentLocation;
+    @Inject
+    IAudioService audioPlayer;
     private BottomSheetManager mBottomSheetManager;
+
+    @Inject
+    IServerErrorHandler errorHandler;
 
     private boolean darkThemeActivated;
 
@@ -91,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         createViewPager();
-        mBottomSheetManager = new BottomSheetManager(this);
+        mBottomSheetManager = new BottomSheetManager(this,audioPlayer);
         setUpBottomSheetManager();
         setViewPager();
         createLocationCallback();
@@ -125,17 +137,15 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
     }
 
     private void setViewModels() {
-        locationViewModel = ViewModelProviders.of(this).get(UserLocationViewModel.class);
-        landmarksViewModel = ViewModelProviders.of(this).get(LandmarksViewModel.class);
-        toursViewModel = ViewModelProviders.of(this).get(ToursViewModel.class);
+        locationViewModel = ViewModelProviders.of(this,viewModelsFactory).get(UserLocationViewModel.class);
+        landmarksViewModel = ViewModelProviders.of(this,viewModelsFactory).get(LandmarksViewModel.class);
+        toursViewModel = ViewModelProviders.of(this,viewModelsFactory).get(ToursViewModel.class);
         landmarksViewModel.getSelectedLandmark().observe( this,
                 landmark -> onLandmarkSelected(landmark) );
     }
 
     private void setServerErrorHandler() {
-        ServerErrorHandler handler = ServerErrorHandler.getInstance();
-
-        handler.serverError().observe(this, throwable -> {
+        errorHandler.serverError().observe(this, throwable -> {
             View appView = findViewById(R.id.main_content);
             Snackbar snackbar = Snackbar
                     .make(appView, getString(R.string.server_error_message), Snackbar.LENGTH_INDEFINITE);
@@ -146,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements TourSelectedListe
                 }
             });
             snackbar.show();
-            handler.serverError().removeObservers(this);
+            errorHandler.serverError().removeObservers(this);
         });
     }
 

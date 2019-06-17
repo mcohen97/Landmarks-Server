@@ -3,7 +3,9 @@ package com.acr.landmarks.services;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
-public class ServerErrorHandler {
+import com.acr.landmarks.services.contracts.IServerErrorHandler;
+
+public class ServerErrorHandler implements IServerErrorHandler {
 
     private MutableLiveData<Throwable> serverError;
     private static final ServerErrorHandler singleton= new ServerErrorHandler();

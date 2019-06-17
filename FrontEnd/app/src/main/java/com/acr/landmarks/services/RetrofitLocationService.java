@@ -3,6 +3,8 @@ package com.acr.landmarks.services;
 import android.location.Location;
 import android.util.Log;
 
+import com.acr.landmarks.services.contracts.ILocationUpdatesService;
+
 import java.util.concurrent.Executors;
 
 import retrofit2.Call;
@@ -11,7 +13,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitLocationService {
+public class RetrofitLocationService implements ILocationUpdatesService {
 
     private Retrofit retrofit;
     private RetrofitLocationAPI webService;
