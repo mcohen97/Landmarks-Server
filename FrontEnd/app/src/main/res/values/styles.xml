@@ -36,7 +36,7 @@
         <item name="backgroundColor">@color/backgroundNight</item>
         <item name="cardBackgroundColor">@color/cardBackgroundNight</item>
         <item name="textColor">@color/textColorNight</item>
-        <item name="textColorStrong">@color/White</item>
+        <item name="textColorStrong">@color/textColorNight</item>
         <item name="tintColor">@color/tintColorNight</item>
         <item name="buttonColor">@color/buttonColorNight</item>
         <item name="buttonTextColor">@color/White</item>

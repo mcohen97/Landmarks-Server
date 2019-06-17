@@ -61,11 +61,12 @@ public class MessageService extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        String dataBody = data.get("body");
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_statue_accent)
                         .setContentTitle(data.get("title"))
-                        .setContentText(data.get("body"))
+                        .setContentText(dataBody.substring(0, dataBody.length()-12) + "m")
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent)

@@ -20,7 +20,7 @@
     <color name="colorPrimaryDarkNight">#000000</color>
     <color name="backgroundNight">#303030</color>
     <color name= "cardBackgroundNight">#4B4B4B</color>
-    <color name="textColorNight">#FFFFFF</color>
+    <color name="textColorNight">#F5F5F5</color>
     <color name="tintColorNight">#FFFFFF</color>
     <color name="buttonColorNight">#131925</color>
 

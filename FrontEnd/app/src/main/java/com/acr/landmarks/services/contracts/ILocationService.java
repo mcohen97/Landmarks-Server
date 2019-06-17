@@ -8,4 +8,6 @@ public interface ILocationService {
     void setLocation(Location current);
 
     LiveData<Location> getLocation();
+
+
 }

@@ -1,6 +1,8 @@
 package com.acr.landmarks.ui;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 import com.acr.landmarks.R;
 import com.acr.landmarks.adapters.LandmarkCardAdapter;
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.models.LandmarkDistanceComparator;
+import com.acr.landmarks.services.LocationService;
 import com.acr.landmarks.services.contracts.IImageService;
 import com.acr.landmarks.view_models.LandmarksViewModel;
 
@@ -52,6 +56,14 @@ public class LandmarkCardsFragment extends DaggerFragment implements LandmarkCar
         viewModel.getLandmarks().observe(this, landmarks -> {
             //Fragment and adapter share the same reference to data
             data.clear();
+            Location userLocation = LocationService.getInstance().getLocation().getValue();
+            for (Landmark landmark : landmarks) {
+                Location landmarkLocation = new Location(new String());
+                landmarkLocation.setLatitude(landmark.latitude);
+                landmarkLocation.setLongitude(landmark.longitude);
+                landmark.distance = (int) userLocation.distanceTo(landmarkLocation);
+            }
+            landmarks.sort(new LandmarkDistanceComparator());
             data.addAll(landmarks);
             checkEmpty();
             adapter.notifyDataSetChanged();
@@ -93,4 +105,6 @@ public class LandmarkCardsFragment extends DaggerFragment implements LandmarkCar
     public void onLandmarkClicked(Landmark clicked) {
         viewModel.setSelectedLandmark(clicked.id);
     }
+
+
 }

@@ -1,6 +1,8 @@
 package com.acr.landmarks.models;
 
-public class Landmark {
+import android.support.annotation.NonNull;
+
+public class Landmark implements Comparable<Landmark>{
     public int id;
     public String title;
     public String description;
@@ -8,6 +10,7 @@ public class Landmark {
     public double longitude;
     public String[] imageFiles;
     public String[] audioFiles;
+    public int distance;
 
     public Landmark(int id, String title, String description, double latitude, double longitude, String[] images, String[] audios) {
         this.id = id;
@@ -17,6 +20,7 @@ public class Landmark {
         this.longitude = longitude;
         this.imageFiles = images;
         this.audioFiles = audios;
+        this.distance = 0;
     }
 
     @Override
@@ -25,5 +29,10 @@ public class Landmark {
             return false;
         }
         return ((Landmark) o).id == this.id;
+    }
+
+    @Override
+    public int compareTo(@NonNull Landmark o) {
+        return this.distance - o.distance;
     }
 }
