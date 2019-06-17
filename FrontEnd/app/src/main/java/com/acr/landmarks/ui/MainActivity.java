@@ -1,6 +1,8 @@
 package com.acr.landmarks.ui;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
@@ -13,6 +15,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -94,9 +98,9 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         loadTheme();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        showSplashScreen();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -136,8 +140,11 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         SharedPreferences preferences = getSharedPreferences("PREFS",0);
         boolean savedOption = preferences.getBoolean("darkTheme", false);
         if(savedOption != darkThemeActivated){
+            preferences.edit().putBoolean("showSplashScreen", false).commit();
             finish();
             startActivity(getIntent());
+        }else{
+            preferences.edit().putBoolean("showSplashScreen", true).commit();
         }
 
     }
@@ -439,5 +446,50 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         toursViewModel.setSelectedTour(ToursViewModel.NO_TOUR_SELECTED);
         landmarksViewModel.getAskedForDirections().postValue(false);
 
+    }
+
+    private static final int STOPSPLASH = 0;
+    //time in milliseconds
+    private static final long SPLASHTIME = 3000;
+
+    private View splash;
+
+    //handler for splash screen
+    private Handler splashHandler = new Handler() {
+        /* (non-Javadoc)
+         * @see android.os.Handler#handleMessage(android.os.Message)
+         */
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case STOPSPLASH:
+                    //remove SplashScreen from view
+                    splash.animate()
+                            .alpha(0.0f)
+                            .setDuration(300)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    splash.setVisibility(View.GONE);
+                                }
+                            });
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    private void showSplashScreen(){
+        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+        boolean showSplashScreen = preferences.getBoolean("showSplashScreen", true);
+        splash = findViewById(R.id.splashscreen);
+        if(showSplashScreen){
+            Message msg = new Message();
+            msg.what = STOPSPLASH;
+            splashHandler.sendMessageDelayed(msg, SPLASHTIME);
+        } else {
+            splash.setVisibility(View.GONE);
+        }
     }
 }

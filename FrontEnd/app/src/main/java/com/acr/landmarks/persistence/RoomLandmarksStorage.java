@@ -87,7 +87,7 @@ public class RoomLandmarksStorage implements LandmarkStorage {
 
     private List<LandmarkEntity> convertLandmarks(List<Landmark> landmarks) {
         List<LandmarkEntity> converted = new ArrayList<>();
-        for (Landmark l : landmarks) {
+        for (Landmark l : new ArrayList<>(landmarks)) {
             LandmarkEntity entity = new LandmarkEntity();
             entity.id = l.id;
             entity.latitude = l.latitude;

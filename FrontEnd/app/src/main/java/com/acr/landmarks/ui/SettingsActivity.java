@@ -36,13 +36,12 @@ public class SettingsActivity extends AppCompatActivity {
             SharedPreferences.Editor preferencesEditor = preferences.edit();
             preferencesEditor.putBoolean("darkTheme",darkThemeActivated);
             preferencesEditor.putString("mapStyle",mapStyle);
-            preferencesEditor.apply();
+            preferencesEditor.commit();
 
 
 
             Intent newIntent = new Intent(SettingsActivity.this, SettingsActivity.class);
 
-            //getParent().startActivity(newIntent,options.toBundle());
             finish();
             overridePendingTransition(0,0);
             startActivity(newIntent);
