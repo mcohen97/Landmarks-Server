@@ -66,9 +66,6 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         }
 
         String image = requestedTour.imageFile;
-        //byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
-        //Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-        //holder.categoryThumbnail.setImageBitmap(bitmap);
         imageService.loadTourImageToView(holder.categoryThumbnail,image);
         String tourDescription = requestedTour.description;
         holder.description.setText(tourDescription);

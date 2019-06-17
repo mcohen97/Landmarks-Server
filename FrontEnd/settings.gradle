@@ -1,1 +1,1 @@
-include ':app', ':autoimageslider'
+include ':app'
