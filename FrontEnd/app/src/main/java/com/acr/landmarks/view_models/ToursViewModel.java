@@ -18,6 +18,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 
 public class ToursViewModel extends ViewModel {
+    public static final int NO_TOUR_SELECTED = -1;
+
     private ITourService tourService;
 
     private MutableLiveData<Tour> selectedTour;

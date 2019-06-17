@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -60,6 +61,10 @@ import static com.acr.landmarks.ui.RequestCodes.PERMISSIONS_REQUEST_ACCESS_FINE_
 import static com.acr.landmarks.ui.RequestCodes.PERMISSIONS_REQUEST_ENABLE_GPS;
 
 public class MainActivity extends DaggerAppCompatActivity implements TourSelectedListener {
+
+    public static final int TOUR_TAB = 0;
+    public static final int MAP_TAB = 1;
+    public static final int LANDMARK_TAB = 2;
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -113,6 +118,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
 
     private void setIconVisibility(boolean show) {
         getSupportActionBar().setDisplayShowHomeEnabled(show);
+        getSupportActionBar().setHomeButtonEnabled(show);
         getSupportActionBar().setIcon(R.drawable.icon);
     }
 
@@ -198,7 +204,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
             @Override
             public void onClick(View view) {
                 TabLayout tabs = findViewById(R.id.tabs);
-                TabLayout.Tab tab = tabs.getTabAt(1);
+                TabLayout.Tab tab = tabs.getTabAt(MAP_TAB);
                 tab.select();
                 mBottomSheetManager.hideSheetIfExpanded();
                 Log.d(DebugConstants.AP_DEX,"Directions to landmark requested, time: "+System.currentTimeMillis());
@@ -392,11 +398,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
                 break;
 
             case android.R.id.home:
-                TabLayout tabs = findViewById(R.id.tabs);
-                TabLayout.Tab tab = tabs.getTabAt(0);
-                tab.select();
-                setBackButtonVisibility(false);
-                toursViewModel.setSelectedTour(-1);
+                goHome();
         }
 
         return super.onOptionsItemSelected(item);
@@ -419,4 +421,23 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         setIconVisibility(!show);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK ) {
+            goHome();
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void goHome(){
+        mBottomSheetManager.hideSheetIfExpanded();
+        TabLayout tabs = findViewById(R.id.tabs);
+        TabLayout.Tab tab = tabs.getTabAt(MAP_TAB);
+        tab.select();
+        toursViewModel.setSelectedTour(ToursViewModel.NO_TOUR_SELECTED);
+        landmarksViewModel.getAskedForDirections().postValue(false);
+
+    }
 }
