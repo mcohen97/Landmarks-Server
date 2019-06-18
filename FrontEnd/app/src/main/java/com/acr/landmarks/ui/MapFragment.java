@@ -198,7 +198,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     private void observeDirectionsAsked() {
         landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
             if (isAsked ) {
-                //resetTheMap();
                 if(isTourSelected()){
                     drawTour(toursViewModel.getSelectedTour().getValue());
                 }
@@ -208,6 +207,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
                     marker = getLandmarksMarker(selected);
                 }
                 if(marker != null) {
+                    mMapManager.resetMapPolylines();
                     mMapManager.showDirections(marker,mUserLocation,ContextCompat.getColor(getActivity(), R.color.darkGrey));
                 }
             }
