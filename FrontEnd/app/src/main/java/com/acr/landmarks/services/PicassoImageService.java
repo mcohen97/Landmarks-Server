@@ -2,6 +2,7 @@ package com.acr.landmarks.services;
 
 import android.widget.ImageView;
 
+import com.acr.landmarks.R;
 import com.acr.landmarks.services.contracts.IImageService;
 import com.squareup.picasso.Picasso;
 
@@ -15,6 +16,7 @@ public class PicassoImageService implements IImageService {
     private final List<PicassoLoadingTarget> targets;
     private static final String LANDMARK_IMAGES_PATH ="images/landmarks/%s";
     private static final String TOUR_IMAGES_PATH ="images/tours/%s";
+    private static final int PLACEHOLDER = R.drawable.ic_statue_background;
 
 
     public  PicassoImageService(String baseUrl){
@@ -25,11 +27,13 @@ public class PicassoImageService implements IImageService {
     }
 
     public void loadLandmarkImageToView(ImageView imageView, String fileName){
+        Picasso.get().load(PLACEHOLDER).into(imageView);
         String url =String.format(landmarksUrl,fileName);
         Picasso.get().load(url).into(imageView);
     }
 
     public void loadTourImageToView(ImageView imageView, String fileName) {
+        Picasso.get().load(PLACEHOLDER).into(imageView);
         String url =String.format(toursUrl,fileName);
         Picasso.get().load(url).into(imageView);
     }
