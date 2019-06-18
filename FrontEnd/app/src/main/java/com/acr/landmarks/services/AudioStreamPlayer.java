@@ -76,8 +76,8 @@ public class AudioStreamPlayer implements IAudioService {
     private void setMediaPlayerTarget(String filename) throws IOException {
         this.mediaPlayer.setDataSource(this.url+filename);
         this.mediaPlayer.prepareAsync();
+        this.isAudioLoaded = true;
         this.mediaPlayer.setOnPreparedListener(mp -> {
-            this.isAudioLoaded = true;
             Log.d(DebugConstants.AP_DEX, "Audio loaded, time: "+ System.currentTimeMillis());
         });
     }

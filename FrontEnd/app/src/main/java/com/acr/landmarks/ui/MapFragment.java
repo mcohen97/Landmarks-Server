@@ -197,8 +197,11 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
 
     private void observeDirectionsAsked() {
         landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
+            resetTheMap();
+            updateMapMarkers();
             if (isAsked ) {
-                //resetTheMap();
+                mMapManager.resetMapPolylines();
+
                 if(isTourSelected()){
                     drawTour(toursViewModel.getSelectedTour().getValue());
                 }
