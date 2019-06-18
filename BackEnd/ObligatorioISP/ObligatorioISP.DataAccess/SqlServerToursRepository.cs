@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
@@ -36,11 +37,15 @@ namespace ObligatorioISP.DataAccess
 
         public ICollection<Tour> GetToursWithinKmRange(double centerLat, double centerLng, double rangeInKm)
         {
+            string centerLatStr = centerLat.ToString(CultureInfo.InvariantCulture);
+            string centerLngStr = centerLng.ToString(CultureInfo.InvariantCulture);
+            string rangeInKmStr = rangeInKm.ToString(CultureInfo.InvariantCulture);
+
             string command = $"SELECT T.* FROM Tour T " 
                 + $"WHERE NOT EXISTS (" 
                 + $"SELECT 1 FROM Landmark L, LandmarkTour LT" 
                 + $" WHERE L.ID = LT.LANDMARK_ID AND T.ID = LT.TOUR_ID " 
-                + $"AND dbo.DISTANCE({centerLat},{centerLng},L.LATITUDE, L.LONGITUDE) > {rangeInKm});";
+                + $"AND dbo.DISTANCE({centerLatStr},{centerLngStr},L.LATITUDE, L.LONGITUDE) > {rangeInKmStr});";
        
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
             ICollection<Tour> result = rows.Select(r => BuildTour(r)).ToList();
