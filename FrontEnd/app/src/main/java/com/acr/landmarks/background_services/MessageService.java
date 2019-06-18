@@ -66,7 +66,7 @@ public class MessageService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_statue_accent)
                         .setContentTitle(data.get("title"))
-                        .setContentText(dataBody.substring(0, dataBody.length()-12) + "m")
+                        .setContentText(dataBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent)

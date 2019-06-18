@@ -92,7 +92,7 @@ namespace ObligatorioISP.Services
             };
         }
 
-        private double ComputeDistanceMeters(double lat1, double lon1, double lat2, double lon2)
+        private int ComputeDistanceMeters(double lat1, double lon1, double lat2, double lon2)
         {
             int earthRadiusM = 6371 * 1000;
 
@@ -105,7 +105,9 @@ namespace ObligatorioISP.Services
             double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
                     Math.Sin(dLon / 2) * Math.Sin(dLon / 2) * Math.Cos(lat1) * Math.Cos(lat2);
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return earthRadiusM * c;
+            double distance = earthRadiusM * c;
+
+            return (int) Math.Truncate(distance);
         }
 
         private double degreesToRadians(double degrees)
