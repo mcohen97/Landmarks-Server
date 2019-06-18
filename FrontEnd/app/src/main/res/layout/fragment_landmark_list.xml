@@ -24,7 +24,7 @@
             android:textColor="@color/Grey"
             android:visibility="gone"
             android:gravity="center"
-            android:text="@string/no_item_available" />
+            android:text="@string/no_landmarks" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/cards_recyclerview_id"

@@ -75,7 +75,7 @@ public class BottomSheetManager {
         if (audioPlayer.isAudioLoaded())
             audioPlayer.play();
         else {
-            Toast.makeText(mActivity.getApplicationContext(), "No audio", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity.getApplicationContext(), "Sin audio", Toast.LENGTH_SHORT).show();
 
         }
 

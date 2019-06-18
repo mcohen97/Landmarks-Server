@@ -385,9 +385,24 @@
 			"response": []
 		},
 		{
-			"name": "Update Location",
+			"name": "UpdateLocation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fef4df37-8ee1-41b8-b54c-a180f59ee54d",
+						"exec": [
+							"pm.test(\"Status code is 200\",function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"url": {
 					"raw": "{{Domain}}/api/location/update/{{Token}}?lat=-34.923844&lng=-56.170590",
@@ -409,6 +424,166 @@
 							"key": "lng",
 							"value": "-56.170590"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetExistentImageTest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2b3b822e-05cd-4fc0-a962-f959b99073d9",
+						"exec": [
+							"pm.test(\"Status code is 200\",function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var header = postman.getResponseHeader(\"Content-Type\");",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"    pm.expect(header).to.eql(\"image/jpeg\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Domain}}/api/images/landmarks/1_1.jpg",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"images",
+						"landmarks",
+						"1_1.jpg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUnexistentImageTest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5131da58-ee8e-4323-b5e3-7f8c0873c96a",
+						"exec": [
+							"pm.test(\"Status code is 404\",function(){",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Has error message\",function(){",
+							"  pm.expect(jsonData).to.have.property('errorMessage');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Domain}}/api/images/landmarks/unexistent.jpg",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"images",
+						"landmarks",
+						"unexistent.jpg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetExistentAudio",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "344fce99-e7c5-42e2-8112-5a70f0099ce5",
+						"exec": [
+							"pm.test(\"Status code is 200\",function(){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var header = postman.getResponseHeader(\"Content-Type\");",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"    pm.expect(header).to.eql(\"audio/mp3\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Domain}}/api/audios/1_1.mp3",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"audios",
+						"1_1.mp3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUnexistentAudio",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc9602d0-a119-4cd8-ba4c-53917fe63b5a",
+						"exec": [
+							"pm.test(\"Status code is 404\",function(){",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Has error message\",function(){",
+							"  pm.expect(jsonData).to.have.property('errorMessage');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Domain}}/api/audios/unexistent.mp3",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"api",
+						"audios",
+						"unexistent.mp3"
 					]
 				}
 			},
@@ -439,15 +614,15 @@
 	],
 	"variable": [
 		{
-			"id": "2e5f7322-1607-4232-800d-b67519150bd8",
+			"id": "f4cd6828-4006-4c6f-a57f-659f84d8395c",
 			"key": "Domain",
-			"value": "https://localhost:44310",
+			"value": "http://192.168.0.111",
 			"type": "string"
 		},
 		{
-			"id": "8e1bf502-c081-4f65-8794-7ac59c338b3a",
+			"id": "21bae764-45b3-4b98-87c9-73ebca4104eb",
 			"key": "Token",
-			"value": "f9lbBkiVPuo:APA91bGa_mr6j730iPVTQP18w0UbohhKWIf2ke4VFu-G-npbggsWPnHBM5PnTBopjt9dO3kHNX1W8fc6-ULCiQuiyGN83sb61ZV-D9G3YXn4C1HWnsk6FbsWDPpvEOZBMDLT7YD4o-mx",
+			"value": "cWn1Eh_ZuI8:APA91bFI-GSce1cIEQ6MRfJQfqfqx83N2w7Q0S0oIZre9TFKjncOWKEDJtk1Q4_Suac7KtK44bxGugHigtc0UwUYpTu2DZfv1Ewl8ll3xAHfMnXXvy2oXQstcNRhlZ5sXWxdVNyATxtg",
 			"type": "string"
 		}
 	]

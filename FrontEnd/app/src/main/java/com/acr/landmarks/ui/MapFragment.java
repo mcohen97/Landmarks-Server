@@ -197,18 +197,19 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
 
     private void observeDirectionsAsked() {
         landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
+            //resetTheMap();
+            //updateMapMarkers();
             if (isAsked ) {
-                if(isTourSelected()){
-                    drawTour(toursViewModel.getSelectedTour().getValue());
-                }
                 LandmarkClusterMarker marker = mSelectedMarker;
                 if(marker == null) {
                     Landmark selected = landmarksViewModel.getSelectedLandmark().getValue();
                     marker = getLandmarksMarker(selected);
                 }
                 if(marker != null) {
-                    mMapManager.resetMapPolylines();
                     mMapManager.showDirections(marker,mUserLocation,ContextCompat.getColor(getActivity(), R.color.darkGrey));
+                }
+                if(isTourSelected()){
+                    drawTour(toursViewModel.getSelectedTour().getValue());
                 }
             }
 
@@ -263,7 +264,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         if (mMap == null) {
             return;
         }
-        mMapManager.resetMapPolylines();//PORQUÉ
+        //mMapManager.resetMapPolylines();//PORQUÉ ?
         boolean firstTime = mClusterManager == null;
         if (firstTime) {
             setUpClusterManager();
@@ -368,9 +369,8 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
         mSelectedMarker = landmarkClusterMarker;
         if(isTourSelected() && isPartOfSelectedTour(landmarkClusterMarker)){
-            mMapManager.clearRoutes();
-            drawTour(toursViewModel.getSelectedTour().getValue());
             mMapManager.showDirections(landmarkClusterMarker, mUserLocation,ContextCompat.getColor(getActivity(), R.color.darkGrey));
+            drawTour(toursViewModel.getSelectedTour().getValue());
         }
         return false;
     }
@@ -403,7 +403,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     }
 
     public void drawTour(Tour selected) {
-        addMapMarkers();
+        //addMapMarkers();//Porqué
 
         ArrayList<Integer> landmarksIds = selected.landmarksIds;
         ArrayList<Landmark> landmarks = new ArrayList<Landmark>();

@@ -36,6 +36,5 @@ public class PicassoLoadingTarget implements Target {
 
     @Override
     public void onPrepareLoad(Drawable placeHolderDrawable) {
-
     }
 }

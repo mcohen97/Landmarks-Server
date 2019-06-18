@@ -25,6 +25,7 @@
       "ObligatorioISP.WebAPI/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.App": "2.1.1",
+          "Microsoft.Extensions.Configuration.Abstractions": "2.1.1",
           "Microsoft.NETCore.App": "2.1.0",
           "ObligatorioISP.DataAccess": "1.0.0",
           "ObligatorioISP.DataAccess.Contracts": "1.0.0",
@@ -385,6 +386,7 @@
       "ObligatorioISP.Services/1.0.0": {
         "dependencies": {
           "FluentCache.Microsoft.Extensions.Caching.Memory": "4.0.0.2",
+          "Microsoft.Extensions.Configuration.Abstractions": "2.1.1",
           "Newtonsoft.Json": "12.0.2",
           "ObligatorioISP.DataAccess.Contracts": "1.0.0",
           "ObligatorioISP.Services.Contracts": "1.0.0"

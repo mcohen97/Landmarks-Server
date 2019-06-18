@@ -22,7 +22,7 @@
     <!--MapFragment end-->
 
     <!--Alerts start-->
-    <string name="alert_no_gps_message">Esta aplicación requiere GPS para funcionar correctamente, quieres habilitarlo?</string>
+    <string name="alert_no_gps_message">Esta aplicación requiere GPS para funcionar correctamente, ¿Deseas habilitarlo?</string>
     <string name="alert_yes">SÍ</string>
     <string name="alert_no">NO</string>
 
@@ -34,7 +34,10 @@
 
     <string name="settings_title">Configuración</string>
     <string name="dark_theme_name">Tema oscuro</string>
-    <string name="no_item_available">No hay elementos para mostrar</string>
+
+    <string name="no_landmarks">El mapa está situado en una zona sin landmarks</string>
+    <string name="no_tours">El mapa está situado en una zona sin tours</string>
+
 
     <string name="google_map_api_key">AIzaSyBwpUs0_sE60F6dGoUeRwjfcZBiKTst6AI</string>
 </resources>

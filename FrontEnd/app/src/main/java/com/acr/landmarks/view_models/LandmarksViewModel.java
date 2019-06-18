@@ -69,8 +69,6 @@ public class LandmarksViewModel extends ViewModel {
                 updateGeofence((Pair<Location, Double>) centerRadius));
         liveDataMerger.addSource(landmarksInRange,
                 value -> updateLandmarks(value));
-
-        askedForDirections.setValue(false);
     }
 
     private void updateLandmarks(Object value) {
