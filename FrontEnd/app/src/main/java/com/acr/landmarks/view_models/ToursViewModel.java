@@ -30,6 +30,7 @@ public class ToursViewModel extends ViewModel {
     private MediatorLiveData liveDataMerger;
     private final MutableLiveData<Pair<Location,Double>> geoFence;
     private final AtomicBoolean lastDataRetrieved;
+    private boolean isTourSelected;
 
     @Inject
     public ToursViewModel(ITourService service){
@@ -59,6 +60,7 @@ public class ToursViewModel extends ViewModel {
                 updateGeofence((Pair<Location, Double>) centerRadius));
         liveDataMerger.addSource(toursInRange,
                 value -> updateTours(value));
+        isTourSelected = false;
     }
 
     private void updateTours(Object value) {
@@ -98,10 +100,16 @@ public class ToursViewModel extends ViewModel {
         if(index >=0) {
             Log.d(DebugConstants.AP_DEX, "Requested tour to be shown on map, time: "+ System.currentTimeMillis());
             selectedTour.setValue(toursInRange.getValue().get(index));
+            isTourSelected = true;
         }else{
             selectedTour.setValue(null);
+            isTourSelected = false;
         }
     }
 
     public LiveData<Tour> getSelectedTour(){return selectedTour;}
+
+    public boolean isTourSelected() {
+        return isTourSelected;
+    }
 }

@@ -121,7 +121,8 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     }
 
     private void setIconVisibility(boolean show) {
-        getSupportActionBar().setDisplayShowHomeEnabled(show);
+        //getSupportActionBar().setDisplayShowHomeEnabled(show);
+        getSupportActionBar().setHomeButtonEnabled(show);
         getSupportActionBar().setHomeButtonEnabled(show);
         getSupportActionBar().setIcon(R.drawable.icon);
     }
@@ -185,14 +186,14 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                setBackButtonVisibility(false);
                 mBottomSheetManager.hideSheetIfExpanded();
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if (toursViewModel != null && tab.getPosition() == 1) {
-                    toursViewModel.setSelectedTour(-1);
+                if (toursViewModel != null && tab.getPosition() == MAP_TAB) {
+                    toursViewModel.setSelectedTour(ToursViewModel.NO_TOUR_SELECTED);
+                    setBackButtonVisibility(false);
                 }
             }
 
@@ -229,6 +230,8 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
                 }
                 mCurrentLocation = locationResult.getLastLocation();
                 locationViewModel.setLocation(mCurrentLocation);
+                if(splashShown)
+                    hideSplashScreen();
             }
         };
     }
@@ -248,6 +251,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         }
         mBottomSheetManager.hideSheetIfExpanded();
         setConnectivityMonitor();
+
     }
 
     private void setLandmarkIfCommingFromNotification() {
@@ -425,7 +429,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
 
     public void setBackButtonVisibility(boolean show) {
         getSupportActionBar().setDisplayHomeAsUpEnabled(show);
-        setIconVisibility(!show);
+        getSupportActionBar().setHomeAsUpIndicator(0);
     }
 
     @Override
@@ -439,23 +443,27 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     }
 
     public void goBack(){
-        if(!mBottomSheetManager.isHidden()){
-            mBottomSheetManager.hideSheetIfExpanded();
-        }else{
+        if(mBottomSheetManager.isHidden()) {
+            if(toursViewModel.isTourSelected()){
+                setBackButtonVisibility(false);
+                toursViewModel.setSelectedTour(ToursViewModel.NO_TOUR_SELECTED);
+            }
             TabLayout tabs = findViewById(R.id.tabs);
-            TabLayout.Tab tab = tabs.getTabAt(MAP_TAB);
-            tab.select();
+            if(tabs.getSelectedTabPosition() != MAP_TAB){
+                TabLayout.Tab tab = tabs.getTabAt(MAP_TAB);
+                tab.select();
+            }
+            landmarksViewModel.getAskedForDirections().postValue(false);
         }
-        toursViewModel.setSelectedTour(ToursViewModel.NO_TOUR_SELECTED);
-        landmarksViewModel.getAskedForDirections().postValue(false);
-
+        mBottomSheetManager.hideSheetIfExpanded();
     }
 
     private static final int STOP_SPLASH = 0;
-    private static final long SPLASH_TIME = 2500;
-    private static final int ANIMATION_TIME = 500;
+    private static final long SPLASH_TIME = 2000;
+    private static final int ANIMATION_TIME = 700;
 
     private View splash;
+    private boolean splashShown;
 
     //handler for splash screen
     private Handler splashHandler = new Handler() {
@@ -484,15 +492,27 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     };
 
     private void showSplashScreen(){
+        splashShown = true;
         SharedPreferences preferences = getSharedPreferences("PREFS",0);
         boolean showSplashScreen = preferences.getBoolean("showSplashScreen", true);
         splash = findViewById(R.id.splashscreen);
-        if(showSplashScreen){
-            Message msg = new Message();
-            msg.what = STOP_SPLASH;
-            splashHandler.sendMessageDelayed(msg, SPLASH_TIME);
-        } else {
+        if(!showSplashScreen){
             splash.setVisibility(View.GONE);
         }
+    }
+
+    private void hideSplashScreen(){
+        splashShown = false;
+        splash.animate()
+                .alpha(0.0f)
+                .setDuration(ANIMATION_TIME)
+                .setStartDelay(300)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        splash.setVisibility(View.GONE);
+                    }
+                });
     }
 }
