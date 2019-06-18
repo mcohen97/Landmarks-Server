@@ -104,7 +104,6 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
                 marker.getPosition().longitude
         );
         DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
-
         directions.alternatives(true);
         directions.origin(
                 new com.google.maps.model.LatLng(
@@ -211,4 +210,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
                 new LatLng(mUserLocation.getLatitude(),
                         mUserLocation.getLongitude()), zoom));
     }
+
+
+
 }

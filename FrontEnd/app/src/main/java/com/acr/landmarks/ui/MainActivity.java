@@ -217,6 +217,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
                 mBottomSheetManager.hideSheetIfExpanded();
                 Log.d(DebugConstants.AP_DEX,"Directions to landmark requested, time: "+System.currentTimeMillis());
                 landmarksViewModel.getAskedForDirections().postValue(true);
+                setBackButtonVisibility(true);
             }
         });
     }
@@ -444,8 +445,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
 
     public void goBack(){
         if(mBottomSheetManager.isHidden()) {
-            if(toursViewModel.isTourSelected()){
-                setBackButtonVisibility(false);
+            if(toursViewModel!= null && toursViewModel.isTourSelected()){
                 toursViewModel.setSelectedTour(ToursViewModel.NO_TOUR_SELECTED);
             }
             TabLayout tabs = findViewById(R.id.tabs);
@@ -454,6 +454,8 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
                 tab.select();
             }
             landmarksViewModel.getAskedForDirections().postValue(false);
+            setBackButtonVisibility(false);
+
         }
         mBottomSheetManager.hideSheetIfExpanded();
     }
