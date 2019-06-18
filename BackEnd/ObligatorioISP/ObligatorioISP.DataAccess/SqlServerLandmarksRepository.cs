@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
@@ -28,11 +29,14 @@ namespace ObligatorioISP.DataAccess
 
         public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm, int offset =0, int count = 50)
         {
+            string centerLatStr = centerLat.ToString(CultureInfo.InvariantCulture);
+            string centerLngStr = centerLng.ToString(CultureInfo.InvariantCulture);
+            string distanceInKmStr= distanceInKm.ToString(CultureInfo.InvariantCulture);
             //Could not find a way to reuse the result of distance and not calculate it twice, should be improved.
             string command = $"SELECT * "
                 + $"FROM Landmark "
-                + $"WHERE dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) <= {distanceInKm} "
-                + $"ORDER BY dbo.DISTANCE({centerLat},{centerLng}, LATITUDE, LONGITUDE) ASC "
+                + $"WHERE dbo.DISTANCE({centerLatStr},{centerLngStr}, LATITUDE, LONGITUDE) <= {distanceInKmStr} "
+                + $"ORDER BY dbo.DISTANCE({centerLatStr},{centerLngStr}, LATITUDE, LONGITUDE) ASC "
                 + $"OFFSET {offset} ROWS FETCH NEXT {count} ROWS ONLY;";
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
