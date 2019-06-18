@@ -128,10 +128,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
     private void addRoutesToMap(final DirectionsResult result) {
         new Handler(Looper.getMainLooper()).post(() -> {
 
-            for (PolylineData polylineData : mPolyLinesData) {
-                polylineData.getPolyline().remove();
-            }
-            resetMapPolylines();
+            clearRoutes();
 
             double minDuration = Integer.MAX_VALUE;
             Polyline shortestPath= null;
@@ -210,5 +207,12 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(mUserLocation.getLatitude(),
                         mUserLocation.getLongitude()), zoom));
+    }
+
+    public void clearRoutes(){
+        for (PolylineData data : mPolyLinesData){
+            data.getPolyline().remove();
+        }
+        resetMapPolylines();
     }
 }

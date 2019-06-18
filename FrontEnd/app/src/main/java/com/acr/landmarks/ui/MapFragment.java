@@ -263,7 +263,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         if (mMap == null) {
             return;
         }
-        mMapManager.resetMapPolylines();
+        mMapManager.resetMapPolylines();//PORQUÉ
         boolean firstTime = mClusterManager == null;
         if (firstTime) {
             setUpClusterManager();
@@ -368,8 +368,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
         mSelectedMarker = landmarkClusterMarker;
         if(isTourSelected() && isPartOfSelectedTour(landmarkClusterMarker)){
-            //resetear mapa por la cant de clicks
-            resetTheMap();
+            mMapManager.clearRoutes();
             drawTour(toursViewModel.getSelectedTour().getValue());
             mMapManager.showDirections(landmarkClusterMarker, mUserLocation,ContextCompat.getColor(getActivity(), R.color.darkGrey));
         }
