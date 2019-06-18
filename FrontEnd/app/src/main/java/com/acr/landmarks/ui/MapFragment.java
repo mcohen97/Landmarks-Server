@@ -188,8 +188,9 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
             if (tour != null) {
                 drawTour(tour);
             } else {
-                resetTheMap();
-                addMapMarkers();
+                //resetTheMap();
+                //addMapMarkers();
+                mMapManager.clearRoutes();
             }
 
         });
@@ -210,6 +211,9 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
                 if(isTourSelected()){
                     drawTour(toursViewModel.getSelectedTour().getValue());
                 }
+            }
+            else{
+                mMapManager.clearRoutes();
             }
 
         });
