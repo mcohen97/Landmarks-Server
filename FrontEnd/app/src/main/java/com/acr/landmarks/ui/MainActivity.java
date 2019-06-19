@@ -252,7 +252,6 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         }
         mBottomSheetManager.hideSheetIfExpanded();
         setConnectivityMonitor();
-
     }
 
     private void setLandmarkIfCommingFromNotification() {
