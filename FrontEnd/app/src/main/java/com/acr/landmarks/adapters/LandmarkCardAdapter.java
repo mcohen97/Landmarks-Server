@@ -71,7 +71,6 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
 
         @Override
         public void onClick(View v) {
-
             int position = getAdapterPosition();
             clickListener.onLandmarkClicked(lastAvailableData.get(position));
         }

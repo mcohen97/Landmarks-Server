@@ -30,6 +30,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
     private GoogleMap mMap;
     private GeoApiContext mGeoApiContext;
     private ArrayList<PolylineData> mPolyLinesData;
+    private ArrayList<PolylineData> mTourPolylinesData;
     private int mPrimaryColor;
     private int mSecondaryColor;
     private static final int ROUTE_PADDING = 120;
@@ -42,6 +43,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
         mPolyLinesData = new ArrayList<>();
         mPrimaryColor = selectedPolylineColor;
         mSecondaryColor = unselectedPolylineColor;
+        mTourPolylinesData = new ArrayList<>();
     }
 
     public float getMapRangeRadius() {
@@ -86,6 +88,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
 
         Polyline polyline = mMap.addPolyline(options);
         polyline.setClickable(true);
+        mTourPolylinesData.add(new PolylineData(polyline, null));
 
         zoomRoute(polyline.getPoints());
         Log.d(DebugConstants.AP_DEX,"Selected tour drawn in map, time: "+ System.currentTimeMillis());
@@ -128,7 +131,6 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
         new Handler(Looper.getMainLooper()).post(() -> {
 
             clearRoutes();
-
             double minDuration = Integer.MAX_VALUE;
             Polyline shortestPath= null;
             List<Polyline> drawnPolylines = new ArrayList<>();
@@ -214,4 +216,13 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
         }
         resetMapPolylines();
     }
+
+    public void clearTours(){
+        for (PolylineData data : mTourPolylinesData){
+            data.getPolyline().remove();
+        }
+        mTourPolylinesData.clear();
+        mTourPolylinesData = new ArrayList<>();
+    }
+
 }

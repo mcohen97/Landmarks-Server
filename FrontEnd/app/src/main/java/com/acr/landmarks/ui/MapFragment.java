@@ -32,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.GeoApiContext;
 import com.google.maps.android.clustering.ClusterManager;
 
@@ -190,6 +191,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
             } else {
                 //resetTheMap();
                 //addMapMarkers();
+                mMapManager.clearTours();
                 mMapManager.clearRoutes();
             }
 
@@ -201,15 +203,12 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
 
             if (isAsked ) {
                 LandmarkClusterMarker marker = mSelectedMarker;
-                if(marker == null) {
-                    Landmark selected = landmarksViewModel.getSelectedLandmark().getValue();
-                    marker = getLandmarksMarker(selected);
-                }
+                mClusterManagerRenderer.getMarker(marker).hideInfoWindow();
+                Landmark selected = landmarksViewModel.getSelectedLandmark().getValue();
+                marker = getLandmarksMarker(selected);
+                mClusterManagerRenderer.getMarker(marker).showInfoWindow();
                 if(marker != null) {
                     mMapManager.showDirections(marker,mUserLocation,ContextCompat.getColor(getActivity(), R.color.darkGrey));
-                }
-                if(isTourSelected()){
-                    drawTour(toursViewModel.getSelectedTour().getValue());
                 }
             }
             else{
@@ -260,7 +259,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     }
 
     private boolean isTourSelected() {
-        return toursViewModel.getSelectedTour().getValue()!=null;
+        return toursViewModel.isTourSelected();
     }
 
     private void addMapMarkers() {
