@@ -95,6 +95,7 @@ public class BottomSheetManager {
     public void hideSheetIfExpanded(){
         if (mBottomSheetBehaviour.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
+            audioPlayer.reset();
         }
     }
 
