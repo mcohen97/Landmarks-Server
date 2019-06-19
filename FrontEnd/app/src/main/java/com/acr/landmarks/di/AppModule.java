@@ -33,51 +33,51 @@ public class AppModule {
 
     @Singleton
     @Provides
-    static IImageService provideImageService(Application application){
-        return new PicassoImageService(Config.getConfigValue(application,"api_url"));
+    static IImageService provideImageService(Application application) {
+        return new PicassoImageService(Config.getConfigValue(application, "api_url"));
     }
 
     @Singleton
     @Provides
-    static ILandmarksService provideLandmarksService(Application application){
-        return new RetrofitLandmarksService(Config.getConfigValue(application,"api_url"));
+    static ILandmarksService provideLandmarksService(Application application) {
+        return new RetrofitLandmarksService(Config.getConfigValue(application, "api_url"));
     }
 
     @Singleton
     @Provides
-    static ITourService provideTourService(Application application){
-        return new RetrofitToursService(Config.getConfigValue(application,"api_url"));
+    static ITourService provideTourService(Application application) {
+        return new RetrofitToursService(Config.getConfigValue(application, "api_url"));
     }
 
     @Singleton
     @Provides
-    static LandmarkStorage provideLandmarksStorage(Application application){
+    static LandmarkStorage provideLandmarksStorage(Application application) {
         return new RoomLandmarksStorage(application);
     }
 
     @Singleton
     @Provides
-    static IAudioService provideAudioService(Application application){
+    static IAudioService provideAudioService(Application application) {
         String audiosUrl = Config.getConfigValue(application, "api_url") + "audios/";
         return new AudioStreamPlayer(audiosUrl);
     }
 
     @Singleton
     @Provides
-    static ILocationService provideLocationService(){
+    static ILocationService provideLocationService() {
         return LocationService.getInstance();
     }
 
     @Singleton
     @Provides
-    static IServerErrorHandler provideServerErrorHandler(){
+    static IServerErrorHandler provideServerErrorHandler() {
         return ServerErrorHandler.getInstance();
     }
 
     @Singleton
     @Provides
-    static ILocationUpdatesService provideLocationUpdatesService(Application application){
-        String url =Config.getConfigValue(application,"api_url");
+    static ILocationUpdatesService provideLocationUpdatesService(Application application) {
+        String url = Config.getConfigValue(application, "api_url");
         return new RetrofitLocationService(url);
     }
 }

@@ -28,7 +28,7 @@ public class BottomSheetManager {
     private SliderLayout mSliderLayout;
     private IAudioService audioPlayer;
 
-    public BottomSheetManager(AppCompatActivity activity, IAudioService service){
+    public BottomSheetManager(AppCompatActivity activity, IAudioService service) {
         mActivity = activity;
         createBottomSheet();
         setSlider();
@@ -88,18 +88,18 @@ public class BottomSheetManager {
         mSliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);
     }
 
-    public void setDirectionsButtonClickListener(View.OnClickListener listener){
+    public void setDirectionsButtonClickListener(View.OnClickListener listener) {
         directionsButton.setOnClickListener(listener);
     }
 
-    public void hideSheetIfExpanded(){
+    public void hideSheetIfExpanded() {
         if (mBottomSheetBehaviour.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HIDDEN);
             audioPlayer.reset();
         }
     }
 
-    public void expandSheetIfHidden(){
+    public void expandSheetIfHidden() {
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
@@ -111,10 +111,10 @@ public class BottomSheetManager {
 
         sheetLandmarkName.setText(selectedLandmark.title);
         sheetLandmarkDescription.setText(selectedLandmark.description);
-        sheetLandmarkDescription.scrollTo(0,0);
+        sheetLandmarkDescription.scrollTo(0, 0);
 
 
-        if (mCurrentLocation != null){
+        if (mCurrentLocation != null) {
             String distance = "" + (mCurrentLocation.distanceTo(createLocation(selectedLandmark.latitude, selectedLandmark.longitude)) / 1000);
             distance = distance.substring(0, 4);
             distance += " Km";
@@ -133,9 +133,10 @@ public class BottomSheetManager {
         mBottomSheetBehaviour.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
-    public boolean isHidden(){
+    public boolean isHidden() {
         return mBottomSheetBehaviour.getState() == mBottomSheetBehaviour.STATE_HIDDEN;
     }
+
     private void addImages(String[] images) {
         mSliderLayout.clearSliderViews();
         String imagesDirectory = Config.getConfigValue(mActivity, "api_url") + "images/landmarks/";

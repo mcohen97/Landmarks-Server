@@ -25,7 +25,7 @@ import com.google.maps.model.DirectionsRoute;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapManager implements GoogleMap.OnPolylineClickListener{
+public class MapManager implements GoogleMap.OnPolylineClickListener {
 
     private GoogleMap mMap;
     private GeoApiContext mGeoApiContext;
@@ -57,7 +57,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
 
     public void zoomRoute(List<LatLng> lstLatLngRoute) {
 
-        if (mMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()){
+        if (mMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()) {
             return;
         }
 
@@ -88,7 +88,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
         polyline.setClickable(true);
 
         zoomRoute(polyline.getPoints());
-        Log.d(DebugConstants.AP_DEX,"Selected tour drawn in map, time: "+ System.currentTimeMillis());
+        Log.d(DebugConstants.AP_DEX, "Selected tour drawn in map, time: " + System.currentTimeMillis());
     }
 
     public static Location latLngToLocation(LatLng googleData) {
@@ -130,7 +130,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
             clearRoutes();
 
             double minDuration = Integer.MAX_VALUE;
-            Polyline shortestPath= null;
+            Polyline shortestPath = null;
             List<Polyline> drawnPolylines = new ArrayList<>();
             for (DirectionsRoute route : result.routes) {
                 Polyline polyline = drawRoute(route);
@@ -143,7 +143,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
             }
             highlightPolyline(shortestPath);
             zoomRoute(shortestPath.getPoints());
-            Log.d(DebugConstants.AP_DEX,"Route to landmark drawn in map, time: "+ System.currentTimeMillis());
+            Log.d(DebugConstants.AP_DEX, "Route to landmark drawn in map, time: " + System.currentTimeMillis());
         });
     }
 
@@ -181,17 +181,17 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
     }
 
     private void highlightPolyline(Polyline polyline) {
-        if(polyline == null){
+        if (polyline == null) {
             return;
         }
-        for(PolylineData polylineData: mPolyLinesData){
-            if(polyline.getId().equals(polylineData.getPolyline().getId())){
+        for (PolylineData polylineData : mPolyLinesData) {
+            if (polyline.getId().equals(polylineData.getPolyline().getId())) {
                 polylineData.getPolyline().setColor(mPrimaryColor);
                 polylineData.getPolyline().setZIndex(1);
 
                 DirectionsLeg leg = polylineData.getLeg();
                 LatLng endLocation = new LatLng(leg.endLocation.lat, leg.endLocation.lng);
-            }else{
+            } else {
                 polylineData.getPolyline().setColor(mSecondaryColor);
                 polylineData.getPolyline().setZIndex(0);
             }
@@ -199,7 +199,7 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
     }
 
     public void setCameraDefaultView(Location mUserLocation) {
-        setCameraViewWithZoom(DEFAULT_ZOOM,mUserLocation);
+        setCameraViewWithZoom(DEFAULT_ZOOM, mUserLocation);
     }
 
     private void setCameraViewWithZoom(float zoom, Location mUserLocation) {
@@ -208,8 +208,8 @@ public class MapManager implements GoogleMap.OnPolylineClickListener{
                         mUserLocation.getLongitude()), zoom));
     }
 
-    public void clearRoutes(){
-        for (PolylineData data : mPolyLinesData){
+    public void clearRoutes() {
+        for (PolylineData data : mPolyLinesData) {
             data.getPolyline().remove();
         }
         resetMapPolylines();

@@ -2,7 +2,7 @@ package com.acr.landmarks.models;
 
 import android.support.annotation.NonNull;
 
-public class Landmark implements Comparable<Landmark>{
+public class Landmark implements Comparable<Landmark> {
     public int id;
     public String title;
     public String description;
@@ -14,7 +14,7 @@ public class Landmark implements Comparable<Landmark>{
 
     public Landmark(int id, String title, String description, double latitude, double longitude, String[] images, String[] audios) {
         this.id = id;
-        this.title =title;
+        this.title = title;
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;

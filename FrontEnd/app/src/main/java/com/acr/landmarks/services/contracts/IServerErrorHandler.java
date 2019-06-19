@@ -4,8 +4,8 @@ import android.arch.lifecycle.LiveData;
 
 public interface IServerErrorHandler {
 
-     LiveData<Throwable> serverError();
+    LiveData<Throwable> serverError();
 
-     void raiseError(Throwable error);
+    void raiseError(Throwable error);
 
 }

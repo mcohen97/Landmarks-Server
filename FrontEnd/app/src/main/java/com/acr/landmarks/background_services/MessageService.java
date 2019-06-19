@@ -34,10 +34,10 @@ public class MessageService extends FirebaseMessagingService {
     }
 
     private void sendNotification(RemoteMessage message) {
-        Map<String,String> data = message.getData();
-        String channelId = Config.getConfigValue(getApplicationContext(),"default_notification_channel_id");
+        Map<String, String> data = message.getData();
+        String channelId = Config.getConfigValue(getApplicationContext(), "default_notification_channel_id");
 
-        NotificationCompat.Builder notificationBuilder = createNotificationBuilder(data,channelId);
+        NotificationCompat.Builder notificationBuilder = createNotificationBuilder(data, channelId);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -52,10 +52,10 @@ public class MessageService extends FirebaseMessagingService {
         notificationManager.notify(0, notificationBuilder.build());
     }
 
-    private NotificationCompat.Builder createNotificationBuilder(Map<String,String> data, String channelId){
+    private NotificationCompat.Builder createNotificationBuilder(Map<String, String> data, String channelId) {
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("landmarkId",Integer.parseInt(data.get("landmarkId")));
+        intent.putExtra("landmarkId", Integer.parseInt(data.get("landmarkId")));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

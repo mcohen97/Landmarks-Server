@@ -51,22 +51,22 @@ public class ToursFragment extends DaggerFragment implements TourCardAdapter.Tou
         data = new ArrayList<>();
         initRecyclerView(inflater, view);
         viewModel.getTours().observe(this, tours -> {
-            Log.d(DebugConstants.AP_DEX, "Received new tours, time: "+System.currentTimeMillis());
+            Log.d(DebugConstants.AP_DEX, "Received new tours, time: " + System.currentTimeMillis());
             //Fragment and adapter share the same reference to data
             data.clear();
             data.addAll(tours);
             checkEmpty();
             adapter.notifyDataSetChanged();
-            Log.d(DebugConstants.AP_DEX, "Displayed new tours, time: "+System.currentTimeMillis());
+            Log.d(DebugConstants.AP_DEX, "Displayed new tours, time: " + System.currentTimeMillis());
         });
         return view;
     }
 
-    private void checkEmpty(){
-        if(data.isEmpty()){
+    private void checkEmpty() {
+        if (data.isEmpty()) {
             this.emptyView.setVisibility(View.VISIBLE);
             this.recyclerView.setVisibility(View.GONE);
-        }else{
+        } else {
             this.emptyView.setVisibility(View.GONE);
             this.recyclerView.setVisibility(View.VISIBLE);
         }
@@ -76,7 +76,7 @@ public class ToursFragment extends DaggerFragment implements TourCardAdapter.Tou
         recyclerView = view.findViewById(R.id.tour_cards_recyclerview_id);
         emptyView = view.findViewById(R.id.empty_tours);
         emptyView.setVisibility(View.VISIBLE);
-        adapter = new TourCardAdapter(getContext(), this, data,imageService);
+        adapter = new TourCardAdapter(getContext(), this, data, imageService);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         recyclerView.setAdapter(adapter);
         recyclerView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {

@@ -25,7 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+        SharedPreferences preferences = getSharedPreferences("PREFS", 0);
         darkThemeActivated = preferences.getBoolean("darkTheme", false);
 
         darkTheme = findViewById(R.id.theme_switch);
@@ -34,18 +34,17 @@ public class SettingsActivity extends AppCompatActivity {
             darkThemeActivated = !darkThemeActivated;
             String mapStyle = darkThemeActivated ? "map_style_night" : "map_style_light";
             SharedPreferences.Editor preferencesEditor = preferences.edit();
-            preferencesEditor.putBoolean("darkTheme",darkThemeActivated);
-            preferencesEditor.putString("mapStyle",mapStyle);
+            preferencesEditor.putBoolean("darkTheme", darkThemeActivated);
+            preferencesEditor.putString("mapStyle", mapStyle);
             preferencesEditor.commit();
-
 
 
             Intent newIntent = new Intent(SettingsActivity.this, SettingsActivity.class);
 
             finish();
-            overridePendingTransition(0,0);
+            overridePendingTransition(0, 0);
             startActivity(newIntent);
-            overridePendingTransition(0,0);
+            overridePendingTransition(0, 0);
 
         });
     }
@@ -61,12 +60,12 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadTheme(){
-        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+    private void loadTheme() {
+        SharedPreferences preferences = getSharedPreferences("PREFS", 0);
         darkThemeActivated = preferences.getBoolean("darkTheme", false);
-        if(darkThemeActivated){
+        if (darkThemeActivated) {
             setTheme(R.style.NightTheme);
-        }else{
+        } else {
             setTheme(R.style.AppTheme);
         }
     }

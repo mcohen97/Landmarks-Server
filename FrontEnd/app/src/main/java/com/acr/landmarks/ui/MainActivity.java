@@ -112,7 +112,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         createViewPager();
-        mBottomSheetManager = new BottomSheetManager(this,audioPlayer);
+        mBottomSheetManager = new BottomSheetManager(this, audioPlayer);
         setUpBottomSheetManager();
         setViewPager();
         createLocationCallback();
@@ -128,34 +128,34 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     }
 
     private void loadTheme() {
-        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+        SharedPreferences preferences = getSharedPreferences("PREFS", 0);
         darkThemeActivated = preferences.getBoolean("darkTheme", false);
-        if(darkThemeActivated){
+        if (darkThemeActivated) {
             setTheme(R.style.NightTheme);
-        }else{
+        } else {
             setTheme(R.style.AppTheme);
         }
     }
 
-    private void checkThemeUpdate(){
-        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+    private void checkThemeUpdate() {
+        SharedPreferences preferences = getSharedPreferences("PREFS", 0);
         boolean savedOption = preferences.getBoolean("darkTheme", false);
-        if(savedOption != darkThemeActivated){
+        if (savedOption != darkThemeActivated) {
             preferences.edit().putBoolean("showSplashScreen", false).commit();
             finish();
             startActivity(getIntent());
-        }else{
+        } else {
             preferences.edit().putBoolean("showSplashScreen", true).commit();
         }
 
     }
 
     private void setViewModels() {
-        locationViewModel = ViewModelProviders.of(this,viewModelsFactory).get(UserLocationViewModel.class);
-        landmarksViewModel = ViewModelProviders.of(this,viewModelsFactory).get(LandmarksViewModel.class);
-        toursViewModel = ViewModelProviders.of(this,viewModelsFactory).get(ToursViewModel.class);
-        landmarksViewModel.getSelectedLandmark().observe( this,
-                landmark -> onLandmarkSelected(landmark) );
+        locationViewModel = ViewModelProviders.of(this, viewModelsFactory).get(UserLocationViewModel.class);
+        landmarksViewModel = ViewModelProviders.of(this, viewModelsFactory).get(LandmarksViewModel.class);
+        toursViewModel = ViewModelProviders.of(this, viewModelsFactory).get(ToursViewModel.class);
+        landmarksViewModel.getSelectedLandmark().observe(this,
+                landmark -> onLandmarkSelected(landmark));
     }
 
     private void setServerErrorHandler() {
@@ -215,7 +215,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
                 TabLayout.Tab tab = tabs.getTabAt(MAP_TAB);
                 tab.select();
                 mBottomSheetManager.hideSheetIfExpanded();
-                Log.d(DebugConstants.AP_DEX,"Directions to landmark requested, time: "+System.currentTimeMillis());
+                Log.d(DebugConstants.AP_DEX, "Directions to landmark requested, time: " + System.currentTimeMillis());
                 landmarksViewModel.getAskedForDirections().postValue(true);
                 setBackButtonVisibility(true);
             }
@@ -231,7 +231,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
                 }
                 mCurrentLocation = locationResult.getLastLocation();
                 locationViewModel.setLocation(mCurrentLocation);
-                if(splashShown)
+                if (splashShown)
                     hideSplashScreen();
             }
         };
@@ -256,7 +256,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
 
     private void setLandmarkIfCommingFromNotification() {
         Bundle extras = getIntent().getExtras();
-        if(extras != null) {
+        if (extras != null) {
             int value = extras.getInt("landmarkId", 0);
             if (value > 0) {
                 landmarksViewModel.setSelectedLandmark(value);
@@ -326,7 +326,6 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     }
 
 
-
     private void getLocationPermission() {
         if (hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
             mLocationPermissionGranted = true;
@@ -374,6 +373,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
             }
         }
     }
+
     private void setConnectivityMonitor() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         ConnectivityReceiver.ConnectivityLossListener listener = new ConnectivityReceiver.ConnectivityLossListener() {
@@ -402,7 +402,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
                 startActivity(settingsIntent);
@@ -416,7 +416,7 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     }
 
     public void onLandmarkSelected(Landmark selectedLandmark) {
-        mBottomSheetManager.onLandmarkSelected(selectedLandmark,mCurrentLocation,mViewPager.getHeight());
+        mBottomSheetManager.onLandmarkSelected(selectedLandmark, mCurrentLocation, mViewPager.getHeight());
     }
 
     @Override
@@ -433,8 +433,8 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-        if (keyCode == KeyEvent.KEYCODE_BACK ) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             goBack();
             return true;
         }
@@ -442,13 +442,13 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         return super.onKeyDown(keyCode, event);
     }
 
-    public void goBack(){
-        if(mBottomSheetManager.isHidden()) {
-            if(toursViewModel!= null && toursViewModel.isTourSelected()){
+    public void goBack() {
+        if (mBottomSheetManager.isHidden()) {
+            if (toursViewModel != null && toursViewModel.isTourSelected()) {
                 toursViewModel.setSelectedTour(ToursViewModel.NO_TOUR_SELECTED);
             }
             TabLayout tabs = findViewById(R.id.tabs);
-            if(tabs.getSelectedTabPosition() != MAP_TAB){
+            if (tabs.getSelectedTabPosition() != MAP_TAB) {
                 TabLayout.Tab tab = tabs.getTabAt(MAP_TAB);
                 tab.select();
             }
@@ -492,17 +492,17 @@ public class MainActivity extends DaggerAppCompatActivity implements TourSelecte
         }
     };
 
-    private void showSplashScreen(){
+    private void showSplashScreen() {
         splashShown = true;
-        SharedPreferences preferences = getSharedPreferences("PREFS",0);
+        SharedPreferences preferences = getSharedPreferences("PREFS", 0);
         boolean showSplashScreen = preferences.getBoolean("showSplashScreen", true);
         splash = findViewById(R.id.splashscreen);
-        if(!showSplashScreen){
+        if (!showSplashScreen) {
             splash.setVisibility(View.GONE);
         }
     }
 
-    private void hideSplashScreen(){
+    private void hideSplashScreen() {
         splashShown = false;
         splash.animate()
                 .alpha(0.0f)

@@ -44,7 +44,7 @@ public class LandmarkCardAdapter extends RecyclerView.Adapter<LandmarkCardAdapte
         String landmarkName = requestedLandmark.title;
         holder.title.setText(landmarkName);
         String image = requestedLandmark.imageFiles[0];
-        imageService.loadLandmarkImageToView(holder.thumbnail,image);
+        imageService.loadLandmarkImageToView(holder.thumbnail, image);
     }
 
     @Override

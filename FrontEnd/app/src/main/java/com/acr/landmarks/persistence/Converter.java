@@ -10,7 +10,8 @@ import java.lang.reflect.Type;
 public class Converter {
     @TypeConverter
     public static String[] fromString(String value) {
-        Type listType = new TypeToken<String[]>() {}.getType();
+        Type listType = new TypeToken<String[]>() {
+        }.getType();
         return new Gson().fromJson(value, listType);
     }
 

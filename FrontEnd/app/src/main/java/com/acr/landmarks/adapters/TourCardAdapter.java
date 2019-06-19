@@ -64,7 +64,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         }
 
         String image = requestedTour.imageFile;
-        imageService.loadTourImageToView(holder.categoryThumbnail,image);
+        imageService.loadTourImageToView(holder.categoryThumbnail, image);
         String tourDescription = requestedTour.description;
         holder.description.setText(tourDescription);
     }

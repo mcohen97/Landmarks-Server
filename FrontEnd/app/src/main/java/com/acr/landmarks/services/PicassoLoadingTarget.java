@@ -30,7 +30,7 @@ public class PicassoLoadingTarget implements Target {
     @Override
     public void onBitmapFailed(Exception e, Drawable errorDrawable) {
         collection.remove(this);
-        Log.d(TAG,"Request failed");
+        Log.d(TAG, "Request failed");
         ServerErrorHandler.getInstance().raiseError(e);
     }
 
