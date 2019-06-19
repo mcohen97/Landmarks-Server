@@ -2,9 +2,6 @@
 using Moq;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.WebAPI.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ObligatorioISP.WebAPI.Tests
 {
@@ -15,13 +12,15 @@ namespace ObligatorioISP.WebAPI.Tests
         private LocationController controller;
 
         [TestInitialize]
-        public void SetUp() {
+        public void SetUp()
+        {
             fakeService = new Mock<IProximityNotificationService>();
             controller = new LocationController(fakeService.Object);
         }
 
         [TestMethod]
-        public void ShouldCallNotificationServiceWithGivenParameters() {
+        public void ShouldCallNotificationServiceWithGivenParameters()
+        {
             string token = "someToken";
             double lat = -34.9185678;
             double lng = -56.1674899;

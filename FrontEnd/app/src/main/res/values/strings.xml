@@ -9,7 +9,7 @@
     <string name="tab_text_3">Landmarks</string>
 
     <!--Server error Snackbar-->
-    <string name="server_error_message">El servidor esta indisponible</string>
+    <string name="server_error_message">El servidor está indisponible</string>
     <string name="server_error_action_btntext">CONTINUAR</string>
     <!--MainActivity-->
 
@@ -27,7 +27,7 @@
     <string name="alert_no">NO</string>
 
     <string name="alert_los_title">Sin conexión</string>
-    <string name="alert_los_message">El internet no esta disponible, chequea tu conectividad e intenta denuevo</string>
+    <string name="alert_los_message">El internet no está disponible, chequea tu conectividad e intenta denuevo</string>
     <string name="alert_los_continue">Continuar</string>
     <string name="alert_los_go_to_settings">Ir a configuración</string>
     <!--Alerts end-->

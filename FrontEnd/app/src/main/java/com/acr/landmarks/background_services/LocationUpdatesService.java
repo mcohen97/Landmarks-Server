@@ -107,7 +107,7 @@ public class LocationUpdatesService extends DaggerService {
                         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                             @Override
                             public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                Log.d("Token", "se envia token: "+task.getResult().getToken());
+                                Log.d("Token", "se envia token: " + task.getResult().getToken());
                                 mServer.updateLocation(location, task.getResult().getToken());
                             }
                         });

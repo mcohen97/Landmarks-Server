@@ -18,28 +18,31 @@ namespace ObligatorioISP.WebAPI.Tests
         private string testImage;
 
         [TestInitialize]
-        public void StartUp() {
+        public void StartUp()
+        {
             landmarksConfigKey = "LandmarkImages:Uri";
             toursConfigKey = "TourImages:Uri";
             config = new Mock<IConfiguration>();
             config.Setup(c => c[landmarksConfigKey]).Returns(Directory.GetCurrentDirectory());
             config.Setup(c => c[toursConfigKey]).Returns(Directory.GetCurrentDirectory());
             testImage = "testImage.jpg";
-            if (!File.Exists(testImage)) {
+            if (!File.Exists(testImage))
+            {
                 File.Create(testImage);
             }
             controller = new ImagesController(config.Object);
         }
 
         [TestMethod]
-        public void GetExistentLandmarkImage() {
-            Task<IActionResult> task =controller.GetLandmarkImage(testImage);
+        public void GetExistentLandmarkImage()
+        {
+            Task<IActionResult> task = controller.GetLandmarkImage(testImage);
             task.Wait();
             IActionResult result = task.Result;
             FileStreamResult stream = result as FileStreamResult;
 
             Assert.IsNotNull(stream);
-            Assert.AreEqual("image/jpeg",stream.ContentType);
+            Assert.AreEqual("image/jpeg", stream.ContentType);
         }
 
         [TestMethod]
@@ -55,7 +58,8 @@ namespace ObligatorioISP.WebAPI.Tests
         }
 
         [TestMethod]
-        public void GerUnexistentImage() {
+        public void GerUnexistentImage()
+        {
             Task<IActionResult> task = controller.GetLandmarkImage("unexistent.jpg");
             task.Wait();
 

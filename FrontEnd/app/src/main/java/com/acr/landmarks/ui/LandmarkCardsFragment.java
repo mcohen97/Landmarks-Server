@@ -71,11 +71,11 @@ public class LandmarkCardsFragment extends DaggerFragment implements LandmarkCar
         return view;
     }
 
-    private void checkEmpty(){
-        if(data.isEmpty()){
+    private void checkEmpty() {
+        if (data.isEmpty()) {
             this.emptyView.setVisibility(View.VISIBLE);
             this.recyclerView.setVisibility(View.GONE);
-        }else{
+        } else {
             this.emptyView.setVisibility(View.GONE);
             this.recyclerView.setVisibility(View.VISIBLE);
         }
@@ -83,7 +83,7 @@ public class LandmarkCardsFragment extends DaggerFragment implements LandmarkCar
 
     private void initRecyclerView(LayoutInflater inflater, View view) {
         recyclerView = view.findViewById(R.id.cards_recyclerview_id);
-        adapter = new LandmarkCardAdapter(getContext(), this, data,imageService);
+        adapter = new LandmarkCardAdapter(getContext(), this, data, imageService);
         emptyView = view.findViewById(R.id.empty_landmarks);
         emptyView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));

@@ -15,7 +15,7 @@ public class AudioStreamPlayer implements IAudioService {
     private MediaPlayer mediaPlayer;
     private boolean isAudioLoaded;
 
-    public AudioStreamPlayer(String audioUrl){
+    public AudioStreamPlayer(String audioUrl) {
         this.url = audioUrl;
         this.mediaPlayer = new MediaPlayer();
         this.isAudioLoaded = false;
@@ -32,24 +32,24 @@ public class AudioStreamPlayer implements IAudioService {
     @Override
     public void load(String fileName) {
         try {
-            Log.d(DebugConstants.AP_DEX, "Audio requested, time: "+ System.currentTimeMillis());
+            Log.d(DebugConstants.AP_DEX, "Audio requested, time: " + System.currentTimeMillis());
             audioAttributesConfig();
             setMediaPlayerTarget(fileName);
-        } catch (IOException e){
+        } catch (IOException e) {
             mediaPlayer.reset();
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             mediaPlayer.reset();
         }
     }
 
-    public void reset(){
+    public void reset() {
         this.mediaPlayer.reset();
         this.isAudioLoaded = false;
     }
 
     @Override
     public void play() {
-        if(isAudioLoaded) {
+        if (isAudioLoaded) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();
             } else {
@@ -64,21 +64,21 @@ public class AudioStreamPlayer implements IAudioService {
     }
 
     @Override
-    public void pause(){
+    public void pause() {
         this.mediaPlayer.pause();
     }
 
     @Override
-    public boolean isAudioLoaded(){
-        return  this.isAudioLoaded;
+    public boolean isAudioLoaded() {
+        return this.isAudioLoaded;
     }
 
     private void setMediaPlayerTarget(String filename) throws IOException {
-        this.mediaPlayer.setDataSource(this.url+filename);
+        this.mediaPlayer.setDataSource(this.url + filename);
         this.mediaPlayer.prepareAsync();
-        this.isAudioLoaded = true;
         this.mediaPlayer.setOnPreparedListener(mp -> {
-            Log.d(DebugConstants.AP_DEX, "Audio loaded, time: "+ System.currentTimeMillis());
+            this.isAudioLoaded = true;
+            Log.d(DebugConstants.AP_DEX, "Audio loaded, time: " + System.currentTimeMillis());
         });
     }
 

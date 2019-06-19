@@ -2,9 +2,7 @@
 using Moq;
 using Microsoft.Extensions.Configuration;
 using ObligatorioISP.Services.Contracts;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.BusinessLogic;
 using System.IO;
@@ -22,28 +20,31 @@ namespace ObligatorioISP.Services.Tests
         private MemoryCache tokenCache;
 
         [TestInitialize]
-        public void SetUp() {
+        public void SetUp()
+        {
             Mock<IConfiguration> config = new Mock<IConfiguration>();
             config.Setup(c => c["Firebase:Url"]).Returns("https://fcm.googleapis.com");
             config.Setup(c => c["Firebase:ApplicationID"]).Returns("someAppId");
             config.Setup(c => c["Firebase:SenderID"]).Returns("someSenderId");
-            config.Setup(c =>c["ProximityNotifications:MaxDistance"]).Returns("0.5");
+            config.Setup(c => c["ProximityNotifications:MaxDistance"]).Returns("0.5");
             config.Setup(c => c["ProximityNotifications:NotifMinimumIntervalHours"]).Returns("0.05");
             landmarks = new Mock<ILandmarksRepository>();
             tokenCache = new MemoryCache(new MemoryCacheOptions());
-            testService = new FirebaseNotificationService(config.Object, landmarks.Object,tokenCache);
+            testService = new FirebaseNotificationService(config.Object, landmarks.Object, tokenCache);
         }
 
         [TestMethod]
-        public void ShouldNotifyLandmarkCloseIfExists() {
-            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(),It.IsAny<int>(),It.IsAny<int>())).Returns(GetFakeLandmarks());
+        public void ShouldNotifyLandmarkCloseIfExists()
+        {
+            landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>())).Returns(GetFakeLandmarks());
             Task<bool> task = testService.NotifyIfCloseToLandmark("aToken", -34.9185678, -56.1674899);
             landmarks.Verify(r => r.GetWithinZone(-34.9185678, -56.1674899, It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>()));
             Assert.IsTrue(task.Result);
         }
 
         [TestMethod]
-        public void ShouldReturnFalseIfNoLandmarksAreClose() {
+        public void ShouldReturnFalseIfNoLandmarksAreClose()
+        {
             landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>())).Returns(new List<Landmark>());
             Task<bool> task = testService.NotifyIfCloseToLandmark("aToken", -34.9185678, -56.1674899);
             landmarks.Verify(r => r.GetWithinZone(-34.9185678, -56.1674899, It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>()));
@@ -51,7 +52,8 @@ namespace ObligatorioISP.Services.Tests
         }
 
         [TestMethod]
-        public void ShouldReturnFalseIfRecentlyNotified() {
+        public void ShouldReturnFalseIfRecentlyNotified()
+        {
             landmarks.Setup(r => r.GetWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>())).Returns(GetFakeLandmarks());
             Task<bool> task = testService.NotifyIfCloseToLandmark("aToken", -34.9185678, -56.1674899);
             bool firstAttempt = task.Result;
@@ -64,7 +66,8 @@ namespace ObligatorioISP.Services.Tests
         private List<Landmark> GetFakeLandmarks()
         {
             string image = "testImage.jpg";
-            if (!File.Exists(image)) {
+            if (!File.Exists(image))
+            {
                 File.Create(image);
             }
             return new List<Landmark>() {

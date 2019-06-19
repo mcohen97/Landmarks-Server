@@ -1,8 +1,7 @@
 ﻿using ObligatorioISP.BusinessLogic.Exceptions;
 using System.Collections.Generic;
-using String = System.String;
-using File =System.IO.File;
-using Path = System.IO.Path;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace ObligatorioISP.BusinessLogic
@@ -17,12 +16,13 @@ namespace ObligatorioISP.BusinessLogic
 
         public int Id { get { return id; } private set { SetId(value); } }
         public string Title { get { return title; } private set { SetTitle(value); } }
-        public ICollection<Landmark> Landmarks { get { return landmarks; }private set { SetLandmarks(value); } }
+        public ICollection<Landmark> Landmarks { get { return landmarks; } private set { SetLandmarks(value); } }
         public string ImageBaseName { get { return imageBaseName; } private set { SetImage(value); } }
         public TourCategory Category { get; private set; }
         public string Description { get { return description; } set { SetDescription(value); } }
 
-        public Tour(int anId, string aTitle, string aDescription ,ICollection<Landmark> someLandmarks, string imagePath, TourCategory category) {
+        public Tour(int anId, string aTitle, string aDescription, ICollection<Landmark> someLandmarks, string imagePath, TourCategory category)
+        {
             Id = anId;
             Title = aTitle;
             Description = aDescription;
@@ -33,7 +33,8 @@ namespace ObligatorioISP.BusinessLogic
 
         private void SetId(int value)
         {
-            if (value < 0) {
+            if (value < 0)
+            {
                 throw new InvalidTourException("Id can't be negative");
             }
             id = value;
@@ -41,7 +42,8 @@ namespace ObligatorioISP.BusinessLogic
 
         private void SetTitle(string value)
         {
-            if (String.IsNullOrWhiteSpace(value)) {
+            if (String.IsNullOrWhiteSpace(value))
+            {
                 throw new InvalidTourException("Title can't be empty");
             }
             title = value;
@@ -58,7 +60,8 @@ namespace ObligatorioISP.BusinessLogic
 
         private void SetLandmarks(ICollection<Landmark> value)
         {
-            if (value == null || !value.Any()) {
+            if (value == null || !value.Any())
+            {
                 throw new InvalidTourException("Landmarks list can't be null or empty");
             }
             landmarks = value;
@@ -71,7 +74,7 @@ namespace ObligatorioISP.BusinessLogic
                 throw new InvalidTourException("Image doesn't exist");
             }
             //checks that image exists, but only keeps image basename.
-            char separator =Path.DirectorySeparatorChar;
+            char separator = Path.DirectorySeparatorChar;
             imageBaseName = path.Split(separator).Last();
         }
     }

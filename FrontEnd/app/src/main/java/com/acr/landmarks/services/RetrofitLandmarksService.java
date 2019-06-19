@@ -49,15 +49,15 @@ public class RetrofitLandmarksService implements ILandmarksService {
                 if (response.isSuccessful()) {
                     long responseTime = response.raw().receivedResponseAtMillis();
                     long requestTime = response.raw().sentRequestAtMillis();
-                    Log.d(DebugConstants.AP_DEX, "Landmarks HTTP request time: "+ requestTime);
-                    Log.d(DebugConstants.AP_DEX, "Landmarks HTTP response time: "+ responseTime);
+                    Log.d(DebugConstants.AP_DEX, "Landmarks HTTP request time: " + requestTime);
+                    Log.d(DebugConstants.AP_DEX, "Landmarks HTTP response time: " + responseTime);
                     landmarksData.postValue(response.body());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Landmark>> call, Throwable t) {
-                Log.d(TAG,"Request failed");
+                Log.d(TAG, "Request failed");
                 ServerErrorHandler.getInstance().raiseError(t);
             }
         });
@@ -82,7 +82,7 @@ public class RetrofitLandmarksService implements ILandmarksService {
 
             @Override
             public void onFailure(Call<Landmark> call, Throwable t) {
-                Log.d(TAG,"Request failed");
+                Log.d(TAG, "Request failed");
                 ServerErrorHandler.getInstance().raiseError(t);
             }
         });

@@ -27,12 +27,12 @@ public class AlertManager {
         alert.show();
     }
 
-    public static void buildAlertMessageConnectionLost(Activity activity){
+    public static void buildAlertMessageConnectionLost(Activity activity) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle(activity.getString(R.string.alert_los_title));
         alertDialog.setMessage(activity.getString(R.string.alert_los_message));
         alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,activity.getString(R.string.alert_los_continue), new DialogInterface.OnClickListener() {
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, activity.getString(R.string.alert_los_continue), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
             }

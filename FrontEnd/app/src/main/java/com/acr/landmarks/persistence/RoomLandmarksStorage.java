@@ -48,10 +48,10 @@ public class RoomLandmarksStorage implements LandmarkStorage {
         int id = getInt(cursor, "id");
         String title = getString(cursor, "title");
         String description = getString(cursor, "description");
-        String[] images = getStringArray(cursor,"images");
-        String[] audios = getStringArray(cursor,"audios");
+        String[] images = getStringArray(cursor, "images");
+        String[] audios = getStringArray(cursor, "audios");
 
-        return new Landmark(id, title, description,lat, lng, images,audios);
+        return new Landmark(id, title, description, lat, lng, images, audios);
     }
 
     private double getDouble(Cursor cursor, String name) {

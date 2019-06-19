@@ -10,15 +10,16 @@ import android.net.NetworkInfo;
 public class ConnectivityReceiver extends BroadcastReceiver {
 
     private ConnectivityLossListener mListener;
-    public ConnectivityReceiver(ConnectivityLossListener listener){
+
+    public ConnectivityReceiver(ConnectivityLossListener listener) {
         mListener = listener;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-         if(!isConnected(context)){
-             mListener.onConnectionLost();
-         }
+        if (!isConnected(context)) {
+            mListener.onConnectionLost();
+        }
     }
 
     private boolean isConnected(Context context) {
@@ -29,7 +30,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         return (activeNetwork != null) && activeNetwork.isConnected();
     }
 
-    public interface ConnectivityLossListener{
+    public interface ConnectivityLossListener {
         void onConnectionLost();
     }
 }

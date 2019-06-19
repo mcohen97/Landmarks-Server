@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using ObligatorioISP.DataAccess.Contracts;
 using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
@@ -65,7 +64,8 @@ namespace ObligatorioISP.WebAPI.Tests
         }
 
         [TestMethod]
-        public void ShouldReturn404IfTourNotFound() {
+        public void ShouldReturn404IfTourNotFound()
+        {
             Exception internalEx = new TourNotFoundException();
             Exception toThrow = new ServiceException(internalEx.Message, ErrorType.ENTITY_NOT_FOUND);
             fakeToursStorage.Setup(s => s.GetTourById(It.IsAny<int>())).Throws(toThrow);

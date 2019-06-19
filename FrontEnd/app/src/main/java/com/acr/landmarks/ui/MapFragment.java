@@ -47,7 +47,7 @@ import dagger.android.support.DaggerFragment;
 
 
 public class MapFragment extends DaggerFragment implements OnMapReadyCallback, ClusterManager.OnClusterItemInfoWindowClickListener<LandmarkClusterMarker>,
-        GoogleMap.OnCameraIdleListener,ClusterManager.OnClusterItemClickListener<LandmarkClusterMarker> {
+        GoogleMap.OnCameraIdleListener, ClusterManager.OnClusterItemClickListener<LandmarkClusterMarker> {
 
     private final String TAG = "MapFragment";
     private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
@@ -63,7 +63,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     //Clustering
     private ClusterManager<LandmarkClusterMarker> mClusterManager;
     private ClusterManagerRenderer mClusterManagerRenderer;
-    private  ArrayList<LandmarkClusterMarker> mClusterMarkers;
+    private ArrayList<LandmarkClusterMarker> mClusterMarkers;
 
     private List<Landmark> mLandmarks;
 
@@ -84,11 +84,11 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //imageService = new PicassoImageService(Config.getConfigValue(getContext(),"api_url"));
-        mUserLocation= null;
+        mUserLocation = null;
         mClusterMarkers = new ArrayList<>();
         mLandmarks = new ArrayList<Landmark>();
 
-        landmarksViewModel = ViewModelProviders.of(getActivity(),viewModelFactory).get(LandmarksViewModel.class);
+        landmarksViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(LandmarksViewModel.class);
         toursViewModel = ViewModelProviders.of(getActivity()).get(ToursViewModel.class);
         locationViewModel = ViewModelProviders.of(getActivity()).get(UserLocationViewModel.class);
         firstCameraMovement = false;
@@ -129,27 +129,27 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        if(mUserLocation != null){
+        if (mUserLocation != null) {
             mMapManager.setCameraDefaultView(mUserLocation);
         }
     }
 
     @Override
     public void onMapReady(GoogleMap map) {
-        if ( !hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (!hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         map.setMyLocationEnabled(true);
         GeoApiContext mGeoApiContext = new GeoApiContext.Builder()
-                    .apiKey(getString(R.string.google_map_api_key))
-                    .build();
+                .apiKey(getString(R.string.google_map_api_key))
+                .build();
 
-        int colorForSelected =ContextCompat.getColor(getActivity(), R.color.blue1);
-        int colorForUnselected =ContextCompat.getColor(getActivity(), R.color.darkGrey);
+        int colorForSelected = ContextCompat.getColor(getActivity(), R.color.blue1);
+        int colorForUnselected = ContextCompat.getColor(getActivity(), R.color.darkGrey);
         mMap = map;
-        mMapManager = new MapManager(mMap,mGeoApiContext,colorForSelected,colorForUnselected);
+        mMapManager = new MapManager(mMap, mGeoApiContext, colorForSelected, colorForUnselected);
         loadMapStyle();
         observeUserLocation();
         observeLandmarksInRange();
@@ -159,15 +159,15 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
 
     private void observeUserLocation() {
         locationViewModel.getLocation().observe(this, location -> {
-            boolean firstLocation =mUserLocation == null;
+            boolean firstLocation = mUserLocation == null;
 
             mUserLocation = location;
 
-            if(firstLocation){
+            if (firstLocation) {
                 mMapManager.setCameraDefaultView(mUserLocation);
                 Double radius = new Double(mMapManager.getMapRangeRadius());
-                landmarksViewModel.setGeofence(location,radius);
-                toursViewModel.setGeofence(location,radius);
+                landmarksViewModel.setGeofence(location, radius);
+                toursViewModel.setGeofence(location, radius);
                 mMap.setOnCameraIdleListener(this);
             }
         });
@@ -176,9 +176,9 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     private void observeLandmarksInRange() {
         landmarksViewModel.getLandmarks().observe(this, landmarks -> {
             mLandmarks = landmarks;
-            Log.d(DebugConstants.AP_DEX, "Receiving new landmarks, time: "+System.currentTimeMillis());
-            Log.d(TAG,"Received "+landmarks.size()+" landmarks");
-            if(!landmarks.isEmpty()) {
+            Log.d(DebugConstants.AP_DEX, "Receiving new landmarks, time: " + System.currentTimeMillis());
+            Log.d(TAG, "Received " + landmarks.size() + " landmarks");
+            if (!landmarks.isEmpty()) {
                 addMapMarkers();
             }
         });
@@ -189,8 +189,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
             if (tour != null) {
                 drawTour(tour);
             } else {
-                //resetTheMap();
-                //addMapMarkers();
                 mMapManager.clearTours();
                 mMapManager.clearRoutes();
             }
@@ -199,9 +197,9 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     }
 
     private void observeDirectionsAsked() {
-        landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
+        landmarksViewModel.getAskedForDirections().observe(this, isAsked -> {
 
-            if (isAsked ) {
+            if (isAsked) {
                 LandmarkClusterMarker marker = mSelectedMarker;
                 mClusterManagerRenderer.getMarker(marker).hideInfoWindow();
                 Landmark selected = landmarksViewModel.getSelectedLandmark().getValue();
@@ -222,9 +220,9 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         boolean success = false;
         mMap.getUiSettings().setMapToolbarEnabled(false);
         try {
-            SharedPreferences preferences = getActivity().getSharedPreferences("PREFS",0);
+            SharedPreferences preferences = getActivity().getSharedPreferences("PREFS", 0);
             String mapStyle = preferences.getString("mapStyle", "map_style_light");
-            switch (mapStyle){
+            switch (mapStyle) {
                 case "map_style_light":
                     success = mMap.setMapStyle(
                             MapStyleOptions.loadRawResourceStyle(
@@ -245,13 +243,13 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         }
     }
 
-    private boolean hasPermission(String permission){
-       return ActivityCompat.checkSelfPermission(getActivity(), permission) == PackageManager.PERMISSION_GRANTED;
+    private boolean hasPermission(String permission) {
+        return ActivityCompat.checkSelfPermission(getActivity(), permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     private LandmarkClusterMarker getLandmarksMarker(Landmark landmark) {
-        for(LandmarkClusterMarker marker: mClusterMarkers){
-            if(marker.getLandmark().equals(landmark)){
+        for (LandmarkClusterMarker marker : mClusterMarkers) {
+            if (marker.getLandmark().equals(landmark)) {
                 return marker;
             }
         }
@@ -295,10 +293,10 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
 
     private void updateMapMarkers() {
 
-        int landmarkIndex =0;
+        int landmarkIndex = 0;
         for (Landmark landmark : mLandmarks) {
             try {
-                addMarker(landmark,mLandmarks.size(),landmarkIndex);
+                addMarker(landmark, mLandmarks.size(), landmarkIndex);
                 landmarkIndex++;
             } catch (NullPointerException e) {
                 Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage());
@@ -309,9 +307,9 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     private void addMarker(Landmark landmark, int size, int landmarkIndex) {
 
         boolean alreadyInMap = isMarkerInMap(landmark);
-        Log.d(TAG,"ya se encuentra en el mapa: "+ alreadyInMap);
+        Log.d(TAG, "ya se encuentra en el mapa: " + alreadyInMap);
         if (!alreadyInMap) {
-            Log.d(TAG, "Loading marker "+ landmarkIndex);
+            Log.d(TAG, "Loading marker " + landmarkIndex);
             String snippet = "Determine route to " + landmark.title + "?";
             LandmarkClusterMarker newClusterMarker = new LandmarkClusterMarker(
                     new LatLng(landmark.latitude, landmark.longitude),
@@ -326,7 +324,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
                 public void onImageLoaded(Bitmap img) {
                     newClusterMarker.setIconPicture(img);
                     mClusterManager.addItem(newClusterMarker);
-                    Log.d(TAG, "Loaded marker "+ landmarkIndex);
+                    Log.d(TAG, "Loaded marker " + landmarkIndex);
                     //if(landmarkIndex == (size-1) ){
                     mClusterManager.cluster();
                     //Log.d(TAG,"Markers loaded");
@@ -337,9 +335,9 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     }
 
     private void removeUselessMarkers() {
-        List<LandmarkClusterMarker> auxLandmarks= (List<LandmarkClusterMarker>) mClusterMarkers.clone();
-        for(LandmarkClusterMarker marker: auxLandmarks){
-            if(!markerContainsLandmarkInRange(marker)){
+        List<LandmarkClusterMarker> auxLandmarks = (List<LandmarkClusterMarker>) mClusterMarkers.clone();
+        for (LandmarkClusterMarker marker : auxLandmarks) {
+            if (!markerContainsLandmarkInRange(marker)) {
                 mClusterMarkers.remove(marker);
                 mClusterManager.removeItem(marker);
             }
@@ -351,8 +349,8 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     }
 
     private boolean isMarkerInMap(Landmark landmark) {
-        for(LandmarkClusterMarker marker :mClusterMarkers){
-            if(marker.getLandmark().equals(landmark)){
+        for (LandmarkClusterMarker marker : mClusterMarkers) {
+            if (marker.getLandmark().equals(landmark)) {
                 return true;
             }
         }
@@ -364,12 +362,13 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
         mSelectedMarker = landmarkClusterMarker;
     }
+
     @Override
     public boolean onClusterItemClick(LandmarkClusterMarker landmarkClusterMarker) {
         landmarksViewModel.setSelectedLandmark(landmarkClusterMarker.getLandmark().id);
         mSelectedMarker = landmarkClusterMarker;
-        if(isTourSelected() && isPartOfSelectedTour(landmarkClusterMarker)){
-            mMapManager.showDirections(landmarkClusterMarker, mUserLocation,ContextCompat.getColor(getActivity(), R.color.darkGrey));
+        if (isTourSelected() && isPartOfSelectedTour(landmarkClusterMarker)) {
+            mMapManager.showDirections(landmarkClusterMarker, mUserLocation, ContextCompat.getColor(getActivity(), R.color.darkGrey));
             drawTour(toursViewModel.getSelectedTour().getValue());
         }
         return false;
@@ -378,8 +377,8 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     private boolean isPartOfSelectedTour(LandmarkClusterMarker landmarkClusterMarker) {
         Tour selectedTour = toursViewModel.getSelectedTour().getValue();
 
-        for (int landmarkId : selectedTour.landmarksIds){
-            if(landmarkId == landmarkClusterMarker.getLandmark().id){
+        for (int landmarkId : selectedTour.landmarksIds) {
+            if (landmarkId == landmarkClusterMarker.getLandmark().id) {
                 return true;
             }
         }
@@ -388,17 +387,17 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
 
     @Override
     public void onCameraIdle() {
-        if(firstCameraMovement) {
+        if (firstCameraMovement) {
             float newRadius = mMapManager.getMapRangeRadius();
             LatLng center = mMap.getCameraPosition().target;
             Location centerLocation = MapManager.latLngToLocation(center);
-            Double radius =new Double(newRadius);
-            Log.d(DebugConstants.AP_DEX, "Requesting new landmarks, time: "+System.currentTimeMillis());
-            Log.d(DebugConstants.AP_DEX, "Requesting new tours, time: "+System.currentTimeMillis());
-            landmarksViewModel.setGeofence(centerLocation,radius );
-            toursViewModel.setGeofence(centerLocation,radius);
-        }else{
-            firstCameraMovement=true;
+            Double radius = new Double(newRadius);
+            Log.d(DebugConstants.AP_DEX, "Requesting new landmarks, time: " + System.currentTimeMillis());
+            Log.d(DebugConstants.AP_DEX, "Requesting new tours, time: " + System.currentTimeMillis());
+            landmarksViewModel.setGeofence(centerLocation, radius);
+            toursViewModel.setGeofence(centerLocation, radius);
+        } else {
+            firstCameraMovement = true;
         }
     }
 
@@ -418,10 +417,10 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     }
 
     public void resetTheMap() {
-        if(mMap != null) {
+        if (mMap != null) {
             mMap.clear();
 
-            if(mClusterManager != null){
+            if (mClusterManager != null) {
                 mClusterManager.clearItems();
             }
             if (mClusterMarkers.size() > 0) {
