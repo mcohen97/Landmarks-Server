@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +12,8 @@ namespace ObligatorioISP.WebAPI.Controllers
         private string landmarksImagesDirectory;
         private string toursImagesDirectory;
 
-        public ImagesController(IConfiguration configuration) {
+        public ImagesController(IConfiguration configuration)
+        {
             landmarksImagesDirectory = configuration["LandmarkImages:Uri"];
             toursImagesDirectory = configuration["TourImages:Uri"];
         }
@@ -27,11 +25,13 @@ namespace ObligatorioISP.WebAPI.Controllers
         }
 
         [HttpGet("tours/{id}")]
-        public async Task<IActionResult> GetTourImage(string id) {
+        public async Task<IActionResult> GetTourImage(string id)
+        {
             return await GetImage(toursImagesDirectory, id);
         }
 
-        private async Task<IActionResult> GetImage(string imagesDirectory, string id) {
+        private async Task<IActionResult> GetImage(string imagesDirectory, string id)
+        {
             IActionResult result;
             try
             {

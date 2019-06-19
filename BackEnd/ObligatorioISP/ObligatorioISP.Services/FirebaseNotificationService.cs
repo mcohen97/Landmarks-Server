@@ -46,7 +46,7 @@ namespace ObligatorioISP.Services
                 if (closeLandmarks.Any())
                 {
                     Landmark toSend = closeLandmarks.First();
-                    SendPushNotification(token,toSend, ComputeDistanceMeters(lat,lng,toSend.Latitude, toSend.Longitude));
+                    SendPushNotification(token, toSend, ComputeDistanceMeters(lat, lng, toSend.Latitude, toSend.Longitude));
                     tokenCache.Set(token, DateTime.Now, DateTimeOffset.UtcNow.AddHours(intervalBetweenNotifications));
                     return true;
                 }
@@ -107,7 +107,7 @@ namespace ObligatorioISP.Services
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
             double distance = earthRadiusM * c;
 
-            return (int) Math.Truncate(distance);
+            return (int)Math.Truncate(distance);
         }
 
         private double degreesToRadians(double degrees)

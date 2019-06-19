@@ -15,29 +15,33 @@ namespace ObligatorioISP.DataAccess.Tests
         private ISqlContext context;
 
         [TestInitialize]
-        public void SetUp() {
+        public void SetUp()
+        {
             testData = new TestDatabaseManager();
             testData.SetUpDatabase();
             testData.LoadTestData();
             context = new SqlServerConnectionManager(testData.ConnectionString);
             landmarks = new SqlServerLandmarksRepository(context, testData.LandmarksImagesPath, testData.AudiosPath);
-            tours = new SqlServerToursRepository(context,landmarks,testData.ToursImagesPaths);
+            tours = new SqlServerToursRepository(context, landmarks, testData.ToursImagesPaths);
         }
 
         [TestMethod]
-        public void ShouldReturnTourGivenExistingId() {
+        public void ShouldReturnTourGivenExistingId()
+        {
             Tour retrieved = tours.GetById(1);
             Assert.AreEqual(1, retrieved.Id);
         }
 
         [TestMethod]
         [ExpectedException(typeof(TourNotFoundException))]
-        public void ShouldThrowExceptionIfTourIsUnexistent() {
+        public void ShouldThrowExceptionIfTourIsUnexistent()
+        {
             Tour retrieved = tours.GetById(101);
         }
 
         [TestMethod]
-        public void ShouldReturnTourWhoseStopsAreInRange() {
+        public void ShouldReturnTourWhoseStopsAreInRange()
+        {
             double lat = -34.923844;
             double lng = -56.170590;
             double distance = 3;
@@ -58,7 +62,8 @@ namespace ObligatorioISP.DataAccess.Tests
         }
 
         [TestMethod]
-        public void ShouldReturnNoToursIfNoneIsWithinRange() {
+        public void ShouldReturnNoToursIfNoneIsWithinRange()
+        {
             double lat = -34.923844;
             double lng = -56.170590;
             double distance = 1;
@@ -69,7 +74,8 @@ namespace ObligatorioISP.DataAccess.Tests
 
         [TestMethod]
         [ExpectedException(typeof(CorruptedDataException))]
-        public void ShouldThrowExceptionIfToursDataIsInconsistent() {
+        public void ShouldThrowExceptionIfToursDataIsInconsistent()
+        {
             Mock<ISqlContext> fakeContext = new Mock<ISqlContext>();
             Dictionary<string, object> faultyToursData = new Dictionary<string, object>();
             faultyToursData.Add("ID", 1);

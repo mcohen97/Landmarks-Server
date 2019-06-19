@@ -14,7 +14,8 @@ namespace ObligatorioISP.BusinessLogic.Tests
         private ICollection<Landmark> fakeLandmarks;
         private string testImage;
         [TestInitialize]
-        public void StartUp() {
+        public void StartUp()
+        {
             testImage = "testImage1.jpg";
             if (!File.Exists(testImage))
             {
@@ -25,8 +26,9 @@ namespace ObligatorioISP.BusinessLogic.Tests
 
         [TestMethod]
         [ExpectedException(typeof(InvalidTourException))]
-        public void ShouldThrowExceptionWhenIdIsNegative() {
-            Tour testTour = new Tour(-1, "Tour 1", "description 1", fakeLandmarks,testImage,TourCategory.CULTURAL);
+        public void ShouldThrowExceptionWhenIdIsNegative()
+        {
+            Tour testTour = new Tour(-1, "Tour 1", "description 1", fakeLandmarks, testImage, TourCategory.CULTURAL);
         }
 
         [TestMethod]
@@ -65,7 +67,8 @@ namespace ObligatorioISP.BusinessLogic.Tests
         }
 
         [TestMethod]
-        public void ShouldHaveSameDataGivenInConstructor() {
+        public void ShouldHaveSameDataGivenInConstructor()
+        {
             Tour testTour = new Tour(1, "Tour 1", "description 1", fakeLandmarks, testImage, TourCategory.CULTURAL);
             Assert.AreEqual(1, testTour.Id);
             Assert.AreEqual("Tour 1", testTour.Title);

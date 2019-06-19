@@ -28,7 +28,8 @@ namespace ObligatorioISP.WebAPI.Controllers
                 ICollection<TourDto> retrieved = tours.GetToursWithinKmRange(lat, lng, dist);
                 result = Ok(retrieved);
             }
-            catch (ServiceException e) {
+            catch (ServiceException e)
+            {
                 result = errorFactory.GenerateError(e);
             }
             return result;
@@ -41,9 +42,10 @@ namespace ObligatorioISP.WebAPI.Controllers
             try
             {
                 TourDto retrieved = tours.GetTourById(id);
-                result= Ok(retrieved);
+                result = Ok(retrieved);
             }
-            catch (ServiceException e) {
+            catch (ServiceException e)
+            {
                 result = errorFactory.GenerateError(e);
             }
             return result;

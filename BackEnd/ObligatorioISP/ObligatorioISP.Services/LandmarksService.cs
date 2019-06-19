@@ -4,9 +4,7 @@ using ObligatorioISP.DataAccess.Contracts.Exceptions;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
 using ObligatorioISP.Services.Contracts.Exceptions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ObligatorioISP.Services
 {
@@ -25,14 +23,16 @@ namespace ObligatorioISP.Services
             {
                 return TryGetLandmarksOfTour(id);
             }
-            catch (EntityNotFoundException e1) {
+            catch (EntityNotFoundException e1)
+            {
                 throw new ServiceException(e1.Message, ErrorType.ENTITY_NOT_FOUND);
             }
             catch (DataInaccessibleException e2)
             {
                 throw new ServiceException(e2.Message, ErrorType.DATA_INACCESSIBLE);
             }
-            catch (CorruptedDataException e3) {
+            catch (CorruptedDataException e3)
+            {
                 throw new ServiceException(e3.Message, ErrorType.DATA_CORRUPTED);
             }
         }
@@ -46,10 +46,12 @@ namespace ObligatorioISP.Services
 
         public ICollection<LandmarkDto> GetLandmarksWithinZone(double latitude, double longitude, double distance)
         {
-            try {
+            try
+            {
                 return TryGetLandmarksWithinZone(latitude, longitude, distance);
             }
-            catch (DataInaccessibleException e) {
+            catch (DataInaccessibleException e)
+            {
                 throw new ServiceException(e.Message, ErrorType.DATA_INACCESSIBLE);
             }
             catch (CorruptedDataException e2)
@@ -67,14 +69,16 @@ namespace ObligatorioISP.Services
 
         public LandmarkDto GetLandmarkById(int id)
         {
-            try {
+            try
+            {
                 return TryGetLandmarkById(id);
             }
             catch (EntityNotFoundException e1)
             {
                 throw new ServiceException(e1.Message, ErrorType.ENTITY_NOT_FOUND);
             }
-            catch (DataInaccessibleException e2) {
+            catch (DataInaccessibleException e2)
+            {
                 throw new ServiceException(e2.Message, ErrorType.DATA_INACCESSIBLE);
             }
             catch (CorruptedDataException e3)

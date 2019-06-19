@@ -2,9 +2,10 @@
 
 namespace ObligatorioISP.DataAccess.Contracts.Exceptions
 {
-    public class TourNotFoundException: EntityNotFoundException
+    public class TourNotFoundException : EntityNotFoundException
     {
-        public TourNotFoundException() : base("Tour not found") {
+        public TourNotFoundException() : base("Tour not found")
+        {
         }
     }
 }

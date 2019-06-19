@@ -1,15 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using System.Text;
 
 namespace ObligatorioISP.DataAccess.Tests
 {
     public class TestDatabaseManager
     {
-        private string serverString ;
+        private string serverString;
         private string securityString;
         public string dbName;
         public string LandmarksImagesPath { get; private set; }
@@ -17,10 +15,11 @@ namespace ObligatorioISP.DataAccess.Tests
         public string AudiosPath { get; private set; }
         public string ConnectionString { get; private set; }
 
-        public TestDatabaseManager() {
-             IConfigurationRoot config = new ConfigurationBuilder()
-            .AddJsonFile("testconfig.json")
-            .Build();
+        public TestDatabaseManager()
+        {
+            IConfigurationRoot config = new ConfigurationBuilder()
+           .AddJsonFile("testconfig.json")
+           .Build();
             serverString = config["serverString"];
             securityString = config["securityString"];
             dbName = config["dbName"];
@@ -120,7 +119,8 @@ namespace ObligatorioISP.DataAccess.Tests
             string[] functionCommands = createFunctions.Split("GO");
             for (int i = 0; i < functionCommands.Length; i++)
             {
-                if (!String.IsNullOrEmpty(functionCommands[i])) {
+                if (!String.IsNullOrEmpty(functionCommands[i]))
+                {
                     using (SqlCommand sqlCmd = new SqlCommand(functionCommands[i], client))
                     {
                         sqlCmd.ExecuteNonQuery();
@@ -146,7 +146,8 @@ namespace ObligatorioISP.DataAccess.Tests
                             string id = reader["ID"].ToString();
                             string extension = reader["EXTENSION"].ToString();
                             string fullPath = $"{imagesPath}/{landmarkId}_{id}.{extension}";
-                            if (!File.Exists(fullPath)) {
+                            if (!File.Exists(fullPath))
+                            {
                                 File.Create(fullPath);
                             }
                         }
@@ -155,7 +156,8 @@ namespace ObligatorioISP.DataAccess.Tests
             }
         }
 
-        private void CreateTourImageFiles(string connectionString, string imagesPath) {
+        private void CreateTourImageFiles(string connectionString, string imagesPath)
+        {
             using (SqlConnection client = new SqlConnection(connectionString))
             {
                 client.Open();
@@ -167,7 +169,7 @@ namespace ObligatorioISP.DataAccess.Tests
                         while (reader.Read())
                         {
                             string path = $"{ToursImagesPaths}/{reader["ID"].ToString()}.{reader["IMAGE_EXTENSION"].ToString()}";
-           
+
                             if (!File.Exists(path))
                             {
                                 File.Create(path);

@@ -1,8 +1,7 @@
 ﻿using ObligatorioISP.BusinessLogic.Exceptions;
 using System.Collections.Generic;
-using String = System.String;
-using File = System.IO.File;
-using Path = System.IO.Path;
+using System;
+using System.IO;
 using System.Linq;
 
 namespace ObligatorioISP.BusinessLogic
@@ -17,7 +16,7 @@ namespace ObligatorioISP.BusinessLogic
         private ICollection<string> imagesPaths;
         private ICollection<string> audiosPaths;
 
-        public int Id { get { return id; }private set { SetId(value); } }
+        public int Id { get { return id; } private set { SetId(value); } }
         public string Title { get { return title; } private set { SetTitle(value); } }
         public string Description { get { return description; } private set { SetDescription(value); } }
         public string Icon { get { return Images.First(); } }
@@ -32,7 +31,7 @@ namespace ObligatorioISP.BusinessLogic
             audiosPaths = new List<string>();
         }
 
-        public Landmark(int anId, string aTitle, double lat, double lng, string aDescription, string aPath):this(aTitle,lat,lng,aDescription,aPath)
+        public Landmark(int anId, string aTitle, double lat, double lng, string aDescription, string aPath) : this(aTitle, lat, lng, aDescription, aPath)
         {
             Id = anId;
         }
@@ -40,19 +39,21 @@ namespace ObligatorioISP.BusinessLogic
         //Constructor with a list of images' paths, instead of a single path.
         public Landmark(int anId, string aTitle, string aDescription, ICollection<string> paths, double lat, double lng)
         {
-            SetCommonAttributes(anId,aTitle, lat, lng, aDescription);
+            SetCommonAttributes(anId, aTitle, lat, lng, aDescription);
             Images = paths;
             Audios = new List<string>();
 
         }
         //Constructor with images and audios lists.
-        public Landmark(int anId, string aTitle, double lat, double lng, string aDescription, ICollection<string> imagesPaths, ICollection<string> audiosPaths) {
-            SetCommonAttributes(anId,aTitle, lat, lng, aDescription);
+        public Landmark(int anId, string aTitle, double lat, double lng, string aDescription, ICollection<string> imagesPaths, ICollection<string> audiosPaths)
+        {
+            SetCommonAttributes(anId, aTitle, lat, lng, aDescription);
             Images = imagesPaths;
             Audios = audiosPaths;
         }
 
-        private void SetCommonAttributes(int anId, string aTitle, double lat, double lng, string aDescription) {
+        private void SetCommonAttributes(int anId, string aTitle, double lat, double lng, string aDescription)
+        {
             Id = anId;
             Title = aTitle;
             Latitude = lat;
@@ -63,7 +64,7 @@ namespace ObligatorioISP.BusinessLogic
 
         private void SetId(int value)
         {
-            if (value<0)
+            if (value < 0)
             {
                 throw new InvalidLandmarkException("id can't be negative");
             }
@@ -72,7 +73,8 @@ namespace ObligatorioISP.BusinessLogic
 
         private void SetTitle(string value)
         {
-            if (String.IsNullOrWhiteSpace(value)) {
+            if (String.IsNullOrWhiteSpace(value))
+            {
                 throw new InvalidLandmarkException("Name can't be empty");
             }
             title = value;
@@ -80,7 +82,8 @@ namespace ObligatorioISP.BusinessLogic
 
         private void SetDescription(string value)
         {
-            if (value == null) {
+            if (value == null)
+            {
                 throw new InvalidLandmarkException("Description can't be null");
             }
             description = value;
@@ -88,21 +91,25 @@ namespace ObligatorioISP.BusinessLogic
 
         public void AddImage(string aPath)
         {
-            if (!File.Exists(aPath)) {
-                throw new InvalidLandmarkException("Image"+aPath+" doesn't exist");
+            if (!File.Exists(aPath))
+            {
+                throw new InvalidLandmarkException("Image" + aPath + " doesn't exist");
             }
             imagesPaths.Add(getFileBasename(aPath));
         }
 
         private void SetImages(ICollection<string> pathList)
         {
-            if (pathList == null) {
+            if (pathList == null)
+            {
                 throw new InvalidLandmarkException("Images list can't be null");
             }
-            if (pathList.Any(p => !File.Exists(p))) {
+            if (pathList.Any(p => !File.Exists(p)))
+            {
                 throw new InvalidLandmarkException("Image doesn't exist");
             }
-            if (!pathList.Any()) {
+            if (!pathList.Any())
+            {
                 throw new InvalidLandmarkException("Images list can't be empty");
             }
             imagesPaths = pathList.Select(p => getFileBasename(p)).ToList();
@@ -121,14 +128,17 @@ namespace ObligatorioISP.BusinessLogic
             audiosPaths = pathList.Select(p => getFileBasename(p)).ToList();
         }
 
-        public void AddAudio(string path) {
-            if (!File.Exists(path)) {
+        public void AddAudio(string path)
+        {
+            if (!File.Exists(path))
+            {
                 throw new InvalidLandmarkException("Audio doesn't exist");
             }
             audiosPaths.Add(getFileBasename(path));
         }
 
-        private string getFileBasename(string path) {
+        private string getFileBasename(string path)
+        {
             //checks that image exists, but only keeps image basename.
             char separator = Path.DirectorySeparatorChar;
             return path.Split(separator).Last();

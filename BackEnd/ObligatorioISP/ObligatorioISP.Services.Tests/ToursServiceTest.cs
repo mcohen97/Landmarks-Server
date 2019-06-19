@@ -22,7 +22,8 @@ namespace ObligatorioISP.Services.Tests
 
 
         [TestInitialize]
-        public void StartUp() {
+        public void StartUp()
+        {
             fakeToursStorage = new Mock<IToursRepository>();
             fakeToursStorage.Setup(r => r.GetToursWithinKmRange(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
                 .Returns(GetFakeTours());
@@ -34,24 +35,26 @@ namespace ObligatorioISP.Services.Tests
         }
 
         [TestMethod]
-        public void ShouldReturnToursWithinRange() {
-            double lat= -34.912126;
-            double lng= -56.167282;
-            double distance=2;
-            ICollection<TourDto> retrieved =service.GetToursWithinKmRange(lat, lng, distance);
+        public void ShouldReturnToursWithinRange()
+        {
+            double lat = -34.912126;
+            double lng = -56.167282;
+            double distance = 2;
+            ICollection<TourDto> retrieved = service.GetToursWithinKmRange(lat, lng, distance);
 
             fakeToursStorage.Verify(r => r.GetToursWithinKmRange(lat, lng, distance), Times.Once);
             Assert.AreEqual(GetFakeTours().Count, retrieved.Count);
         }
 
         [TestMethod]
-        public void ShouldReturnTourWithTheId() {
+        public void ShouldReturnTourWithTheId()
+        {
             int id = 3;
 
             TourDto retrieved = service.GetTourById(id);
 
             fakeToursStorage.Verify(r => r.GetById(id), Times.Once);
-            Assert.AreEqual(id,retrieved.Id);
+            Assert.AreEqual(id, retrieved.Id);
             Assert.AreEqual("Tour 3", retrieved.Title);
             Assert.AreEqual("description 3", retrieved.Description);
             Assert.AreEqual("GREEN_SITES", retrieved.Category);
@@ -70,7 +73,8 @@ namespace ObligatorioISP.Services.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ServiceException))]
-        public void ShoulFailWhenCantAccessDataGetToursWithinKmRange() {
+        public void ShoulFailWhenCantAccessDataGetToursWithinKmRange()
+        {
             double lat = -34.912126;
             double lng = -56.167282;
             double distance = 2;
@@ -82,7 +86,8 @@ namespace ObligatorioISP.Services.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ServiceException))]
-        public void ShouldFailWhenCantAccessDataGetTourById() { 
+        public void ShouldFailWhenCantAccessDataGetTourById()
+        {
             int id = 3;
 
             fakeToursStorage.Setup(r => r.GetById(It.IsAny<int>()))
@@ -93,7 +98,8 @@ namespace ObligatorioISP.Services.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ServiceException))]
-        public void ShouldFailWhenDataIsCorruptedGetToursWithinKmRange() {
+        public void ShouldFailWhenDataIsCorruptedGetToursWithinKmRange()
+        {
             double lat = -34.912126;
             double lng = -56.167282;
             double distance = 2;
@@ -105,7 +111,8 @@ namespace ObligatorioISP.Services.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ServiceException))]
-        public void ShouldFailWhenDataIsCorruptedGetTourById() {
+        public void ShouldFailWhenDataIsCorruptedGetTourById()
+        {
             int id = 3;
 
             fakeToursStorage.Setup(r => r.GetById(It.IsAny<int>()))
@@ -135,7 +142,8 @@ namespace ObligatorioISP.Services.Tests
         private ICollection<Landmark> GetFakeLandmarks()
         {
             string testImagePath = "testImage.jpg";
-            if (!File.Exists(testImagePath)) {
+            if (!File.Exists(testImagePath))
+            {
                 File.Create(testImagePath);
             }
 

@@ -19,9 +19,10 @@ namespace ObligatorioISP.WebAPI.Tests
     {
         private LandmarksController controller;
         private Mock<ILandmarksService> fakeLandmarksService;
-    
+
         [TestInitialize]
-        public void SetUp() {
+        public void SetUp()
+        {
             fakeLandmarksService = new Mock<ILandmarksService>();
             fakeLandmarksService.Setup(l => l.GetLandmarksWithinZone(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<double>()))
                 .Returns(GetFakeLandmarks());
@@ -33,7 +34,8 @@ namespace ObligatorioISP.WebAPI.Tests
         }
 
         [TestMethod]
-        public void ShouldReturn200OKWhenGET() {
+        public void ShouldReturn200OKWhenGET()
+        {
 
             double centerLat = -34.923844;
             double centerLng = -56.170590;
@@ -48,11 +50,12 @@ namespace ObligatorioISP.WebAPI.Tests
             Assert.IsNotNull(ok);
             Assert.AreEqual(200, ok.StatusCode);
             Assert.IsNotNull(landmarks);
-            Assert.AreEqual(GetFakeLandmarks().Count,landmarks.Count);
+            Assert.AreEqual(GetFakeLandmarks().Count, landmarks.Count);
         }
 
         [TestMethod]
-        public void ShouldReturnTheDtosAsRetrieved() {
+        public void ShouldReturnTheDtosAsRetrieved()
+        {
 
             double centerLat = -34.912127;
             double centerLng = -56.167283;
@@ -70,7 +73,8 @@ namespace ObligatorioISP.WebAPI.Tests
         }
 
         [TestMethod]
-        public void ShouldReturnTheLandmarkWithTheIdInGET() {
+        public void ShouldReturnTheLandmarkWithTheIdInGET()
+        {
             int id = 2;
 
             IActionResult result = controller.Get(id);
@@ -85,7 +89,8 @@ namespace ObligatorioISP.WebAPI.Tests
         }
 
         [TestMethod]
-        public void ShouldReturn404IfLandmarkDoesNotExist() {
+        public void ShouldReturn404IfLandmarkDoesNotExist()
+        {
             Exception internalEx = new LandmarkNotFoundException();
             Exception toThrow = new ServiceException(internalEx.Message, ErrorType.ENTITY_NOT_FOUND);
             fakeLandmarksService.Setup(s => s.GetLandmarkById(It.IsAny<int>())).Throws(toThrow);
@@ -103,7 +108,8 @@ namespace ObligatorioISP.WebAPI.Tests
         }
 
         [TestMethod]
-        public void ShouldReturn500IfCantAccessDataInGET() {
+        public void ShouldReturn500IfCantAccessDataInGET()
+        {
             Exception internalEx = new DataInaccessibleException();
             Exception toThrow = new ServiceException(internalEx.Message, ErrorType.DATA_INACCESSIBLE);
             fakeLandmarksService.Setup(s => s.GetLandmarkById(It.IsAny<int>())).Throws(toThrow);

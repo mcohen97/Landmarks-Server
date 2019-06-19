@@ -22,7 +22,7 @@ namespace ObligatorioISP.DataAccess.Tests
             testData.SetUpDatabase();
             testData.LoadTestData();
             context = new SqlServerConnectionManager(testData.ConnectionString);
-            landmarks = new SqlServerLandmarksRepository(context,testData.LandmarksImagesPath,testData.AudiosPath);
+            landmarks = new SqlServerLandmarksRepository(context, testData.LandmarksImagesPath, testData.AudiosPath);
         }
 
         [TestMethod]
@@ -36,32 +36,36 @@ namespace ObligatorioISP.DataAccess.Tests
         }
 
         [TestMethod]
-        public void ShouldAllowOptionalPagination() {
+        public void ShouldAllowOptionalPagination()
+        {
             double centerLat = -34.923844;
             double centerLng = -56.170590;
 
-            ICollection<Landmark> withinBounds = landmarks.GetWithinZone(centerLat, centerLng, 2,1,1);
+            ICollection<Landmark> withinBounds = landmarks.GetWithinZone(centerLat, centerLng, 2, 1, 1);
             Assert.AreEqual(1, withinBounds.Count);
         }
 
         [TestMethod]
-        public void ShouldGiveLandmarksCoveredByTour() {
+        public void ShouldGiveLandmarksCoveredByTour()
+        {
             int tourId = 1;
             ICollection<Landmark> fromTour = landmarks.GetTourLandmarks(tourId);
             Assert.AreEqual(3, fromTour.Count);
         }
 
         [TestMethod]
-        public void ShouldReturnLandmarkWithTheId() {
+        public void ShouldReturnLandmarkWithTheId()
+        {
             int landmarkId = 2;
             Landmark retrieved = landmarks.GetById(2);
             Assert.AreEqual(2, retrieved.Id);
-            Assert.AreEqual("Monumento 2",retrieved.Title);
+            Assert.AreEqual("Monumento 2", retrieved.Title);
         }
 
         [TestMethod]
         [ExpectedException(typeof(LandmarkNotFoundException))]
-        public void ShouldThrowExceptionIfLandmarkNotFound() {
+        public void ShouldThrowExceptionIfLandmarkNotFound()
+        {
             Landmark retrieved = landmarks.GetById(32);
         }
 
@@ -74,7 +78,8 @@ namespace ObligatorioISP.DataAccess.Tests
 
         [TestMethod]
         [ExpectedException(typeof(CorruptedDataException))]
-        public void ShouldThrowExceptionWhenDatabaseHasInconsistencies() {
+        public void ShouldThrowExceptionWhenDatabaseHasInconsistencies()
+        {
             Mock<ISqlContext> fakeContext = new Mock<ISqlContext>();
             Dictionary<string, object> faultyLandmarkData = new Dictionary<string, object>();
             faultyLandmarkData.Add("ID", -1);

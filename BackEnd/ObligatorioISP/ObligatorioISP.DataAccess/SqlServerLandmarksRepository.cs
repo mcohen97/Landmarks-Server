@@ -27,11 +27,11 @@ namespace ObligatorioISP.DataAccess
             audiosDirectory = audiosPath;
         }
 
-        public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm, int offset =0, int count = 50)
+        public ICollection<Landmark> GetWithinZone(double centerLat, double centerLng, double distanceInKm, int offset = 0, int count = 50)
         {
             string centerLatStr = centerLat.ToString(CultureInfo.InvariantCulture);
             string centerLngStr = centerLng.ToString(CultureInfo.InvariantCulture);
-            string distanceInKmStr= distanceInKm.ToString(CultureInfo.InvariantCulture);
+            string distanceInKmStr = distanceInKm.ToString(CultureInfo.InvariantCulture);
             //Could not find a way to reuse the result of distance and not calculate it twice, should be improved.
             string command = $"SELECT * "
                 + $"FROM Landmark "
@@ -50,7 +50,8 @@ namespace ObligatorioISP.DataAccess
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
 
-            if (!rows.Any()) {
+            if (!rows.Any())
+            {
                 throw new TourNotFoundException();
             }
 
@@ -69,14 +70,15 @@ namespace ObligatorioISP.DataAccess
                 + $"WHERE ID = {id};";
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
 
-            if (!rows.Any()) {
+            if (!rows.Any())
+            {
                 throw new LandmarkNotFoundException();
             }
             Landmark selected = BuildLandmark(rows.First());
             return selected;
         }
 
-        private Landmark BuildLandmark(Dictionary<string,object> rawData)
+        private Landmark BuildLandmark(Dictionary<string, object> rawData)
         {
 
             int id = Int32.Parse(rawData["ID"].ToString());
@@ -92,7 +94,8 @@ namespace ObligatorioISP.DataAccess
             {
                 landmark = new Landmark(id, title, lat, lng, description, images, audios);
             }
-            catch (InvalidLandmarkException e) {
+            catch (InvalidLandmarkException e)
+            {
                 throw new CorruptedDataException();
             }
             return landmark;
@@ -107,7 +110,8 @@ namespace ObligatorioISP.DataAccess
             return result;
         }
 
-        private string BuildPath(Dictionary<string, object> rawData, int landmarkId, string table) {
+        private string BuildPath(Dictionary<string, object> rawData, int landmarkId, string table)
+        {
             string resourceId = rawData["ID"].ToString();
             string path;
             char separator = Path.DirectorySeparatorChar;
