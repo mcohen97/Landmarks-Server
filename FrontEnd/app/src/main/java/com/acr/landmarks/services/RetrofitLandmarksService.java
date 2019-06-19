@@ -3,7 +3,9 @@ package com.acr.landmarks.services;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
+import android.util.Log;
 
+import com.acr.landmarks.services.contracts.DebugConstants;
 import com.acr.landmarks.models.Landmark;
 import com.acr.landmarks.services.contracts.ILandmarksService;
 
@@ -23,6 +25,7 @@ public class RetrofitLandmarksService implements ILandmarksService {
     private RetrofitLandmarksAPI webService;
     private final MutableLiveData<List<Landmark>> landmarksData;
     private final MutableLiveData<Landmark> selectedLandmark;
+    private static final String TAG = RetrofitLandmarksService.class.getName();
 
 
     public RetrofitLandmarksService(String apiBaseUrl) {
@@ -44,13 +47,18 @@ public class RetrofitLandmarksService implements ILandmarksService {
             @Override
             public void onResponse(Call<List<Landmark>> call, Response<List<Landmark>> response) {
                 if (response.isSuccessful()) {
+                    long responseTime = response.raw().receivedResponseAtMillis();
+                    long requestTime = response.raw().sentRequestAtMillis();
+                    Log.d(DebugConstants.AP_DEX, "Landmarks HTTP request time: " + requestTime);
+                    Log.d(DebugConstants.AP_DEX, "Landmarks HTTP response time: " + responseTime);
                     landmarksData.postValue(response.body());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Landmark>> call, Throwable t) {
-
+                Log.d(TAG, "Request failed");
+                ServerErrorHandler.getInstance().raiseError(t);
             }
         });
         return landmarksData;
@@ -74,7 +82,8 @@ public class RetrofitLandmarksService implements ILandmarksService {
 
             @Override
             public void onFailure(Call<Landmark> call, Throwable t) {
-
+                Log.d(TAG, "Request failed");
+                ServerErrorHandler.getInstance().raiseError(t);
             }
         });
         return selectedLandmark;

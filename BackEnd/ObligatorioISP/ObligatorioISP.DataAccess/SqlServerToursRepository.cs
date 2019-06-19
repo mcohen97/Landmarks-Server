@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
@@ -9,14 +10,15 @@ using ObligatorioISP.DataAccess.Contracts.Exceptions;
 
 namespace ObligatorioISP.DataAccess
 {
-    public class SqlServerToursRepository: IToursRepository
+    public class SqlServerToursRepository : IToursRepository
     {
         private ILandmarksRepository landmarks;
 
         private ISqlContext connection;
         private string imagesDirectory;
 
-        public SqlServerToursRepository(ISqlContext context, ILandmarksRepository aRepository, string images) {
+        public SqlServerToursRepository(ISqlContext context, ILandmarksRepository aRepository, string images)
+        {
             landmarks = aRepository;
             connection = context;
             imagesDirectory = images;
@@ -27,7 +29,8 @@ namespace ObligatorioISP.DataAccess
             string command = $"SELECT * FROM Tour WHERE ID = {id};";
 
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
-            if (!rows.Any()) {
+            if (!rows.Any())
+            {
                 throw new TourNotFoundException();
             }
             ICollection<Tour> result = rows.Select(r => BuildTour(r)).ToList();
@@ -36,12 +39,16 @@ namespace ObligatorioISP.DataAccess
 
         public ICollection<Tour> GetToursWithinKmRange(double centerLat, double centerLng, double rangeInKm)
         {
-            string command = $"SELECT T.* FROM Tour T " 
-                + $"WHERE NOT EXISTS (" 
-                + $"SELECT 1 FROM Landmark L, LandmarkTour LT" 
-                + $" WHERE L.ID = LT.LANDMARK_ID AND T.ID = LT.TOUR_ID " 
-                + $"AND dbo.DISTANCE({centerLat},{centerLng},L.LATITUDE, L.LONGITUDE) > {rangeInKm});";
-       
+            string centerLatStr = centerLat.ToString(CultureInfo.InvariantCulture);
+            string centerLngStr = centerLng.ToString(CultureInfo.InvariantCulture);
+            string rangeInKmStr = rangeInKm.ToString(CultureInfo.InvariantCulture);
+
+            string command = $"SELECT T.* FROM Tour T "
+                + $"WHERE NOT EXISTS ("
+                + $"SELECT 1 FROM Landmark L, LandmarkTour LT"
+                + $" WHERE L.ID = LT.LANDMARK_ID AND T.ID = LT.TOUR_ID "
+                + $"AND dbo.DISTANCE({centerLatStr},{centerLngStr},L.LATITUDE, L.LONGITUDE) > {rangeInKmStr});";
+
             ICollection<Dictionary<string, object>> rows = connection.ExcecuteRead(command);
             ICollection<Tour> result = rows.Select(r => BuildTour(r)).ToList();
             return result;
@@ -61,9 +68,10 @@ namespace ObligatorioISP.DataAccess
 
             try
             {
-                tour = new Tour(tourId, title,description, tourStops, imagePath,category);
+                tour = new Tour(tourId, title, description, tourStops, imagePath, category);
             }
-            catch (InvalidTourException) {
+            catch (InvalidTourException)
+            {
                 throw new CorruptedDataException();
             }
             return tour;

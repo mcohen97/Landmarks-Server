@@ -7,6 +7,7 @@ import android.location.Location;
 
 
 import com.acr.landmarks.models.Landmark;
+import com.acr.landmarks.persistence.contracts.LandmarkStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +48,10 @@ public class RoomLandmarksStorage implements LandmarkStorage {
         int id = getInt(cursor, "id");
         String title = getString(cursor, "title");
         String description = getString(cursor, "description");
-        String[] images = getStringArray(cursor,"images");
-        String[] audios = getStringArray(cursor,"audios");
+        String[] images = getStringArray(cursor, "images");
+        String[] audios = getStringArray(cursor, "audios");
 
-        return new Landmark(id, title, description,lat, lng, images,audios);
+        return new Landmark(id, title, description, lat, lng, images, audios);
     }
 
     private double getDouble(Cursor cursor, String name) {
@@ -86,7 +87,7 @@ public class RoomLandmarksStorage implements LandmarkStorage {
 
     private List<LandmarkEntity> convertLandmarks(List<Landmark> landmarks) {
         List<LandmarkEntity> converted = new ArrayList<>();
-        for (Landmark l : landmarks) {
+        for (Landmark l : new ArrayList<>(landmarks)) {
             LandmarkEntity entity = new LandmarkEntity();
             entity.id = l.id;
             entity.latitude = l.latitude;

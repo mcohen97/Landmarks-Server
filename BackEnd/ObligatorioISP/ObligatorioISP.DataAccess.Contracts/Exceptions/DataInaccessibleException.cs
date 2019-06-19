@@ -2,9 +2,10 @@
 
 namespace ObligatorioISP.DataAccess.Contracts.Exceptions
 {
-    public class DataInaccessibleException:Exception
+    public class DataInaccessibleException : Exception
     {
-        public DataInaccessibleException():base("Can't access data"){
+        public DataInaccessibleException() : base("Can't access data")
+        {
         }
     }
 }

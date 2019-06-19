@@ -12,9 +12,7 @@ import android.widget.TextView;
 
 import com.acr.landmarks.R;
 import com.acr.landmarks.models.Tour;
-import com.acr.landmarks.services.PicassoImageService;
 import com.acr.landmarks.services.contracts.IImageService;
-import com.acr.landmarks.util.Config;
 
 import java.util.List;
 
@@ -24,10 +22,10 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
     private List<Tour> lastAvailableTourData;
     private IImageService imageService;
 
-    public TourCardAdapter(Context mContext, TourCardAdapter.TourClickedListener clickListener, List<Tour> data) {
+    public TourCardAdapter(Context mContext, TourCardAdapter.TourClickedListener clickListener, List<Tour> data, IImageService service) {
         this.mContext = mContext;
         this.clickListener = clickListener;
-        this.imageService = new PicassoImageService(Config.getConfigValue(mContext,"api_url"));
+        this.imageService = service;
         lastAvailableTourData = data;
     }
 
@@ -66,10 +64,7 @@ public class TourCardAdapter extends RecyclerView.Adapter<TourCardAdapter.ViewHo
         }
 
         String image = requestedTour.imageFile;
-        //byte[] imageData = android.util.Base64.decode(image, Base64.DEFAULT);
-        //Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-        //holder.categoryThumbnail.setImageBitmap(bitmap);
-        imageService.loadTourImageToView(holder.categoryThumbnail,image);
+        imageService.loadTourImageToView(holder.categoryThumbnail, image);
         String tourDescription = requestedTour.description;
         holder.description.setText(tourDescription);
     }

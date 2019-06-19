@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using ObligatorioISP.Services.Contracts;
 using ObligatorioISP.Services.Contracts.Dtos;
@@ -13,7 +12,8 @@ namespace ObligatorioISP.WebAPI.Controllers
     {
         private ILandmarksService landmarks;
         private ErrorActionResultFactory errorFactory;
-        public LandmarksController(ILandmarksService landmarksRepo) {
+        public LandmarksController(ILandmarksService landmarksRepo)
+        {
             landmarks = landmarksRepo;
             errorFactory = new ErrorActionResultFactory(this);
         }
@@ -34,8 +34,9 @@ namespace ObligatorioISP.WebAPI.Controllers
                 LandmarkDto retrieved = landmarks.GetLandmarkById(id);
                 result = Ok(retrieved);
             }
-            catch (ServiceException e) {
-                result=errorFactory.GenerateError(e);
+            catch (ServiceException e)
+            {
+                result = errorFactory.GenerateError(e);
             }
             return result;
         }

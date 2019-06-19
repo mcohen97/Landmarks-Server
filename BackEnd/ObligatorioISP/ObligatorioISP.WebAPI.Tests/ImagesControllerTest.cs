@@ -13,34 +13,53 @@ namespace ObligatorioISP.WebAPI.Tests
     {
         private ImagesController controller;
         private Mock<IConfiguration> config;
-        private string configKey;
+        private string landmarksConfigKey;
+        private string toursConfigKey;
         private string testImage;
 
         [TestInitialize]
-        public void StartUp() {
-            configKey = "LandmarkImages:Uri";
+        public void StartUp()
+        {
+            landmarksConfigKey = "LandmarkImages:Uri";
+            toursConfigKey = "TourImages:Uri";
             config = new Mock<IConfiguration>();
-            config.Setup(c => c[configKey]).Returns(Directory.GetCurrentDirectory());
+            config.Setup(c => c[landmarksConfigKey]).Returns(Directory.GetCurrentDirectory());
+            config.Setup(c => c[toursConfigKey]).Returns(Directory.GetCurrentDirectory());
             testImage = "testImage.jpg";
-            if (!File.Exists(testImage)) {
+            if (!File.Exists(testImage))
+            {
                 File.Create(testImage);
             }
             controller = new ImagesController(config.Object);
         }
 
         [TestMethod]
-        public void GetExistentImage() {
-            Task<IActionResult> task =controller.GetLandmarkImage(testImage);
+        public void GetExistentLandmarkImage()
+        {
+            Task<IActionResult> task = controller.GetLandmarkImage(testImage);
             task.Wait();
             IActionResult result = task.Result;
             FileStreamResult stream = result as FileStreamResult;
 
             Assert.IsNotNull(stream);
-            Assert.AreEqual("image/jpeg",stream.ContentType);
+            Assert.AreEqual("image/jpeg", stream.ContentType);
         }
 
         [TestMethod]
-        public void GerUnexistentImage() {
+        public void GetExistentTourImage()
+        {
+            Task<IActionResult> task = controller.GetTourImage(testImage);
+            task.Wait();
+            IActionResult result = task.Result;
+            FileStreamResult stream = result as FileStreamResult;
+
+            Assert.IsNotNull(stream);
+            Assert.AreEqual("image/jpeg", stream.ContentType);
+        }
+
+        [TestMethod]
+        public void GerUnexistentImage()
+        {
             Task<IActionResult> task = controller.GetLandmarkImage("unexistent.jpg");
             task.Wait();
 

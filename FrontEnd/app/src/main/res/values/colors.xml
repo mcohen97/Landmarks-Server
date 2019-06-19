@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#002A85</color>
-    <color name="colorPrimaryDark">#0A1927</color>
-    <color name="colorAccent">#D81B1B</color>
 
+    <!-- General colors -->
+    <color name="colorAccent">#D81B1B</color>
+    <color name="darkGrayBlue">#131925</color>
+
+
+    <!-- Light colors -->
+    <color name="colorPrimary">#002A85</color>
+    <color name="colorPrimaryDark">#001541</color>
+    <color name="backgroundLight">#FAFAFA</color>
+    <color name= "cardBackgroundLight">#FFFFFF</color>
+    <color name="textColorLight">#252525</color>
+    <color name="tintColorLight">#FFFFFF</color>
+    <color name="buttonColorLight">#001541</color>
+
+    <!-- Night colors -->
+    <color name="colorPrimaryNight">#212121</color>
+    <color name="colorPrimaryDarkNight">#000000</color>
+    <color name="backgroundNight">#303030</color>
+    <color name= "cardBackgroundNight">#4B4B4B</color>
+    <color name="textColorNight">#F5F5F5</color>
+    <color name="tintColorNight">#FFFFFF</color>
+    <color name="buttonColorNight">#131925</color>
+
+    <!-- Other colors -->
     <color name="transparentPrimaryDark">#E50A1927</color>
     <color name="transparent">#000A1927</color>
-
-    <color name="red1">#af0a0a</color>
+    <color name="red1">#af0a0a</color>2F2F31
     <color name="red2">#c40909</color>
     <color name="red3">#e50909</color>
     <color name="orange1">#FF8333</color>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ObligatorioISP.BusinessLogic;
 using ObligatorioISP.DataAccess.Contracts;
@@ -13,12 +12,11 @@ namespace ObligatorioISP.Services
     public class ToursService : IToursService
     {
         private IToursRepository tours;
-        private ILandmarksRepository landmarks;
 
 
-        public ToursService(IToursRepository toursStorage, ILandmarksRepository landmarksStorage) {
+        public ToursService(IToursRepository toursStorage)
+        {
             tours = toursStorage;
-            landmarks = landmarksStorage;
         }
 
         public TourDto GetTourById(int id)
@@ -27,14 +25,16 @@ namespace ObligatorioISP.Services
             {
                 return TryGetTourById(id);
             }
-            catch (TourNotFoundException e1) {
+            catch (TourNotFoundException e1)
+            {
                 throw new ServiceException(e1.Message, ErrorType.ENTITY_NOT_FOUND);
             }
             catch (DataInaccessibleException e2)
             {
                 throw new ServiceException(e2.Message, ErrorType.DATA_INACCESSIBLE);
             }
-            catch (CorruptedDataException e3) {
+            catch (CorruptedDataException e3)
+            {
                 throw new ServiceException(e3.Message, ErrorType.DATA_CORRUPTED);
             }
         }

@@ -1,6 +1,7 @@
 ﻿namespace ObligatorioISP.BusinessLogic
 {
-    public enum TourCategory {
+    public enum TourCategory
+    {
         GREEN_SITES,
         ENTERTAINMENT,
         CULTURAL,

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ObligatorioISP.Services.Contracts.Dtos
 {
@@ -12,7 +10,7 @@ namespace ObligatorioISP.Services.Contracts.Dtos
         public string Description { get; set; }
 
         public IEnumerable<int> LandmarksIds { get; set; }
-        public string Category { get; set; } 
+        public string Category { get; set; }
         public string ImageFile { get; set; }
     }
 }

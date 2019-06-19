@@ -2,7 +2,9 @@ package com.acr.landmarks.services;
 
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.util.Log;
 
+import com.acr.landmarks.services.contracts.DebugConstants;
 import com.acr.landmarks.services.contracts.IAudioService;
 
 import java.io.IOException;
@@ -13,11 +15,10 @@ public class AudioStreamPlayer implements IAudioService {
     private MediaPlayer mediaPlayer;
     private boolean isAudioLoaded;
 
-    public AudioStreamPlayer(String audioUrl){
+    public AudioStreamPlayer(String audioUrl) {
         this.url = audioUrl;
         this.mediaPlayer = new MediaPlayer();
         this.isAudioLoaded = false;
-        audioAttributesConfig();
     }
 
     private void audioAttributesConfig() {
@@ -30,20 +31,25 @@ public class AudioStreamPlayer implements IAudioService {
 
     @Override
     public void load(String fileName) {
-        setMediaPlayerTarget(fileName);
-        this.mediaPlayer.prepareAsync();
-        isAudioLoaded = true;
+        try {
+            Log.d(DebugConstants.AP_DEX, "Audio requested, time: " + System.currentTimeMillis());
+            audioAttributesConfig();
+            setMediaPlayerTarget(fileName);
+        } catch (IOException e) {
+            mediaPlayer.reset();
+        } catch (IllegalStateException e) {
+            mediaPlayer.reset();
+        }
     }
 
-    public void reset(){
+    public void reset() {
         this.mediaPlayer.reset();
-        audioAttributesConfig();
         this.isAudioLoaded = false;
     }
 
     @Override
     public void play() {
-        if(isAudioLoaded) {
+        if (isAudioLoaded) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();
             } else {
@@ -58,21 +64,22 @@ public class AudioStreamPlayer implements IAudioService {
     }
 
     @Override
-    public void pause(){
+    public void pause() {
         this.mediaPlayer.pause();
     }
 
     @Override
-    public boolean isAudioLoaded(){
-        return  this.isAudioLoaded;
+    public boolean isAudioLoaded() {
+        return this.isAudioLoaded;
     }
 
-    private void setMediaPlayerTarget(String filename){
-        try {
-            this.mediaPlayer.setDataSource(this.url+filename);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setMediaPlayerTarget(String filename) throws IOException {
+        this.mediaPlayer.setDataSource(this.url + filename);
+        this.mediaPlayer.prepareAsync();
+        this.mediaPlayer.setOnPreparedListener(mp -> {
+            this.isAudioLoaded = true;
+            Log.d(DebugConstants.AP_DEX, "Audio loaded, time: " + System.currentTimeMillis());
+        });
     }
 
 }
