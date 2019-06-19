@@ -154,6 +154,4 @@ public class BottomSheetManager {
         conversion.setLongitude(lng);
         return conversion;
     }
-
-
 }
