@@ -197,8 +197,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
 
     private void observeDirectionsAsked() {
         landmarksViewModel.getAskedForDirections().observe(this, isAsked ->{
-            //resetTheMap();
-            //updateMapMarkers();
+
             if (isAsked ) {
                 LandmarkClusterMarker marker = mSelectedMarker;
                 if(marker == null) {
@@ -264,7 +263,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
         if (mMap == null) {
             return;
         }
-        //mMapManager.resetMapPolylines();//PORQUÉ ?
         boolean firstTime = mClusterManager == null;
         if (firstTime) {
             setUpClusterManager();
@@ -303,7 +301,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
                 Log.e(TAG, "addMapMarkers: NullPointerException: " + e.getMessage());
             }
         }
-        //mClusterManager.cluster();
     }
 
     private void addMarker(Landmark landmark, int size, int landmarkIndex) {
@@ -403,7 +400,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback, C
     }
 
     public void drawTour(Tour selected) {
-        //addMapMarkers();//Porqué
 
         ArrayList<Integer> landmarksIds = selected.landmarksIds;
         ArrayList<Landmark> landmarks = new ArrayList<Landmark>();
