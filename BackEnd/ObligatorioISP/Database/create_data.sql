@@ -18,6 +18,16 @@ INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (17,'Monu
 INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (18,'Monumento a José Enrique Rodó',-34.914349, -56.167666,'Es un rincón espacioso del antiguo parque, donde la frondosa arboleda luce la floración de las acacias y se irguen los tallos de empenachadas palmeras. La brisa leve llega de la playa vecina, en cuya orilla juegan su incesante vaivén las aguas del gran rio. Muy cerca, el lago recoge en cada margen las imágenes del castillo y del Pabellón de la Música. En esta mañana de sol, deslizanse los cisnes arrogantes, abren sus abanicos los pavos reales refugiados en las islillas y las palomas bullangueras disputan los granos con que las atraen los niños entre sus manitas. En la distancia, hay colorido de azulejos del patio español y música y giros de calesas. Sobre extendida alfombra de gramilla, cruzada por senderos recién formados, de los que emana esencia de alquitrán aun no solidificado, va apoyándose el Monumento a Rodó , creado por José Belloni.');
 INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (19,'Monumento a la Diligencia',-34.861916, -56.211255,'Un gran monumento, obra del escultor uruguayo José Belloni y se inauguró en 1952.Ubicado en un hermoso lugar de la ciudad. Lugar de esparcimiento de descanso o ideal para deporte caminar o correr.');
 INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (20,'Monumento a los últimos charruas',-34.859708, -56.208526,'Está ubicado en el Prado - Montevideo, es un monumento realizado en bronce. Los charrúas fueron exterminados por orden de Rivera. El monumento representa los 4 últimos charrúas sobrevivientes rodeando un fogón, Vaimaca Pirú de pie, Senaque sentado con un mate en la mano, Guyunusa tiene un niño en la falda, delante de ella está Tacuabé. Los autores de este monumento fueron los uruguayos Edmundo Prati, Gervasio Furest Muñoz y Enrique Lussich.');
+INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (21,'Puerta de la Ciudadela',-34.906487, -56.200820,'Puerta de la Ciudadela, Montevideo Uruguay.
+En la ciudad colonial fortificada de Montevideo, la Ciudadela era el baluarte encargado de resistir el embate final de cualquier ataque del enemigo. Ocupaba la mitad de la actual Plaza Independencia y su única entrada era desde el sector interior de la ciudad. Para ingresar debía cruzarse un puente levadizo. Quitada de su emplazamiento y trasladada a la Escuela de Artes y Oficios en 1879, volvió a este lugar original en 1959. La construcción de la Ciudadela llevó más de 40 años. Las obras se iniciaron en 1741 bajo la dirección del Ing. Diego Cardoso, para finalizar recién en 1780.');
+INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (22,'Mausoleo de José Gervasio Artigas ',-34.906535, -56.199842,'En medio de la plaza Independencia se encuentra el mausoleo del general José Artigas. En su interior se recuerdan los episodios más importantes del padre de la Patria Oriental.
+Con una guardia de honor permanente de su cuerpo de soldados (Cuerpo de Blandengues), primero en el que reportó sirviendo a los suyos. El cambio de guardia, constituye un elemento de atractivo turístico en el que la actividad que rodea a la céntrica Plaza se detiene o enlentece para dar paso a la solemnidad y respeto por quien supo expresar con su vida y ejemplo un sentido que trasciende a la nacionalidad oriental y le eleva a la condición de prócer latinoamericano.');
+INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (23,'Monumento al David',-34.906007, -56.185926,'Figura desnuda de David joven, de pie: apoya sobre su hombro izquierdo una honda que sostiene con la mano. Su diestra descansa sobre el muslo. Original realizado en mármol. La escultura fue acogida como un símbolo de la República de Florencia frente a la hegemonía de los Médici y la amenaza de los Estados Pontificios.
+David (1040- 975 a. C), segundo de los reyes de Israel. Fue en su niñez pastor de los rebaños de su padre y muy joven venció en singular combate al gigante Goliat, con lo cual determinó la victoria de los israelitas sobre los filisteos.
+Electo rey, hizo de Jerusalén el centro religioso de su imperio. Se destacó como músico y poeta: compuso la mayoría de los Salmos del Antiguo Testamento.');
+INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (24,'Teatro Solis',-34.907657, -56.201150,'El teatro Solís es uno de los mejores teatros del Uruguay; además de ser el más antiguo, su estructura es increíble. Su sala principal es muy amplia y iluminada. Un excelente lugar para visitar.');
+INSERT INTO Landmark(ID,TITLE, LATITUDE, LONGITUDE,DESCRIPTION) VALUES (25,'Palacio Salvo',-34.906541, -56.198344,'Edificio icono de la ciudad de Montevideo, está edificado en el predio que ocupara La Giralda famosa confitería, donde se estrenará el tango La Cumparsita.
+Los hermanos Salvo se propusieron su construcción, combinando un hotel, galería comercial, y oficinas. Dando origen a un peculiar rascacielos que ofrece salón de baile, comedor, teatro, sala de billar, hotel y cientos de apartamentos. El proyecto lo llevó a cabo el arquitecto Mario Palanti entre los años 1922 y 1928 cuando se inauguró.3');
 
 
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(1,1,'jpg');
@@ -43,8 +53,6 @@ INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(11,1,'jpg');
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(12,1,'jpg');
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(13,1,'jpg');
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(14,1,'jpg');
-
-
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(15,1,'jpg');
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(16,1,'jpg');
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(17,1,'jpg');
@@ -52,13 +60,46 @@ INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(18,1,'jpg');
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(19,1,'jpg');
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(20,1,'jpg');
 INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(20,2,'jpg');
+INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(21,1,'png');
+INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(21,2,'png');
+INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(22,1,'png');
+INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(23,1,'png');
+INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(23,2,'jpg');
+INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(24,1,'png');
+INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(24,2,'png');
+INSERT INTO LandmarkImages(LANDMARK_ID,ID,EXTENSION) VALUES(25,1,'png');
 
 
 INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(1,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(2,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(3,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(4,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(5,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(6,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(7,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(8,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(9,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(10,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(11,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(12,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(13,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(14,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(15,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(16,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(17,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(18,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(19,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(20,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(21,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(22,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(23,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(24,1);
+INSERT INTO LandmarkAudios(LANDMARK_ID,ID) VALUES(25,1);
 
 
 INSERT INTO Tour(ID,TITLE,DESCRIPTION,CATEGORY,IMAGE_EXTENSION) VALUES(1, 'Monumentos de Parque Batlle','recorrido por algunos de los monumentos mas importantes del parque','CULTURAL','jpg');
 INSERT INTO Tour(ID,TITLE,DESCRIPTION,CATEGORY,IMAGE_EXTENSION) VALUES(2, 'Historia del futbol uruguayo','visita a monumentos de la historia de la seleccion uruguaya de futbol','ENTERTAINMENT','jpg');
+INSERT INTO Tour(ID,TITLE,DESCRIPTION,CATEGORY,IMAGE_EXTENSION) VALUES(3, 'Monumentos cerca de la Universidad ORT','Tour con fin de uso en la defensa','CULTURAL','jpg');
 
 
 INSERT INTO LandmarkTour(TOUR_ID, LANDMARK_ID, STOP_NUMBER) VALUES (1,10,1);
@@ -69,3 +110,8 @@ INSERT INTO LandmarkTour(TOUR_ID, LANDMARK_ID, STOP_NUMBER) VALUES (1,9,4);
 
 INSERT INTO LandmarkTour(TOUR_ID, LANDMARK_ID, STOP_NUMBER) VALUES (2,8,1);
 INSERT INTO LandmarkTour(TOUR_ID, LANDMARK_ID, STOP_NUMBER) VALUES (2,5,2);
+
+
+INSERT INTO LandmarkTour(TOUR_ID, LANDMARK_ID, STOP_NUMBER) VALUES (3,6,1);
+INSERT INTO LandmarkTour(TOUR_ID, LANDMARK_ID, STOP_NUMBER) VALUES (3,23,2);
+INSERT INTO LandmarkTour(TOUR_ID, LANDMARK_ID, STOP_NUMBER) VALUES (3,4,3);
